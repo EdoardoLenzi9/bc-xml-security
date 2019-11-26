@@ -1,0 +1,2 @@
+rm *.toc
+rm *.log
