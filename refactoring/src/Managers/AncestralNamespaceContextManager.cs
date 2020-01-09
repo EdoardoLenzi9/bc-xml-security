@@ -24,28 +24,18 @@ namespace Org.BouncyCastle.Crypto.Xml
             return GetScopeAt(_ancestorStack.Count - 1);
         }
 
-        protected XmlAttribute GetNearestRenderedNamespaceWithMatchingPrefix(string nsPrefix, out int depth)
+        protected XmlAttribute GetNearestNamespaceWithMatchingPrefix(string nsPrefix, out int depth, bool isRender = true)
         {
             XmlAttribute attr = null;
             depth = -1;
             for (int i = _ancestorStack.Count - 1; i >= 0; i--)
             {
-                if ((attr = GetScopeAt(i).GetRendered(nsPrefix)) != null)
-                {
-                    depth = i;
-                    return attr;
-                }
-            }
-            return null;
-        }
+                var scope = GetScopeAt(i);
+                attr = isRender
+                    ? scope.GetRendered(nsPrefix)
+                    : scope.GetUnrendered(nsPrefix);
 
-        protected XmlAttribute GetNearestUnrenderedNamespaceWithMatchingPrefix(string nsPrefix, out int depth)
-        {
-            XmlAttribute attr = null;
-            depth = -1;
-            for (int i = _ancestorStack.Count - 1; i >= 0; i--)
-            {
-                if ((attr = GetScopeAt(i).GetUnrendered(nsPrefix)) != null)
+                if (attr != null)
                 {
                     depth = i;
                     return attr;

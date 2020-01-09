@@ -177,12 +177,12 @@
     <Analyzer Include="..\packages\xunit.analyzers.0.10.0\analyzers\dotnet\cs\xunit.analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="XmlDsigTests\XmlLicenseSample.xml" />
+    <EmbeddedResource Include="XmlLicenseSample.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="EncryptionTests\EncryptedXmlSample1.xml" />
-    <EmbeddedResource Include="EncryptionTests\EncryptedXmlSample2.xml" />
-    <EmbeddedResource Include="EncryptionTests\EncryptedXmlSample3.xml" />
+    <EmbeddedResource Include="EncryptedXmlSample1.xml" />
+    <EmbeddedResource Include="EncryptedXmlSample2.xml" />
+    <EmbeddedResource Include="EncryptedXmlSample3.xml" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

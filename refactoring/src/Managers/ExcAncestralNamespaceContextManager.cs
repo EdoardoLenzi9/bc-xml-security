@@ -25,7 +25,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             int tmp;
             string nsPrefix = Utils.GetNamespacePrefix(attr);
             return _inclusivePrefixSet.ContainsKey(nsPrefix) &&
-                Utils.IsNonRedundantNamespaceDecl(attr, GetNearestRenderedNamespaceWithMatchingPrefix(nsPrefix, out tmp));
+                Utils.IsNonRedundantNamespaceDecl(attr, GetNearestNamespaceWithMatchingPrefix(nsPrefix, out tmp));
         }
 
         private void GatherNamespaceToRender(string nsPrefix, SortedList nsListToRender, Hashtable nsLocallyDeclared)
@@ -38,7 +38,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             int rDepth;
             XmlAttribute local = (XmlAttribute)nsLocallyDeclared[nsPrefix];
-            XmlAttribute rAncestral = GetNearestRenderedNamespaceWithMatchingPrefix(nsPrefix, out rDepth);
+            XmlAttribute rAncestral = GetNearestNamespaceWithMatchingPrefix(nsPrefix, out rDepth);
 
             if (local != null)
             {
@@ -51,7 +51,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             else
             {
                 int uDepth;
-                XmlAttribute uAncestral = GetNearestUnrenderedNamespaceWithMatchingPrefix(nsPrefix, out uDepth);
+                XmlAttribute uAncestral = GetNearestNamespaceWithMatchingPrefix(nsPrefix, out uDepth, false);
                 if (uAncestral != null && uDepth > rDepth && Utils.IsNonRedundantNamespaceDecl(uAncestral, rAncestral))
                 {
                     nsListToRender.Add(uAncestral, null);
