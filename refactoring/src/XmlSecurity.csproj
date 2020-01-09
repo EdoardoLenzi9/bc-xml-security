@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants.cs" />
     <Compile Include="Managers\AncestralNamespaceContextManager.cs" />
     <Compile Include="CanonicalXml\AttributeSortOrder.cs" />
     <Compile Include="Managers\C14NAncestralNamespaceContextManager.cs" />
@@ -64,6 +65,8 @@
     <Compile Include="References\CipherReference.cs" />
     <Compile Include="Encryption\CryptoHelpers.cs" />
     <Compile Include="Encryption\CryptoSignedXmlRecursionException.cs" />
+    <Compile Include="RSAFormatters\IKeyDeformatter.cs" />
+    <Compile Include="RSAFormatters\KeyExchangeDeformatter.cs" />
     <Compile Include="Signature\DataObject.cs" />
     <Compile Include="References\DataReference.cs" />
     <Compile Include="Constants\DocPosition.cs" />
@@ -98,9 +101,7 @@
     <Compile Include="References\ReferenceList.cs" />
     <Compile Include="Constants\ReferenceTargetType.cs" />
     <Compile Include="KeyInfo\RSAKeyValue.cs" />
-    <Compile Include="RSAFormatters\RSAOAEPKeyExchangeDeformatter.cs" />
     <Compile Include="RSAFormatters\RSAOAEPKeyExchangeFormatter.cs" />
-    <Compile Include="RSAFormatters\RSAPKCS1KeyExchangeDeformatter.cs" />
     <Compile Include="RSAFormatters\RSAPKCS1KeyExchangeFormatter.cs" />
     <Compile Include="Signature\Signature.cs" />
     <Compile Include="Signature\SignedInfo.cs" />

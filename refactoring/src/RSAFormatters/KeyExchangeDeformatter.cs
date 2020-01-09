@@ -4,45 +4,34 @@
 
 using System;
 using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Crypto.Xml.RSAKey;
 using Org.BouncyCastle.Security;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
-    public class RSAPKCS1KeyExchangeDeformatter
+    public class KeyExchangeDeformatter : IKeyDeformatter
     {
         private RsaKeyParameters _rsaKey;
-        private SecureRandom RngValue;
+        private RSAPadding _padding;
 
-        public RSAPKCS1KeyExchangeDeformatter() { }
-
-        public RSAPKCS1KeyExchangeDeformatter(RsaKeyParameters key)
+        public KeyExchangeDeformatter(RsaKeyParameters key, RSAPadding padding)
         {
+            _padding = padding;
             if (key == null)
                 throw new ArgumentNullException(nameof(key));
 
             _rsaKey = key;
         }
 
-        public SecureRandom RNG {
-            get { return RngValue; }
-            set { RngValue = value; }
-        }
-
-        public string Parameters
-        {
-            get {return null;}
-            set { }
-        }
-
-        public byte[] DecryptKeyExchange(byte[] rgbIn)
+        public byte[] DecryptKeyExchange(byte[] rgbData)
         {
             if (_rsaKey == null)
                 throw new System.Security.Cryptography.CryptographicUnexpectedOperationException(SR.Cryptography_MissingKey);
 
-            var rsa = CipherUtilities.GetCipher("RSA//PKCS1PADDING");
+            var rsa = CipherUtilities.GetCipher(Constants.RsaPaddingDictionary[_padding]);
             rsa.Init(false, _rsaKey);
 
-            return rsa.DoFinal(rgbIn);
+            return rsa.DoFinal(rgbData);
         }
 
         public void SetKey(RsaKeyParameters key)

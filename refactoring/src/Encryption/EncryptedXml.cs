@@ -11,8 +11,10 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Net;
+using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
+using Org.BouncyCastle.Crypto.Xml.RSAKey;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -926,16 +928,15 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (rsa == null)
                 throw new ArgumentNullException(nameof(rsa));
 
+            var padding = RSAPadding.PKCS1;
+
             if (useOAEP)
             {
-                RSAOAEPKeyExchangeDeformatter rsaDeformatter = new RSAOAEPKeyExchangeDeformatter(rsa);
-                return rsaDeformatter.DecryptKeyExchange(keyData);
+                padding = RSAPadding.OAEP;
             }
-            else
-            {
-                RSAPKCS1KeyExchangeDeformatter rsaDeformatter = new RSAPKCS1KeyExchangeDeformatter(rsa);
-                return rsaDeformatter.DecryptKeyExchange(keyData);
-            }
+            
+            IKeyDeformatter rsaDeformatter = new KeyExchangeDeformatter(rsa, padding);
+            return rsaDeformatter.DecryptKeyExchange(keyData);
         }
     }
 }
