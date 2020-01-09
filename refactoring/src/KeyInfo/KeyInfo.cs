@@ -44,7 +44,7 @@ namespace Org.BouncyCastle.Crypto.Xml
         internal XmlElement GetXml(XmlDocument xmlDocument)
         {
             // Create the KeyInfo element itself
-            XmlElement keyInfoElement = xmlDocument.CreateElement("KeyInfo", SignedXml.XmlDsigNamespaceUrl);
+            XmlElement keyInfoElement = xmlDocument.CreateElement("KeyInfo", SignedConstants.XmlDsigNamespaceUrl);
             if (!string.IsNullOrEmpty(_id))
             {
                 keyInfoElement.SetAttribute("Id", _id);
@@ -68,7 +68,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 throw new ArgumentNullException(nameof(value));
 
             XmlElement keyInfoElement = value;
-            _id = Utils.GetAttribute(keyInfoElement, "Id", SignedXml.XmlDsigNamespaceUrl);
+            _id = Utils.GetAttribute(keyInfoElement, "Id", SignedConstants.XmlDsigNamespaceUrl);
             if (!Utils.VerifyAttributes(keyInfoElement, "Id"))
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "KeyInfo");
 

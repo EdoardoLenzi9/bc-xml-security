@@ -194,7 +194,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             Reference reference = new Reference();
             // adding an empty hash value
             byte[] hash = new byte[20];
-            reference.DigestMethod = SignedXml.XmlDsigSHA1Url;
+            reference.DigestMethod = SignedConstants.XmlDsigSHA1Url;
             reference.DigestValue = hash;
             XmlElement xel = reference.GetXml();
             // this is the minimal Reference (DigestValue)!

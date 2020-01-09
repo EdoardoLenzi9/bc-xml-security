@@ -114,7 +114,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         internal XmlElement GetXml(XmlDocument document)
         {
-            XmlElement objectElement = document.CreateElement("Object", SignedXml.XmlDsigNamespaceUrl);
+            XmlElement objectElement = document.CreateElement("Object", SignedConstants.XmlDsigNamespaceUrl);
 
             if (!string.IsNullOrEmpty(_id))
                 objectElement.SetAttribute("Id", _id);
@@ -139,9 +139,9 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (value == null)
                 throw new ArgumentNullException(nameof(value));
 
-            _id = Utils.GetAttribute(value, "Id", SignedXml.XmlDsigNamespaceUrl);
-            _mimeType = Utils.GetAttribute(value, "MimeType", SignedXml.XmlDsigNamespaceUrl);
-            _encoding = Utils.GetAttribute(value, "Encoding", SignedXml.XmlDsigNamespaceUrl);
+            _id = Utils.GetAttribute(value, "Id", SignedConstants.XmlDsigNamespaceUrl);
+            _mimeType = Utils.GetAttribute(value, "MimeType", SignedConstants.XmlDsigNamespaceUrl);
+            _encoding = Utils.GetAttribute(value, "Encoding", SignedConstants.XmlDsigNamespaceUrl);
 
             foreach (XmlNode node in value.ChildNodes)
             {

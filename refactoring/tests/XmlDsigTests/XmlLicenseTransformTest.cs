@@ -306,7 +306,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             XmlDocument doc = context.OwnerDocument;
 
             var nsMgr = new XmlNamespaceManager(doc.NameTable);
-            nsMgr.AddNamespace("dsig", SignedXml.XmlDsigNamespaceUrl);
+            nsMgr.AddNamespace("dsig", SignedConstants.XmlDsigNamespaceUrl);
             nsMgr.AddNamespace("enc", EncryptedXml.XmlEncNamespaceUrl);
             nsMgr.AddNamespace("r", LicenseTransformNsUrl);
 

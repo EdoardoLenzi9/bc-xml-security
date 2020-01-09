@@ -61,7 +61,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             XmlElement xmlkey = dsa.GetXml();
 
             XmlNamespaceManager ns = new XmlNamespaceManager(xmlkey.OwnerDocument.NameTable);
-            ns.AddNamespace("schema", SignedXml.XmlDsigNamespaceUrl);
+            ns.AddNamespace("schema", SignedConstants.XmlDsigNamespaceUrl);
 
             IEnumerable<XmlNode> elements =
                 new[] { "P", "Q", "G", "Y", "J", "Seed", "PgenCounter" }

@@ -31,14 +31,14 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public XmlDsigEnvelopedSignatureTransform()
         {
-            Algorithm = SignedXml.XmlDsigEnvelopedSignatureTransformUrl;
+            Algorithm = SignedConstants.XmlDsigEnvelopedSignatureTransformUrl;
         }
 
         /// <internalonly/>
         public XmlDsigEnvelopedSignatureTransform(bool includeComments)
         {
             _includeComments = includeComments;
-            Algorithm = SignedXml.XmlDsigEnvelopedSignatureTransformUrl;
+            Algorithm = SignedConstants.XmlDsigEnvelopedSignatureTransformUrl;
         }
 
         public override Type[] InputTypes
@@ -94,7 +94,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (_containingDocument == null)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_EnvelopedSignatureRequiresContext);
             _nsm = new XmlNamespaceManager(_containingDocument.NameTable);
-            _nsm.AddNamespace("dsig", SignedXml.XmlDsigNamespaceUrl);
+            _nsm.AddNamespace("dsig", SignedConstants.XmlDsigNamespaceUrl);
         }
 
         private void LoadXmlNodeListInput(XmlNodeList nodeList)
@@ -107,7 +107,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_EnvelopedSignatureRequiresContext);
 
             _nsm = new XmlNamespaceManager(_containingDocument.NameTable);
-            _nsm.AddNamespace("dsig", SignedXml.XmlDsigNamespaceUrl);
+            _nsm.AddNamespace("dsig", SignedConstants.XmlDsigNamespaceUrl);
             _inputNodeList = nodeList;
         }
 
@@ -117,7 +117,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 throw new ArgumentNullException(nameof(doc));
             _containingDocument = doc;
             _nsm = new XmlNamespaceManager(_containingDocument.NameTable);
-            _nsm.AddNamespace("dsig", SignedXml.XmlDsigNamespaceUrl);
+            _nsm.AddNamespace("dsig", SignedConstants.XmlDsigNamespaceUrl);
         }
 
         public override object GetOutput()

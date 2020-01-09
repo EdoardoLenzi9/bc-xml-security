@@ -101,7 +101,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             // Add the transforms to the CipherReference
             if (TransformChain.Count > 0)
-                referenceElement.AppendChild(TransformChain.GetXml(document, SignedXml.XmlDsigNamespaceUrl));
+                referenceElement.AppendChild(TransformChain.GetXml(document, SignedConstants.XmlDsigNamespaceUrl));
 
             return referenceElement;
         }
@@ -120,7 +120,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             // Transforms
             XmlNamespaceManager nsm = new XmlNamespaceManager(value.OwnerDocument.NameTable);
-            nsm.AddNamespace("ds", SignedXml.XmlDsigNamespaceUrl);
+            nsm.AddNamespace("ds", SignedConstants.XmlDsigNamespaceUrl);
             XmlNode transformsNode = value.SelectSingleNode("ds:Transforms", nsm);
             if (transformsNode != null)
                 TransformChain.LoadXml(transformsNode as XmlElement);

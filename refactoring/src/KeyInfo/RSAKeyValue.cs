@@ -67,14 +67,14 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         internal override XmlElement GetXml(XmlDocument xmlDocument)
         {
-            XmlElement keyValueElement = xmlDocument.CreateElement(KeyValueElementName, SignedXml.XmlDsigNamespaceUrl);
-            XmlElement rsaKeyValueElement = xmlDocument.CreateElement(RSAKeyValueElementName, SignedXml.XmlDsigNamespaceUrl);
+            XmlElement keyValueElement = xmlDocument.CreateElement(KeyValueElementName, SignedConstants.XmlDsigNamespaceUrl);
+            XmlElement rsaKeyValueElement = xmlDocument.CreateElement(RSAKeyValueElementName, SignedConstants.XmlDsigNamespaceUrl);
 
-            XmlElement modulusElement = xmlDocument.CreateElement(ModulusElementName, SignedXml.XmlDsigNamespaceUrl);
+            XmlElement modulusElement = xmlDocument.CreateElement(ModulusElementName, SignedConstants.XmlDsigNamespaceUrl);
             modulusElement.AppendChild(xmlDocument.CreateTextNode(Convert.ToBase64String(_key.Modulus.ToByteArrayUnsigned())));
             rsaKeyValueElement.AppendChild(modulusElement);
 
-            XmlElement exponentElement = xmlDocument.CreateElement(ExponentElementName, SignedXml.XmlDsigNamespaceUrl);
+            XmlElement exponentElement = xmlDocument.CreateElement(ExponentElementName, SignedConstants.XmlDsigNamespaceUrl);
             exponentElement.AppendChild(xmlDocument.CreateTextNode(Convert.ToBase64String(_key.Exponent.ToByteArrayUnsigned())));
             rsaKeyValueElement.AppendChild(exponentElement);
 
@@ -105,14 +105,14 @@ namespace Org.BouncyCastle.Crypto.Xml
                 throw new ArgumentNullException(nameof(value));
             }
             if (value.LocalName != KeyValueElementName
-                || value.NamespaceURI != SignedXml.XmlDsigNamespaceUrl)
+                || value.NamespaceURI != SignedConstants.XmlDsigNamespaceUrl)
             {
-                throw new System.Security.Cryptography.CryptographicException($"Root element must be {KeyValueElementName} element in namespace {SignedXml.XmlDsigNamespaceUrl}");
+                throw new System.Security.Cryptography.CryptographicException($"Root element must be {KeyValueElementName} element in namespace {SignedConstants.XmlDsigNamespaceUrl}");
             }
 
             const string xmlDsigNamespacePrefix = "dsig";
             XmlNamespaceManager xmlNamespaceManager = new XmlNamespaceManager(value.OwnerDocument.NameTable);
-            xmlNamespaceManager.AddNamespace(xmlDsigNamespacePrefix, SignedXml.XmlDsigNamespaceUrl);
+            xmlNamespaceManager.AddNamespace(xmlDsigNamespacePrefix, SignedConstants.XmlDsigNamespaceUrl);
 
             XmlNode rsaKeyValueElement = value.SelectSingleNode($"{xmlDsigNamespacePrefix}:{RSAKeyValueElementName}", xmlNamespaceManager);
             if (rsaKeyValueElement == null)

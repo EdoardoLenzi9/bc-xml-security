@@ -44,10 +44,10 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             Assert.Equal(signedXml.SafeCanonicalizationMethods,
                 new []
                 {
-                    SignedXml.XmlDsigC14NTransformUrl,
-                    SignedXml.XmlDsigC14NWithCommentsTransformUrl,
-                    SignedXml.XmlDsigExcC14NTransformUrl,
-                    SignedXml.XmlDsigExcC14NWithCommentsTransformUrl
+                    SignedConstants.XmlDsigC14NTransformUrl,
+                    SignedConstants.XmlDsigC14NWithCommentsTransformUrl,
+                    SignedConstants.XmlDsigExcC14NTransformUrl,
+                    SignedConstants.XmlDsigExcC14NWithCommentsTransformUrl
                 });
             Assert.NotNull(signedXml.SignatureFormatValidator);
 

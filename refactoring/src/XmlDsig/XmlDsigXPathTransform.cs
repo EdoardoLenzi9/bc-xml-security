@@ -26,7 +26,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public XmlDsigXPathTransform()
         {
-            Algorithm = SignedXml.XmlDsigXPathTransformUrl;
+            Algorithm = SignedConstants.XmlDsigXPathTransformUrl;
         }
 
         public override Type[] InputTypes
@@ -93,7 +93,7 @@ namespace Org.BouncyCastle.Crypto.Xml
         protected override XmlNodeList GetInnerXml()
         {
             XmlDocument document = new XmlDocument();
-            XmlElement element = document.CreateElement(null, "XPath", SignedXml.XmlDsigNamespaceUrl);
+            XmlElement element = document.CreateElement(null, "XPath", SignedConstants.XmlDsigNamespaceUrl);
 
             if (_nsm != null)
             {

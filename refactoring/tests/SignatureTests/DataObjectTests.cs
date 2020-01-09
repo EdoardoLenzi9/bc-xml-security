@@ -145,10 +145,10 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         private static XmlElement CreateTestElement(string name, string idValue, string mimeTypeValue, string encodingValue, int childs)
         {
             var doc = new XmlDocument();
-            XmlElement element = doc.CreateElement(name, SignedXml.XmlDsigNamespaceUrl);
-            XmlAttribute idAttribute = doc.CreateAttribute(IdAttributeName, SignedXml.XmlDsigNamespaceUrl);
-            XmlAttribute mimeTypeAttribute = doc.CreateAttribute(MimeTypeAttributeName, SignedXml.XmlDsigNamespaceUrl);
-            XmlAttribute encodingAttribute = doc.CreateAttribute(EncodingAttributeName, SignedXml.XmlDsigNamespaceUrl);
+            XmlElement element = doc.CreateElement(name, SignedConstants.XmlDsigNamespaceUrl);
+            XmlAttribute idAttribute = doc.CreateAttribute(IdAttributeName, SignedConstants.XmlDsigNamespaceUrl);
+            XmlAttribute mimeTypeAttribute = doc.CreateAttribute(MimeTypeAttributeName, SignedConstants.XmlDsigNamespaceUrl);
+            XmlAttribute encodingAttribute = doc.CreateAttribute(EncodingAttributeName, SignedConstants.XmlDsigNamespaceUrl);
             idAttribute.Value = idValue;
             mimeTypeAttribute.Value = mimeTypeValue;
             encodingAttribute.Value = encodingValue;

@@ -133,7 +133,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         internal XmlElement GetXml(XmlDocument document, string name)
         {
-            XmlElement transformElement = document.CreateElement(name, SignedXml.XmlDsigNamespaceUrl);
+            XmlElement transformElement = document.CreateElement(name, SignedConstants.XmlDsigNamespaceUrl);
             if (!string.IsNullOrEmpty(Algorithm))
                 transformElement.SetAttribute("Algorithm", Algorithm);
             XmlNodeList children = GetInnerXml();

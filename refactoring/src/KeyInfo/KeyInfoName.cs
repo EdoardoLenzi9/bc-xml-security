@@ -48,7 +48,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         internal override XmlElement GetXml(XmlDocument xmlDocument)
         {
-            XmlElement nameElement = xmlDocument.CreateElement("KeyName", SignedXml.XmlDsigNamespaceUrl);
+            XmlElement nameElement = xmlDocument.CreateElement("KeyName", SignedConstants.XmlDsigNamespaceUrl);
             nameElement.AppendChild(xmlDocument.CreateTextNode(_keyName));
             return nameElement;
         }

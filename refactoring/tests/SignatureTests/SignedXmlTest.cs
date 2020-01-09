@@ -47,14 +47,14 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact]
         public void StaticValues()
         {
-            Assert.Equal("http://www.w3.org/TR/2001/REC-xml-c14n-20010315", SignedXml.XmlDsigCanonicalizationUrl);
-            Assert.Equal("http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments", SignedXml.XmlDsigCanonicalizationWithCommentsUrl);
-            Assert.Equal("http://www.w3.org/2000/09/xmldsig#dsa-sha1", SignedXml.XmlDsigDSAUrl);
-            Assert.Equal("http://www.w3.org/2000/09/xmldsig#hmac-sha1", SignedXml.XmlDsigHMACSHA1Url);
-            Assert.Equal("http://www.w3.org/2000/09/xmldsig#minimal", SignedXml.XmlDsigMinimalCanonicalizationUrl);
-            Assert.Equal("http://www.w3.org/2000/09/xmldsig#", SignedXml.XmlDsigNamespaceUrl);
-            Assert.Equal("http://www.w3.org/2000/09/xmldsig#rsa-sha1", SignedXml.XmlDsigRSASHA1Url);
-            Assert.Equal("http://www.w3.org/2000/09/xmldsig#sha1", SignedXml.XmlDsigSHA1Url);
+            Assert.Equal("http://www.w3.org/TR/2001/REC-xml-c14n-20010315", SignedConstants.XmlDsigCanonicalizationUrl);
+            Assert.Equal("http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments", SignedConstants.XmlDsigCanonicalizationWithCommentsUrl);
+            Assert.Equal("http://www.w3.org/2000/09/xmldsig#dsa-sha1", SignedConstants.XmlDsigDSAUrl);
+            Assert.Equal("http://www.w3.org/2000/09/xmldsig#hmac-sha1", SignedConstants.XmlDsigHMACSHA1Url);
+            Assert.Equal("http://www.w3.org/2000/09/xmldsig#minimal", SignedConstants.XmlDsigMinimalCanonicalizationUrl);
+            Assert.Equal("http://www.w3.org/2000/09/xmldsig#", SignedConstants.XmlDsigNamespaceUrl);
+            Assert.Equal("http://www.w3.org/2000/09/xmldsig#rsa-sha1", SignedConstants.XmlDsigRSASHA1Url);
+            Assert.Equal("http://www.w3.org/2000/09/xmldsig#sha1", SignedConstants.XmlDsigSHA1Url);
         }
 
         [Fact]
@@ -62,7 +62,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         {
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(signature);
-            XmlNodeList xnl = doc.GetElementsByTagName("Signature", SignedXml.XmlDsigNamespaceUrl);
+            XmlNodeList xnl = doc.GetElementsByTagName("Signature", SignedConstants.XmlDsigNamespaceUrl);
             XmlElement xel = (XmlElement)xnl[0];
 
             SignedXml sx = new SignedXml(doc);
@@ -75,7 +75,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         {
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(signature);
-            XmlNodeList xnl = doc.GetElementsByTagName("Signature", SignedXml.XmlDsigNamespaceUrl);
+            XmlNodeList xnl = doc.GetElementsByTagName("Signature", SignedConstants.XmlDsigNamespaceUrl);
             XmlElement xel = (XmlElement)xnl[0];
 
             SignedXml sx = new SignedXml(doc);
@@ -95,7 +95,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         {
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(signature);
-            XmlNodeList xnl = doc.GetElementsByTagName("Signature", SignedXml.XmlDsigNamespaceUrl);
+            XmlNodeList xnl = doc.GetElementsByTagName("Signature", SignedConstants.XmlDsigNamespaceUrl);
             XmlElement xel = (XmlElement)xnl[0];
 
             SignedXml sx = new SignedXml(doc.DocumentElement);
@@ -108,7 +108,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         {
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(signature);
-            XmlNodeList xnl = doc.GetElementsByTagName("Signature", SignedXml.XmlDsigNamespaceUrl);
+            XmlNodeList xnl = doc.GetElementsByTagName("Signature", SignedConstants.XmlDsigNamespaceUrl);
             XmlElement xel = (XmlElement)xnl[0];
 
             SignedXml sx = new SignedXml(doc.DocumentElement);
@@ -163,7 +163,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             keyGen.Init(new KeyGenerationParameters(new SecureRandom(), 1024));
             var pair = keyGen.GenerateKeyPair();
             signedXml.SigningKey = pair.Private;
-            signedXml.SignedInfo.SignatureMethod = SignedXml.XmlDsigHMACSHA1Url;
+            signedXml.SignedInfo.SignatureMethod = SignedConstants.XmlDsigHMACSHA1Url;
 
             // Add a KeyInfo.
             KeyInfo keyInfo = new KeyInfo();
@@ -323,7 +323,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             signedXml.ComputeSignature();
 
             Assert.Null(signedXml.SignatureLength);
-            Assert.Equal(SignedXml.XmlDsigDSAUrl, signedXml.SignatureMethod);
+            Assert.Equal(SignedConstants.XmlDsigDSAUrl, signedXml.SignatureMethod);
             Assert.InRange(signedXml.SignatureValue.Length, low: 40, high: int.MaxValue);
             Assert.Null(signedXml.SigningKeyName);
 
@@ -357,7 +357,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             Assert.Equal(0, signedXml.KeyInfo.Count);
             Assert.Null(signedXml.SignatureLength);
-            Assert.Equal(SignedXml.XmlDsigHMACSHA1Url, signedXml.SignatureMethod);
+            Assert.Equal(SignedConstants.XmlDsigHMACSHA1Url, signedXml.SignatureMethod);
             Assert.Equal(20, signedXml.SignatureValue.Length);
             Assert.Null(signedXml.SigningKeyName);
 
@@ -632,7 +632,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             sxml.AddObject(d);
             Reference r = new Reference("#_1");
             r.AddTransform(transform);
-            r.DigestMethod = SignedXml.XmlDsigSHA1Url;
+            r.DigestMethod = SignedConstants.XmlDsigSHA1Url;
             sxml.SignedInfo.AddReference(r);
             sxml.ComputeSignature(keyhash);
             StringWriter sw = new StringWriter();
@@ -683,11 +683,11 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             var privKey = store.GetKey(alias).Key;
             SignedXml signedXml = new SignedXml(doc);
             signedXml.SigningKey = privKey;
-            signedXml.SignedInfo.CanonicalizationMethod = SignedXml.XmlDsigExcC14NTransformUrl;
-            signedXml.SignedInfo.SignatureMethod = SignedXml.XmlDsigRSASHA1Url;
+            signedXml.SignedInfo.CanonicalizationMethod = SignedConstants.XmlDsigExcC14NTransformUrl;
+            signedXml.SignedInfo.SignatureMethod = SignedConstants.XmlDsigRSASHA1Url;
 
             Reference reference = new Reference();
-            reference.DigestMethod = SignedXml.XmlDsigSHA1Url;
+            reference.DigestMethod = SignedConstants.XmlDsigSHA1Url;
             reference.Uri = "";
 
             XmlDsigEnvelopedSignatureTransform env = new XmlDsigEnvelopedSignatureTransform();
@@ -752,11 +752,11 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             var privKey = store.GetKey(alias).Key;
             SignedXml signedXml = new SignedXml(doc);
             signedXml.SigningKey = privKey;
-            signedXml.SignedInfo.SignatureMethod = SignedXml.XmlDsigRSASHA1Url;
-            signedXml.SignedInfo.CanonicalizationMethod = SignedXml.XmlDsigExcC14NTransformUrl;
+            signedXml.SignedInfo.SignatureMethod = SignedConstants.XmlDsigRSASHA1Url;
+            signedXml.SignedInfo.CanonicalizationMethod = SignedConstants.XmlDsigExcC14NTransformUrl;
 
             Reference reference = new Reference();
-            reference.DigestMethod = SignedXml.XmlDsigSHA1Url;
+            reference.DigestMethod = SignedConstants.XmlDsigSHA1Url;
             reference.Uri = "";
 
             XmlDsigEnvelopedSignatureTransform env = new XmlDsigEnvelopedSignatureTransform();
@@ -866,7 +866,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             var cert = store.GetCertificate(alias).Certificate;
             var privKey = store.GetKey(alias).Key;
 
-            XmlDocument doc = CreateSignedXml(cert, privKey, SignedXml.XmlDsigExcC14NTransformUrl, "\r\n");
+            XmlDocument doc = CreateSignedXml(cert, privKey, SignedConstants.XmlDsigExcC14NTransformUrl, "\r\n");
             Assert.Equal(string.Format(CultureInfo.InvariantCulture, "<person>{0}" +
                 "  <birthplace>Brussels</birthplace>{0}" +
                 "<Signature xmlns=\"http://www.w3.org/2000/09/xmldsig#\">" +
@@ -928,7 +928,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             var cert = store.GetCertificate(alias).Certificate;
             var privKey = store.GetKey(alias).Key;
 
-            XmlDocument doc = CreateSignedXml(cert, privKey, SignedXml.XmlDsigExcC14NTransformUrl, "\n");
+            XmlDocument doc = CreateSignedXml(cert, privKey, SignedConstants.XmlDsigExcC14NTransformUrl, "\n");
             Assert.Equal(string.Format(CultureInfo.InvariantCulture, "<person>{0}" +
                 "  <birthplace>Brussels</birthplace>{0}" +
                 "<Signature xmlns=\"http://www.w3.org/2000/09/xmldsig#\">" +
@@ -991,16 +991,16 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             var cert = store.GetCertificate(alias).Certificate;
             var privKey = store.GetKey(alias).Key;
 
-            doc = CreateSignedXml(cert, privKey, SignedXml.XmlDsigExcC14NTransformUrl, "\n");
+            doc = CreateSignedXml(cert, privKey, SignedConstants.XmlDsigExcC14NTransformUrl, "\n");
             Assert.True(VerifySignedXml(doc), "#1");
 
-            doc = CreateSignedXml(cert, privKey, SignedXml.XmlDsigExcC14NWithCommentsTransformUrl, "\n");
+            doc = CreateSignedXml(cert, privKey, SignedConstants.XmlDsigExcC14NWithCommentsTransformUrl, "\n");
             Assert.True(VerifySignedXml(doc), "#2");
 
-            doc = CreateSignedXml(cert, privKey, SignedXml.XmlDsigCanonicalizationUrl, "\n");
+            doc = CreateSignedXml(cert, privKey, SignedConstants.XmlDsigCanonicalizationUrl, "\n");
             Assert.True(VerifySignedXml(doc), "#3");
 
-            doc = CreateSignedXml(cert, privKey, SignedXml.XmlDsigCanonicalizationWithCommentsUrl, "\n");
+            doc = CreateSignedXml(cert, privKey, SignedConstants.XmlDsigCanonicalizationWithCommentsUrl, "\n");
             Assert.True(VerifySignedXml(doc), "#4");
         }
 
@@ -1014,10 +1014,10 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             SignedXml signedXml = new SignedXml(doc);
             signedXml.SigningKey = key;
             signedXml.SignedInfo.CanonicalizationMethod = canonicalizationMethod;
-            signedXml.SignedInfo.SignatureMethod = SignedXml.XmlDsigRSASHA1Url;
+            signedXml.SignedInfo.SignatureMethod = SignedConstants.XmlDsigRSASHA1Url;
 
             Reference reference = new Reference();
-            reference.DigestMethod = SignedXml.XmlDsigSHA1Url;
+            reference.DigestMethod = SignedConstants.XmlDsigSHA1Url;
             reference.Uri = "";
 
             XmlDsigEnvelopedSignatureTransform env = new XmlDsigEnvelopedSignatureTransform();
@@ -1352,7 +1352,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             // works as long as the string can be used by CryptoConfig to create 
             // an instance of the required hash algorithm
-            SignedXml sign = SignHMAC(SignedXml.XmlDsigSHA384Url, hmac, true);
+            SignedXml sign = SignHMAC(SignedConstants.XmlDsigSHA384Url, hmac, true);
             Assert.Equal(more384, sign.SignatureMethod);
         }
 

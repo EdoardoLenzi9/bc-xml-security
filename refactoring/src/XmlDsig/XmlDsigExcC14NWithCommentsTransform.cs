@@ -22,12 +22,12 @@ namespace Org.BouncyCastle.Crypto.Xml
     {
         public XmlDsigExcC14NWithCommentsTransform() : base(true)
         {
-            Algorithm = SignedXml.XmlDsigExcC14NWithCommentsTransformUrl;
+            Algorithm = SignedConstants.XmlDsigExcC14NWithCommentsTransformUrl;
         }
 
         public XmlDsigExcC14NWithCommentsTransform(string inclusiveNamespacesPrefixList) : base(true, inclusiveNamespacesPrefixList)
         {
-            Algorithm = SignedXml.XmlDsigExcC14NWithCommentsTransformUrl;
+            Algorithm = SignedConstants.XmlDsigExcC14NWithCommentsTransformUrl;
         }
     }
 }
