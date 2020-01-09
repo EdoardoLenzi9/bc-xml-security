@@ -198,8 +198,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public bool CheckSignature()
         {
-            AsymmetricKeyParameter signingKey;
-            return CheckSignatureReturningKey(out signingKey);
+            return CheckSignatureReturningKey(out _);
         }
 
         public bool CheckSignatureReturningKey(out AsymmetricKeyParameter signingKey)
@@ -450,22 +449,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             return null;
         }
 
-        private IList<X509Certificate> BuildBagOfCerts()
-        {
-            var collection = new List<X509Certificate>();
-            if (KeyInfo != null)
-            {
-                foreach (KeyInfoClause clause in KeyInfo)
-                {
-                    KeyInfoX509Data x509Data = clause as KeyInfoX509Data;
-                    if (x509Data != null)
-                        collection.AddRange(Utils.BuildBagOfCerts(x509Data, CertUsageType.Verification));
-                }
-            }
-
-            return collection;
-        }
-
         private AsymmetricKeyParameter GetNextCertificatePublicKey()
         {
             while (_x509Enum.MoveNext())
@@ -549,7 +532,6 @@ namespace Org.BouncyCastle.Crypto.Xml
         //
 
         private bool _bCacheValid = false;
-        //private byte[] _digestedSignedInfo = null;
 
         private static bool DefaultSignatureFormatValidator(SignedXml signedXml)
         {
@@ -743,7 +725,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             }
         }
 
-        private int GetReferenceLevel(int index, ArrayList references)
+        public int GetReferenceLevel(int index, ArrayList references)
         {
             if (_refProcessed[index]) return _refLevelCache[index];
             _refProcessed[index] = true;
@@ -776,39 +758,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             }
             // Malformed reference
             throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidReference);
-        }
-
-        private class ReferenceLevelSortOrder : IComparer
-        {
-            private ArrayList _references = null;
-            public ReferenceLevelSortOrder() { }
-
-            public ArrayList References
-            {
-                get { return _references; }
-                set { _references = value; }
-            }
-
-            public int Compare(object a, object b)
-            {
-                Reference referenceA = a as Reference;
-                Reference referenceB = b as Reference;
-
-                // Get the indexes
-                int iIndexA = 0;
-                int iIndexB = 0;
-                int i = 0;
-                foreach (Reference reference in References)
-                {
-                    if (reference == referenceA) iIndexA = i;
-                    if (reference == referenceB) iIndexB = i;
-                    i++;
-                }
-
-                int iLevelA = referenceA.SignedXml.GetReferenceLevel(iIndexA, References);
-                int iLevelB = referenceB.SignedXml.GetReferenceLevel(iIndexB, References);
-                return iLevelA.CompareTo(iLevelB);
-            }
         }
 
         private void BuildDigestedReferences()
@@ -948,11 +897,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (signatureDescription == null)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_SignatureDescriptionNotCreated);
 
-            // Let's see if the key corresponds with the SignatureMethod 
-            //ISigner ta = SignerUtilities.GetSigner(signatureDescription.AlgorithmName);
-            //if (!IsKeyTheCorrectAlgorithm(key, ta))
-            //    return false;
-
             try
             {
                 signatureDescription.Init(false, key);
@@ -963,14 +907,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             }
 
             GetC14NDigest(new SignerHashWrapper(signatureDescription));
-
-            /*SignedXmlDebugLog.LogVerifySignedInfo(this,
-                                                  key,
-                                                  signatureDescription,
-                                                  hashAlgorithm,
-                                                  asymmetricSignatureDeformatter,
-                                                  hashval,
-                                                  m_signature.SignatureValue);*/
 
             return signatureDescription.VerifySignature(m_signature.SignatureValue);
         }

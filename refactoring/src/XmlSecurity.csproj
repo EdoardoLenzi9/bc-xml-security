@@ -86,6 +86,8 @@
     <Compile Include="CanonicalXml\ExcCanonicalXml.cs" />
     <Compile Include="Signature\HashWrappers.cs" />
     <Compile Include="CanonicalXml\ICanonicalizableNode.cs" />
+    <Compile Include="Signature\IReferenceLevelSortOrder.cs" />
+    <Compile Include="Signature\ReferenceLevelSortOrder.cs" />
     <Compile Include="Signature\SignedConstants.cs" />
     <Compile Include="XmlDsig\IRelDecryptor.cs" />
     <Compile Include="KeyInfo\KeyInfo.cs" />
