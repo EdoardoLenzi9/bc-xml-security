@@ -5,7 +5,6 @@
 using System.Xml;
 using System.IO;
 using System.Text;
-using System.Collections;
 using System;
 
 namespace Org.BouncyCastle.Crypto.Xml
@@ -14,11 +13,6 @@ namespace Org.BouncyCastle.Crypto.Xml
     {
         private CanonicalXmlDocument _c14nDoc;
         private C14NAncestralNamespaceContextManager _ancMgr;
-
-        // private static string defaultXPathWithoutComments = "(//. | //@* | //namespace::*)[not(self::comment())]";
-        // private static string defaultXPathWithoutComments = "(//. | //@* | //namespace::*)";
-        // private static string defaultXPathWithComments = "(//. | //@* | //namespace::*)";
-        // private static string defaultXPathWithComments = "(//. | //@* | //namespace::*)";
 
         internal CanonicalXml(Stream inputStream, bool includeComments, XmlResolver resolver, string strBaseUri)
         {

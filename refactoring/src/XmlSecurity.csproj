@@ -43,6 +43,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CanonicalXml\CanonicalXmlElement.cs" />
+    <Compile Include="CanonicalXml\CanonicalXmlProcessingInstruction.cs" />
+    <Compile Include="CanonicalXml\CanonicalXmlText.cs" />
+    <Compile Include="CanonicalXml\NamespaceSortOrder.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Managers\AncestralNamespaceContextManager.cs" />
     <Compile Include="CanonicalXml\AttributeSortOrder.cs" />
@@ -53,12 +57,9 @@
     <Compile Include="CanonicalXml\CanonicalXmlCDataSection.cs" />
     <Compile Include="CanonicalXml\CanonicalXmlComment.cs" />
     <Compile Include="CanonicalXml\CanonicalXmlDocument.cs" />
-    <Compile Include="CanonicalXml\CanonicalXmlElement.cs" />
     <Compile Include="CanonicalXml\CanonicalXmlEntityReference.cs" />
     <Compile Include="CanonicalXml\CanonicalXmlNodeList.cs" />
-    <Compile Include="CanonicalXml\CanonicalXmlProcessingInstruction.cs" />
     <Compile Include="CanonicalXml\CanonicalXmlSignificantWhitespace.cs" />
-    <Compile Include="CanonicalXml\CanonicalXmlText.cs" />
     <Compile Include="CanonicalXml\CanonicalXmlWhitespace.cs" />
     <Compile Include="Constants\CertUsageType.cs" />
     <Compile Include="Encryption\CipherData.cs" />
@@ -96,7 +97,6 @@
     <Compile Include="KeyInfo\KeyReference.cs" />
     <Compile Include="XmlDsig\MyXmlDocument.cs" />
     <Compile Include="CanonicalXml\NamespaceFrame.cs" />
-    <Compile Include="CanonicalXml\NamespaceSortOrder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="References\Reference.cs" />
     <Compile Include="References\ReferenceList.cs" />
