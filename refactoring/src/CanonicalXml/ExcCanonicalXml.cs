@@ -5,7 +5,6 @@
 using System.Xml;
 using System.IO;
 using System.Text;
-using System.Collections;
 using System;
 
 namespace Org.BouncyCastle.Crypto.Xml
@@ -52,6 +51,12 @@ namespace Org.BouncyCastle.Crypto.Xml
             _ancMgr = new ExcAncestralNamespaceContextManager(inclusiveNamespacesPrefixList);
 
             MarkInclusionStateForNodes(nodeList, doc, _c14nDoc);
+        }
+
+        private static void MarkNodeAsIncluded(XmlNode node)
+        {
+            if (node is ICanonicalizableNode)
+                ((ICanonicalizableNode)node).IsInNodeSet = true;
         }
 
         internal byte[] GetBytes()
@@ -105,12 +110,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 }
                 index++;
             } while (index < elementList.Count);
-        }
-
-        private static void MarkNodeAsIncluded(XmlNode node)
-        {
-            if (node is ICanonicalizableNode)
-                ((ICanonicalizableNode)node).IsInNodeSet = true;
         }
     }
 }
