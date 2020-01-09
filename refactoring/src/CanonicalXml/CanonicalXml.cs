@@ -59,6 +59,19 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (node is ICanonicalizableNode)
                 ((ICanonicalizableNode)node).IsInNodeSet = true;
         }
+        
+        internal byte[] GetBytes()
+        {
+            StringBuilder sb = new StringBuilder();
+            _c14nDoc.Write(sb, DocPosition.BeforeRootElement, _ancMgr);
+            UTF8Encoding utf8 = new UTF8Encoding(false);
+            return utf8.GetBytes(sb.ToString());
+        }
+
+        internal void GetDigestedBytes(IHash hash)
+        {
+            _c14nDoc.WriteHash(hash, DocPosition.BeforeRootElement, _ancMgr);
+        }
 
         private static void MarkInclusionStateForNodes(XmlNodeList nodeList, XmlDocument inputRoot, XmlDocument root)
         {
@@ -100,17 +113,5 @@ namespace Org.BouncyCastle.Crypto.Xml
             } while (index < elementList.Count);
         }
 
-        internal byte[] GetBytes()
-        {
-            StringBuilder sb = new StringBuilder();
-            _c14nDoc.Write(sb, DocPosition.BeforeRootElement, _ancMgr);
-            UTF8Encoding utf8 = new UTF8Encoding(false);
-            return utf8.GetBytes(sb.ToString());
-        }
-
-        internal void GetDigestedBytes(IHash signer)
-        {
-            _c14nDoc.WriteHash(signer, DocPosition.BeforeRootElement, _ancMgr);
-        }
     }
 }

@@ -53,6 +53,12 @@ namespace Org.BouncyCastle.Crypto.Xml
             MarkInclusionStateForNodes(nodeList, doc, _c14nDoc);
         }
 
+        private static void MarkNodeAsIncluded(XmlNode node)
+        {
+            if (node is ICanonicalizableNode)
+                ((ICanonicalizableNode)node).IsInNodeSet = true;
+        }
+
         internal byte[] GetBytes()
         {
             StringBuilder sb = new StringBuilder();
@@ -104,12 +110,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 }
                 index++;
             } while (index < elementList.Count);
-        }
-
-        private static void MarkNodeAsIncluded(XmlNode node)
-        {
-            if (node is ICanonicalizableNode)
-                ((ICanonicalizableNode)node).IsInNodeSet = true;
         }
     }
 }
