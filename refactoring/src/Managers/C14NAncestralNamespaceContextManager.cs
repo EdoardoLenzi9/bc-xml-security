@@ -30,7 +30,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             int rDepth;
             XmlAttribute local = (XmlAttribute)nsLocallyDeclared[nsPrefix];
-            XmlAttribute rAncestral = GetNearestRenderedNamespaceWithMatchingPrefix(nsPrefix, out rDepth);
+            XmlAttribute rAncestral = GetNearestNamespaceWithMatchingPrefix(nsPrefix, out rDepth);
             if (local != null)
             {
                 if (Utils.IsNonRedundantNamespaceDecl(local, rAncestral))
@@ -45,7 +45,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             else
             {
                 int uDepth;
-                XmlAttribute uAncestral = GetNearestUnrenderedNamespaceWithMatchingPrefix(nsPrefix, out uDepth);
+                XmlAttribute uAncestral = GetNearestNamespaceWithMatchingPrefix(nsPrefix, out uDepth, false);
                 if (uAncestral != null && uDepth > rDepth && Utils.IsNonRedundantNamespaceDecl(uAncestral, rAncestral))
                 {
                     if (Utils.IsXmlNamespaceNode(uAncestral))
@@ -65,7 +65,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             {
                 attrib = (XmlAttribute)a;
                 int rDepth;
-                XmlAttribute rAncestral = GetNearestRenderedNamespaceWithMatchingPrefix(Utils.GetNamespacePrefix(attrib), out rDepth);
+                XmlAttribute rAncestral = GetNearestNamespaceWithMatchingPrefix(Utils.GetNamespacePrefix(attrib), out rDepth);
                 if (Utils.IsNonRedundantNamespaceDecl(attrib, rAncestral))
                 {
                     nsLocallyDeclared.Remove(Utils.GetNamespacePrefix(attrib));
