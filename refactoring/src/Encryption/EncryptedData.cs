@@ -17,7 +17,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             XmlNamespaceManager nsm = new XmlNamespaceManager(value.OwnerDocument.NameTable);
             nsm.AddNamespace("enc", EncryptedXml.XmlEncNamespaceUrl);
-            nsm.AddNamespace("ds", SignedXml.XmlDsigNamespaceUrl);
+            nsm.AddNamespace("ds", SignedConstants.XmlDsigNamespaceUrl);
 
             Id = Utils.GetAttribute(value, "Id", EncryptedXml.XmlEncNamespaceUrl);
             Type = Utils.GetAttribute(value, "Type", EncryptedXml.XmlEncNamespaceUrl);

@@ -33,13 +33,13 @@ namespace _SignedXml.Samples
             var reference = new Reference();
             reference.Uri = "";
             reference.AddTransform(new XmlDsigEnvelopedSignatureTransform());
-            reference.DigestMethod = SignedXml.XmlDsigGost3411_2012_512_Url;
+            reference.DigestMethod = SignedConstants.XmlDsigGost3411_2012_512_Url;
             signedXml.AddReference(reference);
 
             signedXml.KeyInfo = new KeyInfo();
             signedXml.KeyInfo.AddClause(new KeyInfoX509Data(cert));
 
-            signedXml.SignedInfo.SignatureMethod = SignedXml.XmlDsigGost3410_2012_512_Url;
+            signedXml.SignedInfo.SignatureMethod = SignedConstants.XmlDsigGost3410_2012_512_Url;
 
             signedXml.ComputeSignature();
 

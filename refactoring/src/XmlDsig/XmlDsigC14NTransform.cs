@@ -23,13 +23,13 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public XmlDsigC14NTransform()
         {
-            Algorithm = SignedXml.XmlDsigC14NTransformUrl;
+            Algorithm = SignedConstants.XmlDsigC14NTransformUrl;
         }
 
         public XmlDsigC14NTransform(bool includeComments)
         {
             _includeComments = includeComments;
-            Algorithm = (includeComments ? SignedXml.XmlDsigC14NWithCommentsTransformUrl : SignedXml.XmlDsigC14NTransformUrl);
+            Algorithm = (includeComments ? SignedConstants.XmlDsigC14NWithCommentsTransformUrl : SignedConstants.XmlDsigC14NTransformUrl);
         }
 
         public override Type[] InputTypes

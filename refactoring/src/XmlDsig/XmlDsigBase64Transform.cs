@@ -24,7 +24,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public XmlDsigBase64Transform()
         {
-            Algorithm = SignedXml.XmlDsigBase64TransformUrl;
+            Algorithm = SignedConstants.XmlDsigBase64TransformUrl;
         }
 
         public override Type[] InputTypes

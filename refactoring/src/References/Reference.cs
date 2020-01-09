@@ -15,7 +15,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 {
     public class Reference
     {
-        internal const string DefaultDigestMethod = SignedXml.XmlDsigSHA256Url;
+        internal const string DefaultDigestMethod = SignedConstants.XmlDsigSHA256Url;
 
         private string _id;
         private string _uri;
@@ -175,7 +175,7 @@ namespace Org.BouncyCastle.Crypto.Xml
         internal XmlElement GetXml(XmlDocument document)
         {
             // Create the Reference
-            XmlElement referenceElement = document.CreateElement("Reference", SignedXml.XmlDsigNamespaceUrl);
+            XmlElement referenceElement = document.CreateElement("Reference", SignedConstants.XmlDsigNamespaceUrl);
 
             if (!string.IsNullOrEmpty(_id))
                 referenceElement.SetAttribute("Id", _id);
@@ -188,13 +188,13 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             // Add the transforms to the Reference
             if (TransformChain.Count != 0)
-                referenceElement.AppendChild(TransformChain.GetXml(document, SignedXml.XmlDsigNamespaceUrl));
+                referenceElement.AppendChild(TransformChain.GetXml(document, SignedConstants.XmlDsigNamespaceUrl));
 
             // Add the DigestMethod
             if (string.IsNullOrEmpty(_digestMethod))
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_DigestMethodRequired);
 
-            XmlElement digestMethodElement = document.CreateElement("DigestMethod", SignedXml.XmlDsigNamespaceUrl);
+            XmlElement digestMethodElement = document.CreateElement("DigestMethod", SignedConstants.XmlDsigNamespaceUrl);
             digestMethodElement.SetAttribute("Algorithm", _digestMethod);
             referenceElement.AppendChild(digestMethodElement);
 
@@ -205,7 +205,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 DigestValue = _hashval;
             }
 
-            XmlElement digestValueElement = document.CreateElement("DigestValue", SignedXml.XmlDsigNamespaceUrl);
+            XmlElement digestValueElement = document.CreateElement("DigestValue", SignedConstants.XmlDsigNamespaceUrl);
             digestValueElement.AppendChild(document.CreateTextNode(Convert.ToBase64String(_digestValue)));
             referenceElement.AppendChild(digestValueElement);
 
@@ -217,14 +217,14 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (value == null)
                 throw new ArgumentNullException(nameof(value));
 
-            _id = Utils.GetAttribute(value, "Id", SignedXml.XmlDsigNamespaceUrl);
-            _uri = Utils.GetAttribute(value, "URI", SignedXml.XmlDsigNamespaceUrl);
-            _type = Utils.GetAttribute(value, "Type", SignedXml.XmlDsigNamespaceUrl);
+            _id = Utils.GetAttribute(value, "Id", SignedConstants.XmlDsigNamespaceUrl);
+            _uri = Utils.GetAttribute(value, "URI", SignedConstants.XmlDsigNamespaceUrl);
+            _type = Utils.GetAttribute(value, "Type", SignedConstants.XmlDsigNamespaceUrl);
             if (!Utils.VerifyAttributes(value, new string[] { "Id", "URI", "Type" }))
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "Reference");
 
             XmlNamespaceManager nsm = new XmlNamespaceManager(value.OwnerDocument.NameTable);
-            nsm.AddNamespace("ds", SignedXml.XmlDsigNamespaceUrl);
+            nsm.AddNamespace("ds", SignedConstants.XmlDsigNamespaceUrl);
 
             // Transforms
             bool hasTransforms = false;
@@ -257,7 +257,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                     foreach (XmlNode transformNode in transformNodes)
                     {
                         XmlElement transformElement = transformNode as XmlElement;
-                        string algorithm = Utils.GetAttribute(transformElement, "Algorithm", SignedXml.XmlDsigNamespaceUrl);
+                        string algorithm = Utils.GetAttribute(transformElement, "Algorithm", SignedConstants.XmlDsigNamespaceUrl);
                         if (algorithm == null || !Utils.VerifyAttributes(transformElement, "Algorithm"))
                         {
                             throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_UnknownTransform);
@@ -300,7 +300,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (digestMethodNodes == null || digestMethodNodes.Count == 0 || digestMethodNodes.Count > 1)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "Reference/DigestMethod");
             XmlElement digestMethodElement = digestMethodNodes[0] as XmlElement;
-            _digestMethod = Utils.GetAttribute(digestMethodElement, "Algorithm", SignedXml.XmlDsigNamespaceUrl);
+            _digestMethod = Utils.GetAttribute(digestMethodElement, "Algorithm", SignedConstants.XmlDsigNamespaceUrl);
             if (_digestMethod == null || !Utils.VerifyAttributes(digestMethodElement, "Algorithm"))
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "Reference/DigestMethod");
 
@@ -431,8 +431,8 @@ namespace Org.BouncyCastle.Crypto.Xml
                                     foreach (XmlNode node in refList)
                                     {
                                         XmlElement tempElem = node as XmlElement;
-                                        if ((tempElem != null) && (Utils.HasAttribute(tempElem, "Id", SignedXml.XmlDsigNamespaceUrl))
-                                            && (Utils.GetAttribute(tempElem, "Id", SignedXml.XmlDsigNamespaceUrl).Equals(idref)))
+                                        if ((tempElem != null) && (Utils.HasAttribute(tempElem, "Id", SignedConstants.XmlDsigNamespaceUrl))
+                                            && (Utils.GetAttribute(tempElem, "Id", SignedConstants.XmlDsigNamespaceUrl).Equals(idref)))
                                         {
                                             elem = tempElem;
                                             if (_signedXml._context != null)

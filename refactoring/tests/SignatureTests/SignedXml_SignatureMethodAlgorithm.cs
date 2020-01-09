@@ -19,7 +19,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             xmlDoc.PreserveWhitespace = true;
             xmlDoc.LoadXml(xml);
 
-            var signatureNode = (XmlElement)xmlDoc.GetElementsByTagName("Signature", SignedXml.XmlDsigNamespaceUrl)[0];
+            var signatureNode = (XmlElement)xmlDoc.GetElementsByTagName("Signature", SignedConstants.XmlDsigNamespaceUrl)[0];
 
             SignedXml signedXml = new SignedXml(xmlDoc);
             signedXml.LoadXml(signatureNode);

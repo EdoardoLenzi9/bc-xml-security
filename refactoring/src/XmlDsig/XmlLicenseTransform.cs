@@ -26,7 +26,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public XmlLicenseTransform()
         {
-            Algorithm = SignedXml.XmlLicenseTransformUrl;
+            Algorithm = SignedConstants.XmlLicenseTransformUrl;
         }
 
         public override Type[] InputTypes
@@ -147,7 +147,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             _license = new XmlDocument();
             _license.PreserveWhitespace = true;
             _namespaceManager = new XmlNamespaceManager(_license.NameTable);
-            _namespaceManager.AddNamespace("dsig", SignedXml.XmlDsigNamespaceUrl);
+            _namespaceManager.AddNamespace("dsig", SignedConstants.XmlDsigNamespaceUrl);
             _namespaceManager.AddNamespace("enc", EncryptedXml.XmlEncNamespaceUrl);
             _namespaceManager.AddNamespace("r", NamespaceUriCore);
 

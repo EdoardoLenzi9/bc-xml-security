@@ -25,13 +25,13 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public XmlDsigXsltTransform()
         {
-            Algorithm = SignedXml.XmlDsigXsltTransformUrl;
+            Algorithm = SignedConstants.XmlDsigXsltTransformUrl;
         }
 
         public XmlDsigXsltTransform(bool includeComments)
         {
             _includeComments = includeComments;
-            Algorithm = SignedXml.XmlDsigXsltTransformUrl;
+            Algorithm = SignedConstants.XmlDsigXsltTransformUrl;
         }
 
         public override Type[] InputTypes

@@ -32,7 +32,7 @@ namespace Org.BouncyCastle.Crypto.Xml
         {
             _includeComments = includeComments;
             _inclusiveNamespacesPrefixList = inclusiveNamespacesPrefixList;
-            Algorithm = (includeComments ? SignedXml.XmlDsigExcC14NWithCommentsTransformUrl : SignedXml.XmlDsigExcC14NTransformUrl);
+            Algorithm = (includeComments ? SignedConstants.XmlDsigExcC14NWithCommentsTransformUrl : SignedConstants.XmlDsigExcC14NTransformUrl);
         }
 
         public string InclusiveNamespacesPrefixList
@@ -61,14 +61,14 @@ namespace Org.BouncyCastle.Crypto.Xml
                     if (e != null)
                     {
                         if (e.LocalName.Equals("InclusiveNamespaces")
-                        && e.NamespaceURI.Equals(SignedXml.XmlDsigExcC14NTransformUrl) &&
-                        Utils.HasAttribute(e, "PrefixList", SignedXml.XmlDsigNamespaceUrl))
+                        && e.NamespaceURI.Equals(SignedConstants.XmlDsigExcC14NTransformUrl) &&
+                        Utils.HasAttribute(e, "PrefixList", SignedConstants.XmlDsigNamespaceUrl))
                         {
                             if (!Utils.VerifyAttributes(e, "PrefixList"))
                             {
                                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_UnknownTransform);
                             }
-                            this.InclusiveNamespacesPrefixList = Utils.GetAttribute(e, "PrefixList", SignedXml.XmlDsigNamespaceUrl);
+                            this.InclusiveNamespacesPrefixList = Utils.GetAttribute(e, "PrefixList", SignedConstants.XmlDsigNamespaceUrl);
                             return;
                         }
                         else
@@ -104,10 +104,10 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (InclusiveNamespacesPrefixList == null)
                 return null;
             XmlDocument document = new XmlDocument();
-            XmlElement element = document.CreateElement("Transform", SignedXml.XmlDsigNamespaceUrl);
+            XmlElement element = document.CreateElement("Transform", SignedConstants.XmlDsigNamespaceUrl);
             if (!string.IsNullOrEmpty(Algorithm))
                 element.SetAttribute("Algorithm", Algorithm);
-            XmlElement prefixListElement = document.CreateElement("InclusiveNamespaces", SignedXml.XmlDsigExcC14NTransformUrl);
+            XmlElement prefixListElement = document.CreateElement("InclusiveNamespaces", SignedConstants.XmlDsigExcC14NTransformUrl);
             prefixListElement.SetAttribute("PrefixList", InclusiveNamespacesPrefixList);
             element.AppendChild(prefixListElement);
             return element.ChildNodes;

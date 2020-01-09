@@ -189,7 +189,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 throw new ArgumentNullException(nameof(value));
 
             XmlNamespaceManager nsm = new XmlNamespaceManager(value.OwnerDocument.NameTable);
-            nsm.AddNamespace("ds", SignedXml.XmlDsigNamespaceUrl);
+            nsm.AddNamespace("ds", SignedConstants.XmlDsigNamespaceUrl);
 
             XmlNodeList transformNodes = value.SelectNodes("ds:Transform", nsm);
             if (transformNodes.Count == 0)
@@ -199,7 +199,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             for (int i = 0; i < transformNodes.Count; ++i)
             {
                 XmlElement transformElement = (XmlElement)transformNodes.Item(i);
-                string algorithm = Utils.GetAttribute(transformElement, "Algorithm", SignedXml.XmlDsigNamespaceUrl);
+                string algorithm = Utils.GetAttribute(transformElement, "Algorithm", SignedConstants.XmlDsigNamespaceUrl);
                 Transform transform = CryptoHelpers.CreateFromName<Transform>(algorithm);
                 if (transform == null)
                     throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_UnknownTransform);

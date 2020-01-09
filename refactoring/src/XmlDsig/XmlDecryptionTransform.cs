@@ -31,7 +31,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public XmlDecryptionTransform()
         {
-            Algorithm = SignedXml.XmlDecryptionTransformUrl;
+            Algorithm = SignedConstants.XmlDecryptionTransformUrl;
         }
 
         private ArrayList ExceptUris
@@ -127,7 +127,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (ExceptUris.Count == 0)
                 return null;
             XmlDocument document = new XmlDocument();
-            XmlElement element = document.CreateElement("Transform", SignedXml.XmlDsigNamespaceUrl);
+            XmlElement element = document.CreateElement("Transform", SignedConstants.XmlDsigNamespaceUrl);
             if (!string.IsNullOrEmpty(Algorithm))
                 element.SetAttribute("Algorithm", Algorithm);
             foreach (string uri in ExceptUris)
