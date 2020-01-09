@@ -1,0 +1,12 @@
+V
+MC:\code\bc-xml-security\refactoring\samples\EncryptingDecryptingAsymmetric.csutf-8U
+LC:\code\bc-xml-security\refactoring\samples\EncryptingDecryptingSymmetric.csutf-8\
+SC:\code\bc-xml-security\refactoring\samples\EncryptingDecryptingSymmetricKeyWrap.csutf-8E
+<C:\code\bc-xml-security\refactoring\samples\GostUtilities.csutf-8?
+6C:\code\bc-xml-security\refactoring\samples\Program.csutf-8O
+FC:\code\bc-xml-security\refactoring\samples\Properties\AssemblyInfo.csutf-8H
+?C:\code\bc-xml-security\refactoring\samples\SigningVerifying.csutf-8a
+XC:\code\bc-xml-security\refactoring\samples\SigningVerifyingWithCustomSignatureMethod.csutf-8L
+CC:\code\bc-xml-security\refactoring\samples\SigningVerifyingGost.csutf-8P
+GC:\code\bc-xml-security\refactoring\samples\SigningVerifyingX509Cert.csutf-8\
+QC:\Users\Eddy\AppData\Local\Temp\.NETFramework,Version=v4.0.AssemblyAttributes.csutf-8
