@@ -14,8 +14,7 @@ namespace Org.BouncyCastle.Crypto.Xml
     // implement ICanonicalizableNode; so a manual dispatch is sometimes necessary.
     internal class CanonicalizationDispatcher
     {
-        private CanonicalizationDispatcher() { }
-
+        
         public static void Write(XmlNode node, StringBuilder strBuilder, DocPosition docPos, AncestralNamespaceContextManager anc)
         {
             if (node is ICanonicalizableNode)

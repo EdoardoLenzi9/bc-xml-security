@@ -27,7 +27,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (_rsaKey == null)
                 throw new System.Security.Cryptography.CryptographicUnexpectedOperationException(SR.Cryptography_MissingKey);
 
-            var rsa = CipherUtilities.GetCipher(Constants.RsaPaddingDictionary[_padding]);
+            var rsa = CipherUtilities.GetCipher(Padding.Rsa[_padding]);
             rsa.Init(true, _rsaKey);
 
             return rsa.DoFinal(rgbData);
