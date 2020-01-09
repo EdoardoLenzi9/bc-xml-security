@@ -887,16 +887,15 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (rsa == null)
                 throw new ArgumentNullException(nameof(rsa));
 
+            var padding = RSAPadding.PKCS1;
+
             if (useOAEP)
             {
-                RSAOAEPKeyExchangeFormatter rsaFormatter = new RSAOAEPKeyExchangeFormatter(rsa);
-                return rsaFormatter.CreateKeyExchange(keyData);
+                padding = RSAPadding.OAEP;
             }
-            else
-            {
-                RSAPKCS1KeyExchangeFormatter rsaFormatter = new RSAPKCS1KeyExchangeFormatter(rsa);
-                return rsaFormatter.CreateKeyExchange(keyData);
-            }
+            
+            IKeyFormatter rsaFormatter = new KeyExchangeFormatter(rsa, padding);
+            return rsaFormatter.CreateKeyExchange(keyData);
         }
 
         // decrypts the supplied wrapped key using the provided symmetric algorithm
