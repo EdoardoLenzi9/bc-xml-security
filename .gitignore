@@ -262,3 +262,5 @@ __pycache__/
 
 build/lib/
 
+
+refactoring/.sonarqube/
