@@ -2,23 +2,17 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using Org.BouncyCastle.Asn1;
+using Org.BouncyCastle.Asn1.X509;
+using Org.BouncyCastle.Crypto.Macs;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.X509;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Globalization;
-using System.IO;
 using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
-using System.Security.Permissions;
 using System.Xml;
-using Microsoft.Win32;
-using Org.BouncyCastle.X509;
-using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Asn1.X509;
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Security;
-using Org.BouncyCastle.Crypto.Macs;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -153,17 +147,6 @@ namespace Org.BouncyCastle.Crypto.Xml
         {
             get { return m_strSigningKeyName; }
             set { m_strSigningKeyName = value; }
-        }
-
-        public XmlResolver Resolver
-        {
-            // This property only has a setter. The rationale for this is that we don't have a good value
-            // to return when it has not been explicitely set, as we are using XmlSecureResolver by default
-            set
-            {
-                _xmlResolver = value;
-                _bResolverSet = true;
-            }
         }
 
         internal bool ResolverSet
@@ -457,27 +440,24 @@ namespace Org.BouncyCastle.Crypto.Xml
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidSignatureLength2);
 
             BuildDigestedReferences();
-            switch (macAlg.AlgorithmName.Substring(0, macAlg.AlgorithmName.IndexOf('/')).ToUpperInvariant()) {
-                case "SHA-1":
-                    SignedInfo.SignatureMethod = SignedXml.XmlDsigHMACSHA1Url;
-                    break;
-                case "SHA-256":
-                    SignedInfo.SignatureMethod = SignedXml.XmlDsigMoreHMACSHA256Url;
-                    break;
-                case "SHA-384":
-                    SignedInfo.SignatureMethod = SignedXml.XmlDsigMoreHMACSHA384Url;
-                    break;
-                case "SHA-512":
-                    SignedInfo.SignatureMethod = SignedXml.XmlDsigMoreHMACSHA512Url;
-                    break;
-                case "MD5":
-                    SignedInfo.SignatureMethod = SignedXml.XmlDsigMoreHMACMD5Url;
-                    break;
-                case "RIPEMD160":
-                    SignedInfo.SignatureMethod = SignedXml.XmlDsigMoreHMACRIPEMD160Url;
-                    break;
-                default:
-                    throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_SignatureMethodKeyMismatch);
+            var algorithmName = macAlg.AlgorithmName.Substring(0, macAlg.AlgorithmName.IndexOf('/')).ToUpperInvariant();
+            var signedXmlDictionary = new Dictionary<string, string>()
+            {
+                { "SHA-1", SignedXml.XmlDsigHMACSHA1Url },
+                { "SHA-256", SignedXml.XmlDsigMoreHMACSHA256Url },
+                { "SHA-384", SignedXml.XmlDsigMoreHMACSHA384Url},
+                { "SHA-512", SignedXml.XmlDsigMoreHMACSHA512Url },
+                { "MD5", SignedXml.XmlDsigMoreHMACMD5Url },
+                { "RIPEMD160", SignedXml.XmlDsigMoreHMACRIPEMD160Url }
+            };
+
+            try
+            {
+                SignedInfo.SignatureMethod = signedXmlDictionary[algorithmName];
+            }
+            catch (Exception)
+            {
+                throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_SignatureMethodKeyMismatch);
             }
 
             GetC14NDigest(new MacHashWrapper(macAlg));
@@ -1039,9 +1019,12 @@ namespace Org.BouncyCastle.Crypto.Xml
             //if (!IsKeyTheCorrectAlgorithm(key, ta))
             //    return false;
 
-            try {
+            try
+            {
                 signatureDescription.Init(false, key);
-            } catch (Exception) {
+            }
+            catch (Exception)
+            {
                 return false;
             }
 
@@ -1086,7 +1069,8 @@ namespace Org.BouncyCastle.Crypto.Xml
             byte[] hashValue = new byte[macAlg.GetMacSize()];
             macAlg.DoFinal(hashValue, 0);
             SignedXmlDebugLog.LogVerifySignedInfo(this, macAlg, hashValue, m_signature.SignatureValue);
-            for (int i = 0; i < m_signature.SignatureValue.Length; i++) {
+            for (int i = 0; i < m_signature.SignatureValue.Length; i++)
+            {
                 if (m_signature.SignatureValue[i] != hashValue[i]) return false;
             }
             return true;
@@ -1120,17 +1104,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             }
 
             throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidReference);
-        }
-
-        private static bool IsKeyTheCorrectAlgorithm(AsymmetricKeyParameter key, ISigner expectedType)
-        {
-            try {
-                expectedType.Init(false, key);
-            } catch (Exception) {
-                return false;
-            }
-
-            return true;
         }
     }
 }
