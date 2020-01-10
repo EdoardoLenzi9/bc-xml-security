@@ -210,7 +210,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             bool bRet = false;
             AsymmetricKeyParameter key = null;
 
-            if (!CheckSignatureFormat())
+            if (!CheckSignatureManager.CheckSignatureFormat(this, _signatureFormatValidator))
             {
                 return false;
             }
@@ -233,7 +233,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public bool CheckSignature(AsymmetricKeyParameter key)
         {
-            if (!CheckSignatureFormat())
+            if (!CheckSignatureManager.CheckSignatureFormat(this, _signatureFormatValidator))
             {
                 return false;
             }
@@ -257,7 +257,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public bool CheckSignature(IMac macAlg)
         {
-            if (!CheckSignatureFormat())
+            if (!CheckSignatureManager.CheckSignatureFormat(this, _signatureFormatValidator))
             {
                 return false;
             }
@@ -839,25 +839,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             }
 
             return (0 == result);
-        }
-
-        // If we have a signature format validation callback, check to see if this signature's format (not
-        // the signautre itself) is valid according to the validator.  A return value of true indicates that
-        // the signature format is acceptable, false means that the format is not valid.
-        private bool CheckSignatureFormat()
-        {
-            if (_signatureFormatValidator == null)
-            {
-                // No format validator means that we default to accepting the signature.  (This is
-                // effectively compatibility mode with v3.5).
-                return true;
-            }
-
-            SignedXmlDebugLog.LogBeginCheckSignatureFormat(this, _signatureFormatValidator);
-
-            bool formatValid = _signatureFormatValidator(this);
-            SignedXmlDebugLog.LogFormatValidationResult(this, formatValid);
-            return formatValid;
         }
     }
 }

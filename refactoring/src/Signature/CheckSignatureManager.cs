@@ -126,5 +126,24 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidReference);
         }
+
+        // If we have a signature format validation callback, check to see if this signature's format (not
+        // the signautre itself) is valid according to the validator.  A return value of true indicates that
+        // the signature format is acceptable, false means that the format is not valid.
+        public static bool CheckSignatureFormat(SignedXml signedXml, Func<SignedXml, bool> _signatureFormatValidator)
+        {
+            if (_signatureFormatValidator == null)
+            {
+                // No format validator means that we default to accepting the signature.  (This is
+                // effectively compatibility mode with v3.5).
+                return true;
+            }
+
+            SignedXmlDebugLog.LogBeginCheckSignatureFormat(signedXml, _signatureFormatValidator);
+
+            bool formatValid = _signatureFormatValidator(signedXml);
+            SignedXmlDebugLog.LogFormatValidationResult(signedXml, formatValid);
+            return formatValid;
+        }
     }
 }
