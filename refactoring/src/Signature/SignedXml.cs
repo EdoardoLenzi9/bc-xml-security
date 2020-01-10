@@ -40,7 +40,7 @@ namespace Org.BouncyCastle.Crypto.Xml
         // Built in canonicalization algorithm URIs
         private static IList<string> s_knownCanonicalizationMethods = null;
         // Built in transform algorithm URIs (excluding canonicalization URIs)
-        private static IList<string> s_defaultSafeTransformMethods = null;
+        public static IList<string> s_defaultSafeTransformMethods = null;
 
         public bool IsCacheValid { get; set; } = false;
 
@@ -245,7 +245,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             }
 
             // Now is the time to go through all the references and see if their DigestValues are good
-            if (!CheckDigestedReferences())
+            if (!ReferenceManager.CheckDigestedReferences(m_signature, this))
             {
                 SignedXmlDebugLog.LogVerificationFailure(this, SR.Log_VerificationFailed_References);
                 return false;
@@ -268,7 +268,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 return false;
             }
 
-            if (!CheckDigestedReferences())
+            if (!ReferenceManager.CheckDigestedReferences(m_signature, this))
             {
                 SignedXmlDebugLog.LogVerificationFailure(this, SR.Log_VerificationFailed_References);
                 return false;
@@ -600,52 +600,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             return false;
         }
 
-        private bool ReferenceUsesSafeTransformMethods(Reference reference)
-        {
-            TransformChain transformChain = reference.TransformChain;
-            int transformCount = transformChain.Count;
-
-            for (int i = 0; i < transformCount; i++)
-            {
-                Transform transform = transformChain[i];
-
-                if (!IsSafeTransform(transform.Algorithm))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        private bool IsSafeTransform(string transformAlgorithm)
-        {
-            // All canonicalization algorithms are valid transform algorithms.
-            foreach (string safeAlgorithm in SafeCanonicalizationMethods)
-            {
-                if (string.Equals(safeAlgorithm, transformAlgorithm, StringComparison.OrdinalIgnoreCase))
-                {
-                    return true;
-                }
-            }
-
-            foreach (string safeAlgorithm in DefaultSafeTransformMethods)
-            {
-                if (string.Equals(safeAlgorithm, transformAlgorithm, StringComparison.OrdinalIgnoreCase))
-                {
-                    return true;
-                }
-            }
-
-            SignedXmlDebugLog.LogUnsafeTransformMethod(
-                this,
-                transformAlgorithm,
-                SafeCanonicalizationMethods,
-                DefaultSafeTransformMethods);
-
-            return false;
-        }
-
         // Get a list of the built in canonicalization algorithms, as well as any that the machine admin has
         // added to the valid set.
         private static IList<string> KnownCanonicalizationMethods
@@ -669,36 +623,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 return s_knownCanonicalizationMethods;
             }
         }
-
-        private static IList<string> DefaultSafeTransformMethods
-        {
-            get
-            {
-                if (s_defaultSafeTransformMethods == null)
-                {
-                    List<string> safeAlgorithms = new List<string>();
-
-                    // Built in algorithms
-
-                    // KnownCanonicalizationMethods don't need to be added here, because
-                    // the validator will automatically accept those.
-                    //
-                    // xmldsig 6.6.1:
-                    //     Any canonicalization algorithm that can be used for
-                    //     CanonicalizationMethod can be used as a Transform.
-                    safeAlgorithms.Add(SignedConstants.XmlDsigEnvelopedSignatureTransformUrl);
-                    safeAlgorithms.Add(SignedConstants.XmlDsigBase64TransformUrl);
-                    safeAlgorithms.Add(SignedConstants.XmlLicenseTransformUrl);
-                    safeAlgorithms.Add(SignedConstants.XmlDecryptionTransformUrl);
-
-                    s_defaultSafeTransformMethods = safeAlgorithms;
-                }
-
-                return s_defaultSafeTransformMethods;
-            }
-        }
-
-       
+ 
         public int GetReferenceLevel(int index, ArrayList references)
         {
             if (_refProcessed[index]) return _refLevelCache[index];
@@ -770,75 +695,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 if (reference.Id != null)
                     nodeList.Add(reference.GetXml());
             }
-        }
-
-        private bool CheckDigestedReferences()
-        {
-            ArrayList references = m_signature.SignedInfo.References;
-            for (int i = 0; i < references.Count; ++i)
-            {
-                Reference digestedReference = (Reference)references[i];
-
-                if (!ReferenceUsesSafeTransformMethods(digestedReference))
-                {
-                    return false;
-                }
-
-                SignedXmlDebugLog.LogVerifyReference(this, digestedReference);
-                byte[] calculatedHash = null;
-                try
-                {
-                    calculatedHash = digestedReference.CalculateHashValue(_containingDocument, m_signature.ReferencedItems);
-                }
-                catch (CryptoSignedXmlRecursionException)
-                {
-                    SignedXmlDebugLog.LogSignedXmlRecursionLimit(this, digestedReference);
-                    return false;
-                }
-                // Compare both hashes
-                SignedXmlDebugLog.LogVerifyReferenceHash(this, digestedReference, calculatedHash, digestedReference.DigestValue);
-
-                if (!CryptographicEquals(calculatedHash, digestedReference.DigestValue))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        // Methods _must_ be marked both No Inlining and No Optimization to be fully opted out of optimization.
-        // This is because if a candidate method is inlined, its method level attributes, including the NoOptimization
-        // attribute, are lost. 
-        // This method makes no attempt to disguise the length of either of its inputs. It is assumed the attacker has 
-        // knowledge of the algorithms used, and thus the output length. Length is difficult to properly blind in modern CPUs.
-        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
-        private static bool CryptographicEquals(byte[] a, byte[] b)
-        {
-            System.Diagnostics.Debug.Assert(a != null);
-            System.Diagnostics.Debug.Assert(b != null);
-
-            int result = 0;
-
-            // Short cut if the lengths are not identical
-            if (a.Length != b.Length)
-                return false;
-
-            unchecked
-            {
-                // Normally this caching doesn't matter, but with the optimizer off, this nets a non-trivial speedup.
-                int aLength = a.Length;
-
-                for (int i = 0; i < aLength; i++)
-                    // We use subtraction here instead of XOR because the XOR algorithm gets ever so
-                    // slightly faster as more and more differences pile up.
-                    // This cannot overflow more than once (and back to 0) because bytes are 1 byte
-                    // in length, and result is 4 bytes. The OR propagates all set bytes, so the differences
-                    // can't add up and overflow a second time.
-                    result = result | (a[i] - b[i]);
-            }
-
-            return (0 == result);
         }
     }
 }
