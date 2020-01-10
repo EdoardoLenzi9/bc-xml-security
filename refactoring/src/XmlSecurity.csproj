@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -28,6 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle.Crypto, Version=1.8.5.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
@@ -36,6 +38,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -69,6 +72,7 @@
     <Compile Include="RSAFormatters\IKeyFormatter.cs" />
     <Compile Include="RSAFormatters\IKeyDeformatter.cs" />
     <Compile Include="RSAFormatters\KeyExchangeDeformatter.cs" />
+    <Compile Include="Signature\CheckSignatureManager.cs" />
     <Compile Include="Signature\DataObject.cs" />
     <Compile Include="References\DataReference.cs" />
     <Compile Include="Constants\DocPosition.cs" />
@@ -86,6 +90,9 @@
     <Compile Include="CanonicalXml\ExcCanonicalXml.cs" />
     <Compile Include="Signature\HashWrappers.cs" />
     <Compile Include="CanonicalXml\ICanonicalizableNode.cs" />
+    <Compile Include="Signature\IReferenceLevelSortOrder.cs" />
+    <Compile Include="Signature\ReferenceLevelSortOrder.cs" />
+    <Compile Include="Signature\ReferenceManager.cs" />
     <Compile Include="Signature\SignedConstants.cs" />
     <Compile Include="XmlDsig\IRelDecryptor.cs" />
     <Compile Include="KeyInfo\KeyInfo.cs" />
@@ -140,12 +147,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
-    <None Include="RuleSet1.ruleset" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Bitmap1.bmp" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

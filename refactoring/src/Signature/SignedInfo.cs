@@ -4,9 +4,8 @@
 
 using System;
 using System.Collections;
-using System.Runtime.InteropServices;
-using System.Xml;
 using System.Globalization;
+using System.Xml;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {

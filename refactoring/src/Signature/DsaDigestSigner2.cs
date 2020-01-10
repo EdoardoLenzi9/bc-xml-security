@@ -1,10 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Org.BouncyCastle.Asn1;
+﻿using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Crypto.Signers;
 using Org.BouncyCastle.Math;
+using System.Linq;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
