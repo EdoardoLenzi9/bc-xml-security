@@ -50,7 +50,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             bool isKeyedHashAlgorithm = hash is MacHashWrapper;
             if (isKeyedHashAlgorithm || ! signedXml.IsCacheValid || !signedXml.SignedInfo.CacheValid)
             {
-                string baseUri = (signedXml._containingDocument == null ? null : signedXml._containingDocument.BaseURI);
+                string baseUri = (signedXml.ContainingDocument == null ? null : signedXml.ContainingDocument.BaseURI);
                 XmlResolver resolver = (signedXml._bResolverSet ? signedXml._xmlResolver : new XmlSecureResolver(new XmlUrlResolver(), baseUri));
                 XmlDocument doc = Utils.PreProcessElementInput(signedXml.SignedInfo.GetXml(), resolver, baseUri);
 

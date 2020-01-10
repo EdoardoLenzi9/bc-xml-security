@@ -29,7 +29,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         }
 
         [Fact]
-        public void Signature1()
+        public void MSignature()
         {
             // empty - missing SignedInfo
             Assert.Throws<System.Security.Cryptography.CryptographicException>(() => signature.GetXml());

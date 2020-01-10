@@ -26,7 +26,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 byte[] calculatedHash = null;
                 try
                 {
-                    calculatedHash = digestedReference.CalculateHashValue(signedXml._containingDocument, m_signature.ReferencedItems);
+                    calculatedHash = digestedReference.CalculateHashValue(signedXml.ContainingDocument, m_signature.ReferencedItems);
                 }
                 catch (CryptoSignedXmlRecursionException)
                 {
@@ -148,6 +148,44 @@ namespace Org.BouncyCastle.Crypto.Xml
             }
 
             return (0 == result);
+        }
+
+        public static void BuildDigestedReferences(SignedXml signedXml)
+        {
+            // Default the DigestMethod and Canonicalization
+            ArrayList references = signedXml.SignedInfo.References;
+            // Reset the cache
+            signedXml.RefProcessed = new bool[references.Count];
+            signedXml.RefLevelCache = new int[references.Count];
+
+            ReferenceLevelSortOrder sortOrder = new ReferenceLevelSortOrder();
+            sortOrder.References = references;
+            // Don't alter the order of the references array list
+            ArrayList sortedReferences = new ArrayList();
+            foreach (Reference reference in references)
+            {
+                sortedReferences.Add(reference);
+            }
+            sortedReferences.Sort(sortOrder);
+
+            CanonicalXmlNodeList nodeList = new CanonicalXmlNodeList();
+            foreach (DataObject obj in signedXml.Signature.ObjectList)
+            {
+                nodeList.Add(obj.GetXml());
+            }
+            foreach (Reference reference in sortedReferences)
+            {
+                // If no DigestMethod has yet been set, default it to sha1
+                if (reference.DigestMethod == null)
+                    reference.DigestMethod = Reference.DefaultDigestMethod;
+
+                SignedXmlDebugLog.LogSigningReference(signedXml, reference);
+
+                reference.UpdateHashValue(signedXml.ContainingDocument, nodeList);
+                // If this reference has an Id attribute, add it
+                if (reference.Id != null)
+                    nodeList.Add(reference.GetXml());
+            }
         }
     }
 }
