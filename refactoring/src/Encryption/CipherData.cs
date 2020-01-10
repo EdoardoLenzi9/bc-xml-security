@@ -3,12 +3,11 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections;
 using System.Xml;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
-    public sealed class CipherData
+    public sealed class CipherData : ICipherData
     {
         private XmlElement _cachedXml = null;
         private CipherReference _cipherReference = null;
