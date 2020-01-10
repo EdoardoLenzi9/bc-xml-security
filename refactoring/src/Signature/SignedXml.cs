@@ -238,7 +238,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 return false;
             }
 
-            if (!CheckSignedInfo(key))
+            if (!CheckSignatureManager.CheckSignedInfo(key, this, m_signature))
             {
                 SignedXmlDebugLog.LogVerificationFailure(this, SR.Log_VerificationFailed_SignedInfo);
                 return false;
@@ -858,31 +858,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             bool formatValid = _signatureFormatValidator(this);
             SignedXmlDebugLog.LogFormatValidationResult(this, formatValid);
             return formatValid;
-        }
-
-        private bool CheckSignedInfo(AsymmetricKeyParameter key)
-        {
-            if (key == null)
-                throw new ArgumentNullException(nameof(key));
-
-            SignedXmlDebugLog.LogBeginCheckSignedInfo(this, m_signature.SignedInfo);
-
-            ISigner signatureDescription = CryptoHelpers.CreateFromName<ISigner>(SignatureMethod);
-            if (signatureDescription == null)
-                throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_SignatureDescriptionNotCreated);
-
-            try
-            {
-                signatureDescription.Init(false, key);
-            }
-            catch (Exception)
-            {
-                return false;
-            }
-
-            CheckSignatureManager.GetC14NDigest(new SignerHashWrapper(signatureDescription), this);
-
-            return signatureDescription.VerifySignature(m_signature.SignatureValue);
         }
     }
 }

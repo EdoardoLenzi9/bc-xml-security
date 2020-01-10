@@ -72,6 +72,31 @@ namespace Org.BouncyCastle.Crypto.Xml
             }
         }
 
+        public static bool CheckSignedInfo(AsymmetricKeyParameter key, SignedXml signedXml, Signature m_signature)
+        {
+            if (key == null)
+                throw new ArgumentNullException(nameof(key));
+
+            SignedXmlDebugLog.LogBeginCheckSignedInfo(signedXml, m_signature.SignedInfo);
+
+            ISigner signatureDescription = CryptoHelpers.CreateFromName<ISigner>(signedXml.SignatureMethod);
+            if (signatureDescription == null)
+                throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_SignatureDescriptionNotCreated);
+
+            try
+            {
+                signatureDescription.Init(false, key);
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+
+            CheckSignatureManager.GetC14NDigest(new SignerHashWrapper(signatureDescription), signedXml);
+
+            return signatureDescription.VerifySignature(m_signature.SignatureValue);
+        }
+
         public static XmlElement GetSingleReferenceTarget(XmlDocument document, string idAttributeName, string idValue)
         {
             // idValue has already been tested as an NCName (unless overridden for compatibility), so there's no
