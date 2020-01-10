@@ -36,6 +36,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -69,6 +70,7 @@
     <Compile Include="RSAFormatters\IKeyFormatter.cs" />
     <Compile Include="RSAFormatters\IKeyDeformatter.cs" />
     <Compile Include="RSAFormatters\KeyExchangeDeformatter.cs" />
+    <Compile Include="Signature\CheckSignatureManager.cs" />
     <Compile Include="Signature\DataObject.cs" />
     <Compile Include="References\DataReference.cs" />
     <Compile Include="Constants\DocPosition.cs" />
@@ -86,6 +88,9 @@
     <Compile Include="CanonicalXml\ExcCanonicalXml.cs" />
     <Compile Include="Signature\HashWrappers.cs" />
     <Compile Include="CanonicalXml\ICanonicalizableNode.cs" />
+    <Compile Include="Signature\IReferenceLevelSortOrder.cs" />
+    <Compile Include="Signature\ReferenceLevelSortOrder.cs" />
+    <Compile Include="Signature\ReferenceManager.cs" />
     <Compile Include="Signature\SignedConstants.cs" />
     <Compile Include="XmlDsig\IRelDecryptor.cs" />
     <Compile Include="KeyInfo\KeyInfo.cs" />
