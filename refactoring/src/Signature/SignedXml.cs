@@ -516,13 +516,13 @@ namespace Org.BouncyCastle.Crypto.Xml
                 return elem;
             }
 
-            elem = GetSingleReferenceTarget(document, "Id", idValue);
+            elem = CheckSignatureManager.GetSingleReferenceTarget(document, "Id", idValue);
             if (elem != null)
                 return elem;
-            elem = GetSingleReferenceTarget(document, "id", idValue);
+            elem = CheckSignatureManager.GetSingleReferenceTarget(document, "id", idValue);
             if (elem != null)
                 return elem;
-            elem = GetSingleReferenceTarget(document, "ID", idValue);
+            elem = CheckSignatureManager.GetSingleReferenceTarget(document, "ID", idValue);
 
             return elem;
         }
@@ -883,39 +883,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             CheckSignatureManager.GetC14NDigest(new SignerHashWrapper(signatureDescription), this);
 
             return signatureDescription.VerifySignature(m_signature.SignatureValue);
-        }
-
-      
-       
-        //can be extract
-        private static XmlElement GetSingleReferenceTarget(XmlDocument document, string idAttributeName, string idValue)
-        {
-            // idValue has already been tested as an NCName (unless overridden for compatibility), so there's no
-            // escaping that needs to be done here.
-            string xPath = "//*[@" + idAttributeName + "=\"" + idValue + "\"]";
-
-            // http://www.w3.org/TR/xmldsig-core/#sec-ReferenceProcessingModel says that for the form URI="#chapter1":
-            //
-            //   Identifies a node-set containing the element with ID attribute value 'chapter1' ...
-            //
-            // Note that it uses the singular. Therefore, if the match is ambiguous, we should consider the document invalid.
-            //
-            // In this case, we'll treat it the same as having found nothing across all fallbacks (but shortcut so that we don't
-            // fall into a trap of finding a secondary element which wasn't the originally signed one).
-
-            XmlNodeList nodeList = document.SelectNodes(xPath);
-
-            if (nodeList == null || nodeList.Count == 0)
-            {
-                return null;
-            }
-
-            if (nodeList.Count == 1)
-            {
-                return nodeList[0] as XmlElement;
-            }
-
-            throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidReference);
         }
     }
 }
