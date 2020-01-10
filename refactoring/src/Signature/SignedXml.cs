@@ -34,7 +34,7 @@ namespace Org.BouncyCastle.Crypto.Xml
         internal XmlElement _context = null;
         public bool _bResolverSet = false;
 
-        private Func<SignedXml, bool> _signatureFormatValidator = DefaultSignatureFormatValidator;
+        private Func<SignedXml, bool> _signatureFormatValidator = CheckSignatureManager.DefaultSignatureFormatValidator;
         private Collection<string> _safeCanonicalizationMethods;
 
         // Built in canonicalization algorithm URIs
@@ -528,78 +528,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             return elem;
         }
 
-        //
-        // private methods
-        //
-
-
-
-        private static bool DefaultSignatureFormatValidator(SignedXml signedXml)
-        {
-            // Reject the signature if it uses a truncated HMAC
-            if (signedXml.DoesSignatureUseTruncatedHmac())
-            {
-                return false;
-            }
-
-            // Reject the signature if it uses a canonicalization algorithm other than
-            // one of the ones explicitly allowed
-            if (!signedXml.DoesSignatureUseSafeCanonicalizationMethod())
-            {
-                return false;
-            }
-
-            // Otherwise accept it
-            return true;
-        }
-
-        // Validation function to see if the current signature is signed with a truncated HMAC - one which
-        // has a signature length of fewer bits than the whole HMAC output.
-        private bool DoesSignatureUseTruncatedHmac()
-        {
-            // If we're not using the SignatureLength property, then we're not truncating the signature length
-            if (SignedInfo.SignatureLength == null)
-            {
-                return false;
-            }
-
-            // See if we're signed witn an HMAC algorithm
-            IMac hmac = CryptoHelpers.CreateFromName<IMac>(SignatureMethod);
-            if (hmac == null)
-            {
-                // We aren't signed with an HMAC algorithm, so we cannot have a truncated HMAC
-                return false;
-            }
-
-            // Figure out how many bits the signature is using
-            int actualSignatureSize = 0;
-            if (!int.TryParse(SignedInfo.SignatureLength, out actualSignatureSize))
-            {
-                // If the value wasn't a valid integer, then we'll conservatively reject it all together
-                return true;
-            }
-
-            // Make sure the full HMAC signature size is the same size that was specified in the XML
-            // signature.  If the actual signature size is not exactly the same as the full HMAC size, then
-            // reject the signature.
-            return actualSignatureSize != hmac.GetMacSize();
-        }
-
-        // Validation function to see if the signature uses a canonicalization algorithm from our list
-        // of approved algorithm URIs.
-        private bool DoesSignatureUseSafeCanonicalizationMethod()
-        {
-            foreach (string safeAlgorithm in SafeCanonicalizationMethods)
-            {
-                if (string.Equals(safeAlgorithm, SignedInfo.CanonicalizationMethod, StringComparison.OrdinalIgnoreCase))
-                {
-                    return true;
-                }
-            }
-
-            SignedXmlDebugLog.LogUnsafeCanonicalizationMethod(this, SignedInfo.CanonicalizationMethod, SafeCanonicalizationMethods);
-            return false;
-        }
 
         // Get a list of the built in canonicalization algorithms, as well as any that the machine admin has
         // added to the valid set.
