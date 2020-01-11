@@ -4,6 +4,7 @@
 
 using System;
 using System.Xml;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -45,7 +46,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         internal override XmlElement GetXml(XmlDocument xmlDocument)
         {
-            XmlElement nameElement = xmlDocument.CreateElement("KeyName", SignedConstants.XmlDsigNamespaceUrl);
+            XmlElement nameElement = xmlDocument.CreateElement("KeyName", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
             nameElement.AppendChild(xmlDocument.CreateTextNode(_keyName));
             return nameElement;
         }

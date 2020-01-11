@@ -7,6 +7,7 @@ using System.Xml;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Xml;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 using Org.BouncyCastle.Security;
 
 namespace _SignedXml.Samples
@@ -35,7 +36,7 @@ namespace _SignedXml.Samples
             var encryptedKey = new EncryptedKey()
             {
                 CipherData = new CipherData(EncryptedXml.EncryptKey(sessionKeyData, rsaKey, useOAEP)),
-                EncryptionMethod = new EncryptionMethod(useOAEP ? EncryptedXml.XmlEncRSAOAEPUrl : EncryptedXml.XmlEncRSA15Url)
+                EncryptionMethod = new EncryptionMethod(useOAEP ? NS.XmlEncRSAOAEPUrl : NS.XmlEncRSA15Url)
             };
 
             // Specify which EncryptedData
@@ -49,12 +50,12 @@ namespace _SignedXml.Samples
 
             var encryptedData = new EncryptedData()
             {
-                Type = EncryptedXml.XmlEncElementUrl,
+                Type = XmlNameSpace.Url[NS.XmlEncElementUrl],
                 Id = encryptionElementID,
 
                 // Create an EncryptionMethod element so that the
                 // receiver knows which algorithm to use for decryption.
-                EncryptionMethod = new EncryptionMethod(EncryptedXml.XmlEncAES256Url)
+                EncryptionMethod = new EncryptionMethod(NS.XmlEncAES256Url)
             };
 
             encryptedData.KeyInfo.AddClause(new KeyInfoEncryptedKey(encryptedKey));

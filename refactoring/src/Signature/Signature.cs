@@ -5,6 +5,7 @@
 using System;
 using System.Collections;
 using System.Xml;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -102,7 +103,7 @@ namespace Org.BouncyCastle.Crypto.Xml
         internal XmlElement GetXml(XmlDocument document)
         {
             // Create the Signature
-            XmlElement signatureElement = (XmlElement)document.CreateElement("Signature", SignedConstants.XmlDsigNamespaceUrl);
+            XmlElement signatureElement = (XmlElement)document.CreateElement("Signature", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
             if (!string.IsNullOrEmpty(_id))
                 signatureElement.SetAttribute("Id", _id);
 
@@ -116,7 +117,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (_signatureValue == null)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_SignatureValueRequired);
 
-            XmlElement signatureValueElement = document.CreateElement("SignatureValue", SignedConstants.XmlDsigNamespaceUrl);
+            XmlElement signatureValueElement = document.CreateElement("SignatureValue", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
             signatureValueElement.AppendChild(document.CreateTextNode(Convert.ToBase64String(_signatureValue)));
             if (!string.IsNullOrEmpty(_signatureValueId))
                 signatureValueElement.SetAttribute("Id", _signatureValueId);
@@ -151,12 +152,12 @@ namespace Org.BouncyCastle.Crypto.Xml
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "Signature");
 
             // Id attribute -- optional
-            _id = Utils.GetAttribute(signatureElement, "Id", SignedConstants.XmlDsigNamespaceUrl);
+            _id = Utils.GetAttribute(signatureElement, "Id", NS.XmlDsigNamespaceUrl);
             if (!Utils.VerifyAttributes(signatureElement, "Id"))
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "Signature");
 
             XmlNamespaceManager nsm = new XmlNamespaceManager(value.OwnerDocument.NameTable);
-            nsm.AddNamespace("ds", SignedConstants.XmlDsigNamespaceUrl);
+            nsm.AddNamespace("ds", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
             int expectedChildNodes = 0;
 
             // SignedInfo
@@ -176,7 +177,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             XmlElement signatureValueElement = signatureValueNodes[0] as XmlElement;
             expectedChildNodes += signatureValueNodes.Count;
             _signatureValue = Convert.FromBase64String(Utils.DiscardWhiteSpaces(signatureValueElement.InnerText));
-            _signatureValueId = Utils.GetAttribute(signatureValueElement, "Id", SignedConstants.XmlDsigNamespaceUrl);
+            _signatureValueId = Utils.GetAttribute(signatureValueElement, "Id", NS.XmlDsigNamespaceUrl);
             if (!Utils.VerifyAttributes(signatureValueElement, "Id"))
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "SignatureValue");
 

@@ -11,6 +11,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Org.BouncyCastle.Crypto.IO;
 using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 using Org.BouncyCastle.Security;
 using Xunit;
 
@@ -42,9 +43,9 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             Assert.NotNull(encryptionMethod);
             Assert.NotNull(keyInfo);
             Assert.NotNull(toDecrypt);
-            Assert.True(encryptionMethod.KeyAlgorithm == EncryptedXml.XmlEncAES128Url
-                     || encryptionMethod.KeyAlgorithm == EncryptedXml.XmlEncAES192Url
-                     || encryptionMethod.KeyAlgorithm == EncryptedXml.XmlEncAES256Url);
+            Assert.True(encryptionMethod.KeyAlgorithm == NS.XmlEncAES128Url
+                     || encryptionMethod.KeyAlgorithm == NS.XmlEncAES192Url
+                     || encryptionMethod.KeyAlgorithm == NS.XmlEncAES256Url);
 
             Assert.Equal(keyInfo.Count, 1);
 
@@ -57,7 +58,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                     KeyInfoEncryptedKey encryptedKeyInfo = clause as KeyInfoEncryptedKey;
                     EncryptedKey encryptedKey = encryptedKeyInfo.GetEncryptedKey();
 
-                    Assert.Equal(encryptedKey.EncryptionMethod.KeyAlgorithm, EncryptedXml.XmlEncRSAOAEPUrl);
+                    Assert.Equal(encryptedKey.EncryptionMethod.KeyAlgorithm, NS.XmlEncRSAOAEPUrl);
                     Assert.Equal(encryptedKey.KeyInfo.Count, 1);
                     Assert.NotEqual(_asymmetricKeys.Count, 0);
 
@@ -161,7 +162,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             random.NextBytes(keyData);
             var sessionKey = new ParametersWithIV(new KeyParameter(keyData), ivData);
 
-            encryptionMethod = new EncryptionMethod(EncryptedXml.XmlEncAES128Url);
+            encryptionMethod = new EncryptionMethod(NS.XmlEncAES128Url);
             keyInfo = new KeyInfo();
 
             EncryptedKey encKey;
@@ -170,7 +171,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                     encKey = new EncryptedKey()
                     {
                         CipherData = new CipherData(EncryptedXml.EncryptKey(keyData, key, useOAEP: true)),
-                        EncryptionMethod = new EncryptionMethod(EncryptedXml.XmlEncRSAOAEPUrl)
+                        EncryptionMethod = new EncryptionMethod(NS.XmlEncRSAOAEPUrl)
                     }));
 
             encKey.KeyInfo.AddClause(new RsaKeyValue(key));

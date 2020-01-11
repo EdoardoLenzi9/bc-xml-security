@@ -11,6 +11,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.XPath;
 using System.Xml.Xsl;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -22,12 +23,12 @@ namespace Org.BouncyCastle.Crypto.Xml
     {
         public XmlDsigExcC14NWithCommentsTransform() : base(true)
         {
-            Algorithm = SignedConstants.XmlDsigExcC14NWithCommentsTransformUrl;
+            Algorithm = NS.XmlDsigExcC14NWithCommentsTransformUrl;
         }
 
         public XmlDsigExcC14NWithCommentsTransform(string inclusiveNamespacesPrefixList) : base(true, inclusiveNamespacesPrefixList)
         {
-            Algorithm = SignedConstants.XmlDsigExcC14NWithCommentsTransformUrl;
+            Algorithm = NS.XmlDsigExcC14NWithCommentsTransformUrl;
         }
     }
 }

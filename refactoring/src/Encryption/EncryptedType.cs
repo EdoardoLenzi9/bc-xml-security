@@ -4,6 +4,7 @@
 
 using System;
 using System.Xml;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {

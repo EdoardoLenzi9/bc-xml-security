@@ -11,6 +11,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.XPath;
 using System.Xml.Xsl;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -23,13 +24,13 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public XmlDsigC14NTransform()
         {
-            Algorithm = SignedConstants.XmlDsigC14NTransformUrl;
+            Algorithm = NS.XmlDsigC14NTransformUrl;
         }
 
         public XmlDsigC14NTransform(bool includeComments)
         {
             _includeComments = includeComments;
-            Algorithm = (includeComments ? SignedConstants.XmlDsigC14NWithCommentsTransformUrl : SignedConstants.XmlDsigC14NTransformUrl);
+            Algorithm = (includeComments ? NS.XmlDsigC14NWithCommentsTransformUrl : NS.XmlDsigC14NTransformUrl);
         }
 
         public override Type[] InputTypes

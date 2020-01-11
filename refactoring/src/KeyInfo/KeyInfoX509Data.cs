@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
+using Org.BouncyCastle.Crypto.Xml.Constants;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.X509;
 using System;
@@ -196,17 +197,17 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         internal override XmlElement GetXml(XmlDocument xmlDocument)
         {
-            XmlElement x509DataElement = xmlDocument.CreateElement("X509Data", SignedConstants.XmlDsigNamespaceUrl);
+            XmlElement x509DataElement = xmlDocument.CreateElement("X509Data", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
 
             if (_issuerSerials != null)
             {
                 foreach (X509IssuerSerial issuerSerial in _issuerSerials)
                 {
-                    XmlElement issuerSerialElement = xmlDocument.CreateElement("X509IssuerSerial", SignedConstants.XmlDsigNamespaceUrl);
-                    XmlElement issuerNameElement = xmlDocument.CreateElement("X509IssuerName", SignedConstants.XmlDsigNamespaceUrl);
+                    XmlElement issuerSerialElement = xmlDocument.CreateElement("X509IssuerSerial", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
+                    XmlElement issuerNameElement = xmlDocument.CreateElement("X509IssuerName", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
                     issuerNameElement.AppendChild(xmlDocument.CreateTextNode(issuerSerial.IssuerName));
                     issuerSerialElement.AppendChild(issuerNameElement);
-                    XmlElement serialNumberElement = xmlDocument.CreateElement("X509SerialNumber", SignedConstants.XmlDsigNamespaceUrl);
+                    XmlElement serialNumberElement = xmlDocument.CreateElement("X509SerialNumber", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
                     serialNumberElement.AppendChild(xmlDocument.CreateTextNode(issuerSerial.SerialNumber));
                     issuerSerialElement.AppendChild(serialNumberElement);
                     x509DataElement.AppendChild(issuerSerialElement);
@@ -217,7 +218,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             {
                 foreach (byte[] subjectKeyId in _subjectKeyIds)
                 {
-                    XmlElement subjectKeyIdElement = xmlDocument.CreateElement("X509SKI", SignedConstants.XmlDsigNamespaceUrl);
+                    XmlElement subjectKeyIdElement = xmlDocument.CreateElement("X509SKI", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
                     subjectKeyIdElement.AppendChild(xmlDocument.CreateTextNode(Convert.ToBase64String(subjectKeyId)));
                     x509DataElement.AppendChild(subjectKeyIdElement);
                 }
@@ -227,7 +228,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             {
                 foreach (string subjectName in _subjectNames)
                 {
-                    XmlElement subjectNameElement = xmlDocument.CreateElement("X509SubjectName", SignedConstants.XmlDsigNamespaceUrl);
+                    XmlElement subjectNameElement = xmlDocument.CreateElement("X509SubjectName", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
                     subjectNameElement.AppendChild(xmlDocument.CreateTextNode(subjectName));
                     x509DataElement.AppendChild(subjectNameElement);
                 }
@@ -237,7 +238,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             {
                 foreach (X509Certificate certificate in _certificates)
                 {
-                    XmlElement x509Element = xmlDocument.CreateElement("X509Certificate", SignedConstants.XmlDsigNamespaceUrl);
+                    XmlElement x509Element = xmlDocument.CreateElement("X509Certificate", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
                     x509Element.AppendChild(xmlDocument.CreateTextNode(Convert.ToBase64String(certificate.GetEncoded())));
                     x509DataElement.AppendChild(x509Element);
                 }
@@ -245,7 +246,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             if (_CRL != null)
             {
-                XmlElement crlElement = xmlDocument.CreateElement("X509CRL", SignedConstants.XmlDsigNamespaceUrl);
+                XmlElement crlElement = xmlDocument.CreateElement("X509CRL", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
                 crlElement.AppendChild(xmlDocument.CreateTextNode(Convert.ToBase64String(_CRL)));
                 x509DataElement.AppendChild(crlElement);
             }
@@ -259,7 +260,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 throw new ArgumentNullException(nameof(element));
 
             XmlNamespaceManager nsm = new XmlNamespaceManager(element.OwnerDocument.NameTable);
-            nsm.AddNamespace("ds", SignedConstants.XmlDsigNamespaceUrl);
+            nsm.AddNamespace("ds", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
 
             XmlNodeList x509IssuerSerialNodes = element.SelectNodes("ds:X509IssuerSerial", nsm);
             XmlNodeList x509SKINodes = element.SelectNodes("ds:X509SKI", nsm);

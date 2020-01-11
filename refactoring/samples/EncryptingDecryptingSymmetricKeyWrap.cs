@@ -7,6 +7,7 @@ using System.Xml;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Xml;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 
 namespace _SignedXml.Samples
 {
@@ -43,7 +44,7 @@ namespace _SignedXml.Samples
 
             var encryptedData = new EncryptedData()
             {
-                Type = EncryptedXml.XmlEncElementUrl,
+                Type = XmlNameSpace.Url[NS.XmlEncElementUrl],
                 Id = encryptionElementID,
 
                 // Create an EncryptionMethod element so that the

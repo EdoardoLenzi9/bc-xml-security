@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 using System;
 using System.Xml;
 
@@ -81,33 +82,33 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         internal override XmlElement GetXml(XmlDocument xmlDocument)
         {
-            XmlElement keyValueElement = xmlDocument.CreateElement(KeyValueElementName, SignedConstants.XmlDsigNamespaceUrl);
-            XmlElement dsaKeyValueElement = xmlDocument.CreateElement(DSAKeyValueElementName, SignedConstants.XmlDsigNamespaceUrl);
+            XmlElement keyValueElement = xmlDocument.CreateElement(KeyValueElementName, XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
+            XmlElement dsaKeyValueElement = xmlDocument.CreateElement(DSAKeyValueElementName, XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
 
-            XmlElement pElement = xmlDocument.CreateElement(PElementName, SignedConstants.XmlDsigNamespaceUrl);
+            XmlElement pElement = xmlDocument.CreateElement(PElementName, XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
             pElement.AppendChild(xmlDocument.CreateTextNode(Convert.ToBase64String(_key.Parameters.P.ToByteArrayUnsigned())));
             dsaKeyValueElement.AppendChild(pElement);
 
-            XmlElement qElement = xmlDocument.CreateElement(QElementName, SignedConstants.XmlDsigNamespaceUrl);
+            XmlElement qElement = xmlDocument.CreateElement(QElementName, XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
             qElement.AppendChild(xmlDocument.CreateTextNode(Convert.ToBase64String(_key.Parameters.Q.ToByteArrayUnsigned())));
             dsaKeyValueElement.AppendChild(qElement);
 
-            XmlElement gElement = xmlDocument.CreateElement(GElementName, SignedConstants.XmlDsigNamespaceUrl);
+            XmlElement gElement = xmlDocument.CreateElement(GElementName, XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
             gElement.AppendChild(xmlDocument.CreateTextNode(Convert.ToBase64String(_key.Parameters.G.ToByteArrayUnsigned())));
             dsaKeyValueElement.AppendChild(gElement);
 
-            XmlElement yElement = xmlDocument.CreateElement(YElementName, SignedConstants.XmlDsigNamespaceUrl);
+            XmlElement yElement = xmlDocument.CreateElement(YElementName, XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
             yElement.AppendChild(xmlDocument.CreateTextNode(Convert.ToBase64String(_key.Y.ToByteArrayUnsigned())));
             dsaKeyValueElement.AppendChild(yElement);
 
 
             if (_key.Parameters.ValidationParameters != null)
             {  // note we assume counter is correct if Seed is present
-                XmlElement seedElement = xmlDocument.CreateElement(SeedElementName, SignedConstants.XmlDsigNamespaceUrl);
+                XmlElement seedElement = xmlDocument.CreateElement(SeedElementName, XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
                 seedElement.AppendChild(xmlDocument.CreateTextNode(Convert.ToBase64String(_key.Parameters.ValidationParameters.GetSeed())));
                 dsaKeyValueElement.AppendChild(seedElement);
 
-                XmlElement counterElement = xmlDocument.CreateElement(PgenCounterElementName, SignedConstants.XmlDsigNamespaceUrl);
+                XmlElement counterElement = xmlDocument.CreateElement(PgenCounterElementName, XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
                 counterElement.AppendChild(xmlDocument.CreateTextNode(Convert.ToBase64String(Utils.ConvertIntToByteArray(_key.Parameters.ValidationParameters.Counter))));
                 dsaKeyValueElement.AppendChild(counterElement);
             }
@@ -139,14 +140,14 @@ namespace Org.BouncyCastle.Crypto.Xml
                 throw new ArgumentNullException(nameof(value));
             }
             if (value.Name != KeyValueElementName
-                || value.NamespaceURI != SignedConstants.XmlDsigNamespaceUrl)
+                || value.NamespaceURI != XmlNameSpace.Url[NS.XmlDsigNamespaceUrl])
             {
-                throw new System.Security.Cryptography.CryptographicException($"Root element must be {KeyValueElementName} element in namepsace {SignedConstants.XmlDsigNamespaceUrl}");
+                throw new System.Security.Cryptography.CryptographicException($"Root element must be {KeyValueElementName} element in namepsace {NS.XmlDsigNamespaceUrl}");
             }
 
             const string xmlDsigNamespacePrefix = "dsig";
             XmlNamespaceManager xmlNamespaceManager = new XmlNamespaceManager(value.OwnerDocument.NameTable);
-            xmlNamespaceManager.AddNamespace(xmlDsigNamespacePrefix, SignedConstants.XmlDsigNamespaceUrl);
+            xmlNamespaceManager.AddNamespace(xmlDsigNamespacePrefix, XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
 
             XmlNode dsaKeyValueElement = value.SelectSingleNode($"{xmlDsigNamespacePrefix}:{DSAKeyValueElementName}", xmlNamespaceManager);
             if (dsaKeyValueElement == null)

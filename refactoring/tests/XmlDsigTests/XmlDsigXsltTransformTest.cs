@@ -18,6 +18,7 @@ using System.Collections;
 using System.IO;
 using System.Text;
 using System.Xml;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 using Xunit;
 
 namespace Org.BouncyCastle.Crypto.Xml.Tests
@@ -69,7 +70,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
         void CheckProperties(XmlDsigXsltTransform transform)
         {
-            Assert.Equal("http://www.w3.org/TR/1999/REC-xslt-19991116", transform.Algorithm);
+            Assert.Equal("http://www.w3.org/TR/1999/REC-xslt-19991116", XmlNameSpace.Url[transform.Algorithm]);
 
             Type[] input = transform.InputTypes;
             Assert.True((input.Length == 3), "Input #");

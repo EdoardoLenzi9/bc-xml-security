@@ -19,6 +19,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509;
 using Xunit;
@@ -81,7 +82,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             XmlNamespaceManager nm = new XmlNamespaceManager(doc.NameTable);
             nm.AddNamespace("s", "http://www.w3.org/2003/05/soap-envelope");
             nm.AddNamespace("o", "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd");
-            nm.AddNamespace("e", EncryptedXml.XmlEncNamespaceUrl);
+            nm.AddNamespace("e", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
             XmlElement el = doc.SelectSingleNode("/s:Envelope/s:Header/o:Security/e:EncryptedKey", nm) as XmlElement;
             EncryptedKey ekey = new EncryptedKey();
             ekey.LoadXml(el);
@@ -150,13 +151,13 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                     EncryptedXml exml = new EncryptedXml();
                     byte[] encrypted = exml.EncryptData(body, param, false);
                     EncryptedData edata = new EncryptedData();
-                    edata.Type = EncryptedXml.XmlEncElementUrl;
-                    edata.EncryptionMethod = new EncryptionMethod(EncryptedXml.XmlEncAES256Url);
+                    edata.Type = XmlNameSpace.Url[NS.XmlEncElementUrl];
+                    edata.EncryptionMethod = new EncryptionMethod(NS.XmlEncAES256Url);
                     EncryptedKey ekey = new EncryptedKey();
                     // omit key encryption, here for testing
                     byte[] encKeyBytes = keydata;
                     ekey.CipherData = new CipherData(encKeyBytes);
-                    ekey.EncryptionMethod = new EncryptionMethod(EncryptedXml.XmlEncRSA15Url);
+                    ekey.EncryptionMethod = new EncryptionMethod(NS.XmlEncRSA15Url);
                     DataReference dr = new DataReference();
                     dr.Uri = "_0";
                     ekey.AddReference(dr);
@@ -231,7 +232,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             doc.LoadXml(ed.GetXml().OuterXml);
             XmlNamespaceManager nm = new XmlNamespaceManager(doc.NameTable);
-            nm.AddNamespace("enc", EncryptedXml.XmlEncNamespaceUrl);
+            nm.AddNamespace("enc", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
 
             Assert.NotNull(doc.SelectSingleNode("//enc:EncryptedKey", nm));
             Assert.DoesNotContain("sample", doc.OuterXml);
@@ -287,7 +288,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             var keyGen = GeneratorUtilities.GetKeyPairGenerator("RSA");
             keyGen.Init(new KeyGenerationParameters(new SecureRandom(), 1024));
             var pair = keyGen.GenerateKeyPair();
-            CheckEncryptionMethod(pair.Public, EncryptedXml.XmlEncRSA15Url);
+            CheckEncryptionMethod(pair.Public, XmlNameSpace.Url[NS.XmlEncRSA15Url]);
         }
 
         [Fact]
@@ -301,7 +302,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             random.NextBytes(keydata);
             var param = new ParametersWithIV(new DesEdeParameters(keydata), ivdata);
 
-            CheckEncryptionMethod(param, EncryptedXml.XmlEncTripleDESKeyWrapUrl);
+            CheckEncryptionMethod(param, XmlNameSpace.Url[NS.XmlEncTripleDESKeyWrapUrl]);
         }
 
         [Fact]
@@ -315,7 +316,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             random.NextBytes(keydata);
             var param = new ParametersWithIV(new KeyParameter(keydata), ivdata);
 
-            CheckEncryptionMethod(param, EncryptedXml.XmlEncAES128KeyWrapUrl);
+            CheckEncryptionMethod(param, XmlNameSpace.Url[NS.XmlEncAES128KeyWrapUrl]);
         }
 
         [Fact]
@@ -329,13 +330,13 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             random.NextBytes(keydata);
             var param = new ParametersWithIV(new KeyParameter(keydata), ivdata);
 
-            CheckEncryptionMethod(param, EncryptedXml.XmlEncAES192KeyWrapUrl);
+            CheckEncryptionMethod(param, XmlNameSpace.Url[NS.XmlEncAES192KeyWrapUrl]);
         }
 
         [Fact]
         public void Encrypt_NotSupportedAlgorithm()
         {
-            Assert.Throws<System.Security.Cryptography.CryptographicException>(() => CheckEncryptionMethod("", EncryptedXml.XmlEncAES192KeyWrapUrl));
+            Assert.Throws<System.Security.Cryptography.CryptographicException>(() => CheckEncryptionMethod("", XmlNameSpace.Url[NS.XmlEncAES192KeyWrapUrl]));
         }
 
         [Fact]
@@ -427,7 +428,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         public void GetDecryptionKey_EncryptedDataNull()
         {
             EncryptedXml ex = new EncryptedXml();
-            Assert.Throws<ArgumentNullException>(() => ex.GetDecryptionKey(null, EncryptedXml.XmlEncAES128Url));
+            Assert.Throws<ArgumentNullException>(() => ex.GetDecryptionKey(null, NS.XmlEncAES128Url));
         }
 
         [Fact]
@@ -437,14 +438,14 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             edata.KeyInfo = new KeyInfo();
             edata.KeyInfo.AddClause(new KeyInfoEncryptedKey(new EncryptedKey()));
             EncryptedXml exml = new EncryptedXml();
-            Assert.Throws<System.Security.Cryptography.CryptographicException>(() => exml.GetDecryptionKey(edata, null));
+            Assert.Throws<System.Security.Cryptography.CryptographicException>(() => exml.GetDecryptionKey(edata, NS.None));
         }
 
         [Fact]
         public void GetDecryptionKey_StringNull()
         {
             EncryptedXml ex = new EncryptedXml();
-            Assert.Null(ex.GetDecryptionKey(new EncryptedData(), null));
+            Assert.Null(ex.GetDecryptionKey(new EncryptedData(), NS.None));
         }
 
         [Fact]
@@ -463,7 +464,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             EncryptedXml exml = new EncryptedXml();
             exml.AddKeyNameMapping("aes", param);
-            var decryptedAlg = exml.GetDecryptionKey(edata, null);
+            var decryptedAlg = exml.GetDecryptionKey(edata, NS.None);
 
             Assert.IsType<ParametersWithIV>(decryptedAlg);
             Assert.Equal(((KeyParameter)param.Parameters).GetKey(), ((KeyParameter)((ParametersWithIV)decryptedAlg).Parameters).GetKey());
@@ -491,7 +492,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             EncryptedKey ekey = new EncryptedKey();
             byte[] encKeyBytes = EncryptedXml.EncryptKey(((KeyParameter)innerParam.Parameters).GetKey(), (KeyParameter)param.Parameters);
             ekey.CipherData = new CipherData(encKeyBytes);
-            ekey.EncryptionMethod = new EncryptionMethod(EncryptedXml.XmlEncAES256Url);
+            ekey.EncryptionMethod = new EncryptionMethod(NS.XmlEncAES256Url);
             ekey.CarriedKeyName = "aes";
             ekey.KeyInfo = new KeyInfo();
             ekey.KeyInfo.AddClause(new KeyInfoName("another_aes"));
@@ -501,7 +502,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             EncryptedXml exml = new EncryptedXml(doc);
             exml.AddKeyNameMapping("another_aes", param);
-            var decryptedAlg = exml.GetDecryptionKey(edata, EncryptedXml.XmlEncAES256Url);
+            var decryptedAlg = exml.GetDecryptionKey(edata, NS.XmlEncAES256Url);
 
             Assert.IsType<KeyParameter>(decryptedAlg);
             Assert.Equal(((KeyParameter)innerParam.Parameters).GetKey(), ((KeyParameter)decryptedAlg).GetKey());
@@ -511,7 +512,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         public void GetDecryptionIV_EncryptedDataNull()
         {
             EncryptedXml ex = new EncryptedXml();
-            Assert.Throws<ArgumentNullException>(() => ex.GetDecryptionIV(null, EncryptedXml.XmlEncAES128Url));
+            Assert.Throws<ArgumentNullException>(() => ex.GetDecryptionIV(null, NS.XmlEncAES128Url));
         }
 
         [Fact]
@@ -519,9 +520,9 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         {
             EncryptedXml ex = new EncryptedXml();
             EncryptedData encryptedData = new EncryptedData();
-            encryptedData.EncryptionMethod = new EncryptionMethod(EncryptedXml.XmlEncAES256Url);
+            encryptedData.EncryptionMethod = new EncryptionMethod(NS.XmlEncAES256Url);
             encryptedData.CipherData = new CipherData(new byte[16]);
-            Assert.Equal(new byte[16], ex.GetDecryptionIV(encryptedData, null));
+            Assert.Equal(new byte[16], ex.GetDecryptionIV(encryptedData, NS.None));
         }
 
         [Fact]
@@ -530,7 +531,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             EncryptedXml ex = new EncryptedXml();
             EncryptedData encryptedData = new EncryptedData();
             encryptedData.CipherData = new CipherData(new byte[16]);
-            Assert.Throws<System.Security.Cryptography.CryptographicException>(() => ex.GetDecryptionIV(encryptedData, null));
+            Assert.Throws<System.Security.Cryptography.CryptographicException>(() => ex.GetDecryptionIV(encryptedData, NS.None));
         }
 
         [Fact]
@@ -539,7 +540,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             EncryptedXml ex = new EncryptedXml();
             EncryptedData encryptedData = new EncryptedData();
             encryptedData.CipherData = new CipherData(new byte[16]);
-            Assert.Throws<System.Security.Cryptography.CryptographicException>(() => ex.GetDecryptionIV(encryptedData, "invalid"));
+            Assert.Throws<System.Security.Cryptography.CryptographicException>(() => ex.GetDecryptionIV(encryptedData, NS.Invalid));
         }
 
         [Fact]
@@ -548,7 +549,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             EncryptedXml ex = new EncryptedXml();
             EncryptedData encryptedData = new EncryptedData();
             encryptedData.CipherData = new CipherData(new byte[16]);
-            Assert.Equal(8, ex.GetDecryptionIV(encryptedData, EncryptedXml.XmlEncTripleDESUrl).Length);
+            Assert.Equal(8, ex.GetDecryptionIV(encryptedData, NS.XmlEncTripleDESUrl).Length);
         }
 
         [Fact]
@@ -692,8 +693,8 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             string cipherValue = Convert.ToBase64String(exml.EncryptData(Encoding.UTF8.GetBytes(xml), param));
 
             EncryptedData ed = new EncryptedData();
-            ed.Type = EncryptedXml.XmlEncElementUrl;
-            ed.EncryptionMethod = new EncryptionMethod(EncryptedXml.XmlEncAES256Url);
+            ed.Type = XmlNameSpace.Url[NS.XmlEncElementUrl];
+            ed.EncryptionMethod = new EncryptionMethod(NS.XmlEncAES256Url);
             ed.CipherData = new CipherData();
             // Create CipherReference: first extract node value, then convert from base64 using Transforms
             ed.CipherData.CipherReference = new CipherReference("#ID_0");
@@ -804,7 +805,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             EncryptedKey ekey = new EncryptedKey();
             byte[] encKeyBytes = EncryptedXml.EncryptKey(((KeyParameter)innerParam.Parameters).GetKey(), (KeyParameter)param.Parameters);
             ekey.CipherData = new CipherData(encKeyBytes);
-            ekey.EncryptionMethod = new EncryptionMethod(EncryptedXml.XmlEncAES256Url);
+            ekey.EncryptionMethod = new EncryptionMethod(NS.XmlEncAES256Url);
             ekey.Id = "Key_ID";
             ekey.KeyInfo = new KeyInfo();
             ekey.KeyInfo.AddClause(new KeyInfoName("aes"));
@@ -820,9 +821,9 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             Assert.Equal(((KeyParameter)innerParam.Parameters).GetKey(), decryptedKey);
 
             EncryptedData eData = new EncryptedData();
-            eData.EncryptionMethod = new EncryptionMethod(EncryptedXml.XmlEncAES256Url);
+            eData.EncryptionMethod = new EncryptionMethod(NS.XmlEncAES256Url);
             eData.KeyInfo = keyInfoRetrieval;
-            var decryptedAlg = exml.GetDecryptionKey(eData, null);
+            var decryptedAlg = exml.GetDecryptionKey(eData, NS.None);
             Assert.Equal(((KeyParameter)innerParam.Parameters).GetKey(), ((KeyParameter)decryptedAlg).GetKey());
         }
 
@@ -853,7 +854,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             EncryptedKey ekey = new EncryptedKey();
             byte[] encKeyBytes = EncryptedXml.EncryptKey(outerParam.GetKey(), param);
             ekey.CipherData = new CipherData(encKeyBytes);
-            ekey.EncryptionMethod = new EncryptionMethod(EncryptedXml.XmlEncAES256Url);
+            ekey.EncryptionMethod = new EncryptionMethod(NS.XmlEncAES256Url);
             ekey.Id = "Key_ID";
             ekey.KeyInfo = new KeyInfo();
             ekey.KeyInfo.AddClause(new KeyInfoName("aes"));
@@ -864,7 +865,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             EncryptedKey ekeyTopLevel = new EncryptedKey();
             byte[] encTopKeyBytes = EncryptedXml.EncryptKey(innerParam.GetKey(), outerParam);
             ekeyTopLevel.CipherData = new CipherData(encTopKeyBytes);
-            ekeyTopLevel.EncryptionMethod = new EncryptionMethod(EncryptedXml.XmlEncAES256Url);
+            ekeyTopLevel.EncryptionMethod = new EncryptionMethod(NS.XmlEncAES256Url);
             ekeyTopLevel.KeyInfo = topLevelKeyInfo;
 
             doc.LoadXml(ekeyTopLevel.GetXml().OuterXml);
@@ -873,9 +874,9 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             Assert.Equal(innerParam.GetKey(), decryptedKey);
 
             EncryptedData eData = new EncryptedData();
-            eData.EncryptionMethod = new EncryptionMethod(EncryptedXml.XmlEncAES256Url);
+            eData.EncryptionMethod = new EncryptionMethod(NS.XmlEncAES256Url);
             eData.KeyInfo = topLevelKeyInfo;
-            var decryptedAlg = exml.GetDecryptionKey(eData, null);
+            var decryptedAlg = exml.GetDecryptionKey(eData, NS.None);
             Assert.Equal(outerParam.GetKey(), ((KeyParameter)decryptedAlg).GetKey());
         }
 
@@ -1070,7 +1071,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             KeyInfoEncryptedKey kiEncKey = keyInfoEnum.Current as KeyInfoEncryptedKey;
 
             Assert.NotNull(edata);
-            Assert.Equal(uri, kiEncKey.GetEncryptedKey().EncryptionMethod.KeyAlgorithm);
+            Assert.Equal(uri, XmlNameSpace.Url[kiEncKey.GetEncryptedKey().EncryptionMethod.KeyAlgorithm]);
             Assert.NotNull(edata.CipherData.CipherValue);
         }
     }

@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 using Xunit;
 
 namespace Org.BouncyCastle.Crypto.Xml.Tests
@@ -194,7 +195,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             Reference reference = new Reference();
             // adding an empty hash value
             byte[] hash = new byte[20];
-            reference.DigestMethod = SignedConstants.XmlDsigSHA1Url;
+            reference.DigestMethod = XmlNameSpace.Url[NS.XmlDsigSHA1Url];
             reference.DigestValue = hash;
             XmlElement xel = reference.GetXml();
             // this is the minimal Reference (DigestValue)!

@@ -4,6 +4,7 @@
 
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 using Org.BouncyCastle.Pkix;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509;
@@ -62,11 +63,10 @@ namespace Org.BouncyCastle.Crypto.Xml
             while (ancestorNode != null)
             {
                 XmlElement ancestorElement = ancestorNode as XmlElement;
-                if (ancestorElement != null)
-                    if (HasNamespace(ancestorElement, prefix, value))
-                    {
-                        return true;
-                    }
+                if (ancestorElement != null && HasNamespace(ancestorElement, prefix, value))
+                {
+                    return true;
+                }
 
                 ancestorNode = ancestorNode.ParentNode;
             }
@@ -74,11 +74,11 @@ namespace Org.BouncyCastle.Crypto.Xml
             return false;
         }
 
-        internal static string GetAttribute(XmlElement element, string localName, string namespaceURI)
+        internal static string GetAttribute(XmlElement element, string localName, NS nameSpace)
         {
             string s = (element.HasAttribute(localName) ? element.GetAttribute(localName) : null);
-            if (s == null && element.HasAttribute(localName, namespaceURI))
-                s = element.GetAttribute(localName, namespaceURI);
+            if (s == null && element.HasAttribute(localName, XmlNameSpace.Url[nameSpace]))
+                s = element.GetAttribute(localName, XmlNameSpace.Url[nameSpace]);
             return s;
         }
 
@@ -489,7 +489,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                     string name = ((attrib.Prefix.Length > 0) ? attrib.Prefix + ":" + attrib.LocalName : attrib.LocalName);
                     // Skip the attribute if one with the same qualified name already exists
                     if (elem.HasAttribute(name) || (name.Equals("xmlns") && elem.Prefix.Length == 0)) continue;
-                    XmlAttribute nsattrib = (XmlAttribute)elem.OwnerDocument.CreateAttribute(name);
+                    XmlAttribute nsattrib = elem.OwnerDocument.CreateAttribute(name);
                     nsattrib.Value = attrib.Value;
                     elem.SetAttributeNode(nsattrib);
                 }
@@ -503,7 +503,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 foreach (string key in namespaces.Keys)
                 {
                     if (elem.HasAttribute(key)) continue;
-                    XmlAttribute nsattrib = (XmlAttribute)elem.OwnerDocument.CreateAttribute(key);
+                    XmlAttribute nsattrib = elem.OwnerDocument.CreateAttribute(key);
                     nsattrib.Value = namespaces[key] as string;
                     elem.SetAttributeNode(nsattrib);
                 }
@@ -531,7 +531,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 if (!Utils.IsCommittedNamespace(ancestorElement, ancestorElement.Prefix, ancestorElement.NamespaceURI))
                 {
                     // Add the namespace attribute to the collection if needed
-                    if (!Utils.IsRedundantNamespace(ancestorElement, ancestorElement.Prefix, ancestorElement.NamespaceURI))
+                    if (!IsRedundantNamespace(ancestorElement, ancestorElement.Prefix, ancestorElement.NamespaceURI))
                     {
                         string name = ((ancestorElement.Prefix.Length > 0) ? "xmlns:" + ancestorElement.Prefix : "xmlns");
                         XmlAttribute nsattrib = elem.OwnerDocument.CreateAttribute(name);
@@ -561,16 +561,12 @@ namespace Org.BouncyCastle.Crypto.Xml
                         }
                         if (attrib.NamespaceURI.Length > 0)
                         {
-                            if (!Utils.IsCommittedNamespace(ancestorElement, attrib.Prefix, attrib.NamespaceURI))
+                            if (!IsCommittedNamespace(ancestorElement, attrib.Prefix, attrib.NamespaceURI) && !IsRedundantNamespace(ancestorElement, attrib.Prefix, attrib.NamespaceURI))
                             {
-                                // Add the namespace attribute to the collection if needed
-                                if (!Utils.IsRedundantNamespace(ancestorElement, attrib.Prefix, attrib.NamespaceURI))
-                                {
-                                    string name = ((attrib.Prefix.Length > 0) ? "xmlns:" + attrib.Prefix : "xmlns");
-                                    XmlAttribute nsattrib = elem.OwnerDocument.CreateAttribute(name);
-                                    nsattrib.Value = attrib.NamespaceURI;
-                                    namespaces.Add(nsattrib);
-                                }
+                                string name = ((attrib.Prefix.Length > 0) ? "xmlns:" + attrib.Prefix : "xmlns");
+                                XmlAttribute nsattrib = elem.OwnerDocument.CreateAttribute(name);
+                                nsattrib.Value = attrib.NamespaceURI;
+                                namespaces.Add(nsattrib);
                             }
                         }
                     }
