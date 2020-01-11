@@ -12,20 +12,30 @@ namespace Org.BouncyCastle.Crypto.Xml
     {
         public CanonicalXmlCDataSection(string data, XmlDocument doc, bool defaultNodeSetInclusionState) : base(data, doc)
         {
-            IsInNodeSet = defaultNodeSetInclusionState;
+            SetIsInNodeSet(defaultNodeSetInclusionState);
         }
 
-        public bool IsInNodeSet { get; set; }
+        private bool isInNodeSet;
+
+        public bool GetIsInNodeSet()
+        {
+            return isInNodeSet;
+        }
+
+        public void SetIsInNodeSet(bool value)
+        {
+            isInNodeSet = value;
+        }
 
         public void Write(StringBuilder strBuilder, DocPosition docPos, AncestralNamespaceContextManager anc)
         {
-            if (IsInNodeSet)
+            if (GetIsInNodeSet())
                 strBuilder.Append(Utils.EscapeCData(Data));
         }
 
         public void WriteHash(IHash hash, DocPosition docPos, AncestralNamespaceContextManager anc)
         {
-            if (IsInNodeSet)
+            if (GetIsInNodeSet())
             {
                 UTF8Encoding utf8 = new UTF8Encoding(false);
                 byte[] rgbData = utf8.GetBytes(Utils.EscapeCData(Data));

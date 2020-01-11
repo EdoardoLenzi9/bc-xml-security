@@ -2,9 +2,9 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using Microsoft.Win32;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 using Org.BouncyCastle.Pkix;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509;
@@ -13,14 +13,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Security;
-using System.Security.Permissions;
 using System.Text;
-using System.Threading;
 using System.Xml;
 
 namespace Org.BouncyCastle.Crypto.Xml
@@ -67,19 +63,22 @@ namespace Org.BouncyCastle.Crypto.Xml
             while (ancestorNode != null)
             {
                 XmlElement ancestorElement = ancestorNode as XmlElement;
-                if (ancestorElement != null)
-                    if (HasNamespace(ancestorElement, prefix, value)) return true;
+                if (ancestorElement != null && HasNamespace(ancestorElement, prefix, value))
+                {
+                    return true;
+                }
+
                 ancestorNode = ancestorNode.ParentNode;
             }
 
             return false;
         }
 
-        internal static string GetAttribute(XmlElement element, string localName, string namespaceURI)
+        internal static string GetAttribute(XmlElement element, string localName, NS nameSpace)
         {
             string s = (element.HasAttribute(localName) ? element.GetAttribute(localName) : null);
-            if (s == null && element.HasAttribute(localName, namespaceURI))
-                s = element.GetAttribute(localName, namespaceURI);
+            if (s == null && element.HasAttribute(localName, XmlNameSpace.Url[nameSpace]))
+                s = element.GetAttribute(localName, XmlNameSpace.Url[nameSpace]);
             return s;
         }
 
@@ -156,7 +155,6 @@ namespace Org.BouncyCastle.Crypto.Xml
         internal static bool IsXmlPrefixDefinitionNode(XmlAttribute a)
         {
             return false;
-            //            return a.Prefix.Equals("xmlns") && a.LocalName.Equals("xml") && a.Value.Equals(NamespaceUrlForXmlPrefix);
         }
 
         internal static string DiscardWhiteSpaces(string inputBuffer)
@@ -281,7 +279,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             do
             {
-                XmlNode rootNode = (XmlNode)elementList[index];
+                XmlNode rootNode = elementList[index];
                 // Add the children nodes
                 XmlNodeList childNodes = rootNode.ChildNodes;
                 if (childNodes != null)
@@ -491,7 +489,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                     string name = ((attrib.Prefix.Length > 0) ? attrib.Prefix + ":" + attrib.LocalName : attrib.LocalName);
                     // Skip the attribute if one with the same qualified name already exists
                     if (elem.HasAttribute(name) || (name.Equals("xmlns") && elem.Prefix.Length == 0)) continue;
-                    XmlAttribute nsattrib = (XmlAttribute)elem.OwnerDocument.CreateAttribute(name);
+                    XmlAttribute nsattrib = elem.OwnerDocument.CreateAttribute(name);
                     nsattrib.Value = attrib.Value;
                     elem.SetAttributeNode(nsattrib);
                 }
@@ -505,7 +503,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 foreach (string key in namespaces.Keys)
                 {
                     if (elem.HasAttribute(key)) continue;
-                    XmlAttribute nsattrib = (XmlAttribute)elem.OwnerDocument.CreateAttribute(key);
+                    XmlAttribute nsattrib = elem.OwnerDocument.CreateAttribute(key);
                     nsattrib.Value = namespaces[key] as string;
                     elem.SetAttributeNode(nsattrib);
                 }
@@ -533,7 +531,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 if (!Utils.IsCommittedNamespace(ancestorElement, ancestorElement.Prefix, ancestorElement.NamespaceURI))
                 {
                     // Add the namespace attribute to the collection if needed
-                    if (!Utils.IsRedundantNamespace(ancestorElement, ancestorElement.Prefix, ancestorElement.NamespaceURI))
+                    if (!IsRedundantNamespace(ancestorElement, ancestorElement.Prefix, ancestorElement.NamespaceURI))
                     {
                         string name = ((ancestorElement.Prefix.Length > 0) ? "xmlns:" + ancestorElement.Prefix : "xmlns");
                         XmlAttribute nsattrib = elem.OwnerDocument.CreateAttribute(name);
@@ -563,16 +561,12 @@ namespace Org.BouncyCastle.Crypto.Xml
                         }
                         if (attrib.NamespaceURI.Length > 0)
                         {
-                            if (!Utils.IsCommittedNamespace(ancestorElement, attrib.Prefix, attrib.NamespaceURI))
+                            if (!IsCommittedNamespace(ancestorElement, attrib.Prefix, attrib.NamespaceURI) && !IsRedundantNamespace(ancestorElement, attrib.Prefix, attrib.NamespaceURI))
                             {
-                                // Add the namespace attribute to the collection if needed
-                                if (!Utils.IsRedundantNamespace(ancestorElement, attrib.Prefix, attrib.NamespaceURI))
-                                {
-                                    string name = ((attrib.Prefix.Length > 0) ? "xmlns:" + attrib.Prefix : "xmlns");
-                                    XmlAttribute nsattrib = elem.OwnerDocument.CreateAttribute(name);
-                                    nsattrib.Value = attrib.NamespaceURI;
-                                    namespaces.Add(nsattrib);
-                                }
+                                string name = ((attrib.Prefix.Length > 0) ? "xmlns:" + attrib.Prefix : "xmlns");
+                                XmlAttribute nsattrib = elem.OwnerDocument.CreateAttribute(name);
+                                nsattrib.Value = attrib.NamespaceURI;
+                                namespaces.Add(nsattrib);
                             }
                         }
                     }
@@ -671,67 +665,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (keyInfoX509Data.SubjectNames == null && keyInfoX509Data.IssuerSerials == null &&
                 keyInfoX509Data.SubjectKeyIds == null && decryptionIssuerSerials == null)
                 return collection;
-
-            // Open LocalMachine and CurrentUser "Other People"/"My" stores.
-            /*
-            X509Store[] stores = new X509Store[2];
-            string storeName = (certUsageType == CertUsageType.Verification ? "AddressBook" : "My");
-            stores[0] = new X509Store(storeName, StoreLocation.CurrentUser);
-            stores[1] = new X509Store(storeName, StoreLocation.LocalMachine);
-
-            for (int index = 0; index < stores.Length; index++)
-            {
-                if (stores[index] != null)
-                {
-                    X509Certificate2Collection filters = null;
-                    // We don't care if we can't open the store.
-                    try
-                    {
-                        stores[index].Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
-                        filters = stores[index].Certificates;
-                        stores[index].Close();
-                        if (keyInfoX509Data.SubjectNames != null)
-                        {
-                            foreach (string subjectName in keyInfoX509Data.SubjectNames)
-                            {
-                                filters = filters.Find(X509FindType.FindBySubjectDistinguishedName, subjectName, false);
-                            }
-                        }
-                        if (keyInfoX509Data.IssuerSerials != null)
-                        {
-                            foreach (X509IssuerSerial issuerSerial in keyInfoX509Data.IssuerSerials)
-                            {
-                                filters = filters.Find(X509FindType.FindByIssuerDistinguishedName, issuerSerial.IssuerName, false);
-                                filters = filters.Find(X509FindType.FindBySerialNumber, issuerSerial.SerialNumber, false);
-                            }
-                        }
-                        if (keyInfoX509Data.SubjectKeyIds != null)
-                        {
-                            foreach (byte[] ski in keyInfoX509Data.SubjectKeyIds)
-                            {
-                                string hex = EncodeHexString(ski);
-                                filters = filters.Find(X509FindType.FindBySubjectKeyIdentifier, hex, false);
-                            }
-                        }
-                        if (decryptionIssuerSerials != null)
-                        {
-                            foreach (X509IssuerSerial issuerSerial in decryptionIssuerSerials)
-                            {
-                                filters = filters.Find(X509FindType.FindByIssuerDistinguishedName, issuerSerial.IssuerName, false);
-                                filters = filters.Find(X509FindType.FindBySerialNumber, issuerSerial.SerialNumber, false);
-                            }
-                        }
-                    }
-                    // Store doesn't exist, no read permissions, other system error
-                    catch (System.Security.Cryptography.CryptographicException) { }
-                    // Opening LocalMachine stores (other than Root or CertificateAuthority) on Linux
-                    catch (PlatformNotSupportedException) { }
-
-                    if (filters != null)
-                        collection.AddRange(filters);
-                }
-            }
-            */
             return collection;
         }
 
@@ -798,7 +731,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         internal static IList<X509Certificate> BuildCertificateChain(X509Certificate primaryCertificate, IEnumerable<X509Certificate> additionalCertificates)
         {
-            var parser = new X509CertificateParser();
+            _ = new X509CertificateParser();
             var builder = new PkixCertPathBuilder();
 
             // Separate root from itermediate

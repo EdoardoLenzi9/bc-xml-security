@@ -8,8 +8,8 @@ namespace Org.BouncyCastle.Crypto.Xml
 {
     public interface IReferenceLevelSortOrder
     {
-        ArrayList References { get; set; }
-
+        ArrayList GetReferences();
+        void SetReferences(ArrayList value);
         int Compare(object a, object b);
     }
 }

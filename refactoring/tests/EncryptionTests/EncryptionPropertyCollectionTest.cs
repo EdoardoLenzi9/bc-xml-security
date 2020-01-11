@@ -14,7 +14,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         public void Ctor_Default()
         {
             EncryptionPropertyCollection encPropertyCollection = new EncryptionPropertyCollection();
-            Assert.Equal(0, encPropertyCollection.Count);
+            Assert.Empty(encPropertyCollection);
             Assert.False(encPropertyCollection.IsFixedSize);
             Assert.False(encPropertyCollection.IsReadOnly);
             Assert.False(encPropertyCollection.IsSynchronized);

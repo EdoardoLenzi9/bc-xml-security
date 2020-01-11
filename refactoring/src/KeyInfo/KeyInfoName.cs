@@ -1,12 +1,10 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Xml;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -48,16 +46,16 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         internal override XmlElement GetXml(XmlDocument xmlDocument)
         {
-            XmlElement nameElement = xmlDocument.CreateElement("KeyName", SignedConstants.XmlDsigNamespaceUrl);
+            XmlElement nameElement = xmlDocument.CreateElement("KeyName", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
             nameElement.AppendChild(xmlDocument.CreateTextNode(_keyName));
             return nameElement;
         }
 
-        public override void LoadXml(XmlElement value)
+        public override void LoadXml(XmlElement element)
         {
-            if (value == null)
-                throw new ArgumentNullException(nameof(value));
-            XmlElement nameElement = value;
+            if (element == null)
+                throw new ArgumentNullException(nameof(element));
+            XmlElement nameElement = element;
             _keyName = nameElement.InnerText.Trim();
         }
     }

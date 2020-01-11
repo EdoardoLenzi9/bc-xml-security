@@ -13,6 +13,7 @@
 
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 using Org.BouncyCastle.Security;
 using System;
 using System.IO;
@@ -76,7 +77,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         {
             ConcreteTransform concreteTransform = new ConcreteTransform();
             Assert.Null(concreteTransform.Context);
-            Assert.Null(concreteTransform.Algorithm);
+            Assert.Equal(NS.None, concreteTransform.Algorithm);
         }
 
         [Fact]

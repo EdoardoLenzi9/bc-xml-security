@@ -26,8 +26,8 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact]
         public void Ctor_Empty()
         {
-            RSAKeyValue rsaKeyValue = new RSAKeyValue();
-            Assert.NotNull(rsaKeyValue.Key);
+            RsaKeyValue rsaKeyValue = new RsaKeyValue();
+            Assert.NotNull(rsaKeyValue.GetKey());
         }
 
         [Fact]
@@ -36,22 +36,22 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             var keyGen = GeneratorUtilities.GetKeyPairGenerator("RSA");
             keyGen.Init(new KeyGenerationParameters(new SecureRandom(), 1024));
             var pair = keyGen.GenerateKeyPair();
-            RSAKeyValue rsaKeyValue = new RSAKeyValue((RsaKeyParameters)pair.Public);
-            Assert.Equal(pair.Public, rsaKeyValue.Key);
+            RsaKeyValue rsaKeyValue = new RsaKeyValue((RsaKeyParameters)pair.Public);
+            Assert.Equal(pair.Public, rsaKeyValue.GetKey());
         }
 
         [Fact]
         public void Ctor_Rsa_Null()
         {
-            RSAKeyValue rsaKeyValue = new RSAKeyValue(null);
-            Assert.Null(rsaKeyValue.Key);
+            RsaKeyValue rsaKeyValue = new RsaKeyValue(null);
+            Assert.Null(rsaKeyValue.GetKey());
         }
 
 
         [Fact]
         public void GetXml()
         {
-            RSAKeyValue rsa = new RSAKeyValue();
+            RsaKeyValue rsa = new RsaKeyValue();
             XmlElement xmlkey = rsa.GetXml();
 
             // Schema check. Should not throw.
@@ -67,8 +67,8 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             var keyGen = GeneratorUtilities.GetKeyPairGenerator("RSA");
             keyGen.Init(new KeyGenerationParameters(new SecureRandom(), 1024));
             var pair = keyGen.GenerateKeyPair();
-            RSAKeyValue rsaKeyValue1 = new RSAKeyValue((RsaKeyParameters)pair.Public);
-            RSAKeyValue rsaKeyValue2 = new RSAKeyValue((RsaKeyParameters)pair.Public);
+            RsaKeyValue rsaKeyValue1 = new RsaKeyValue((RsaKeyParameters)pair.Public);
+            RsaKeyValue rsaKeyValue2 = new RsaKeyValue((RsaKeyParameters)pair.Public);
             Assert.Equal(rsaKeyValue1.GetXml(), rsaKeyValue2.GetXml());
         }
 
@@ -79,7 +79,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(rsaKey);
 
-            RSAKeyValue rsa1 = new RSAKeyValue();
+            RsaKeyValue rsa1 = new RsaKeyValue();
             rsa1.LoadXml(doc.DocumentElement);
 
             string s = rsa1.GetXml().OuterXml;
@@ -94,7 +94,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(rsaKeyWithPrefix);
 
-            RSAKeyValue rsa1 = new RSAKeyValue();
+            RsaKeyValue rsa1 = new RsaKeyValue();
             rsa1.LoadXml(doc.DocumentElement);
 
             string s = rsa1.GetXml().OuterXml;
@@ -105,7 +105,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact]
         public void LoadXml_Null()
         {
-            RSAKeyValue rsa = new RSAKeyValue();
+            RsaKeyValue rsa = new RsaKeyValue();
             Assert.Throws<ArgumentNullException>(() => rsa.LoadXml(null));
         }
 
@@ -116,7 +116,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             XmlDocument xmlDocument = new XmlDocument();
             xmlDocument.LoadXml(xml);
 
-            RSAKeyValue rsa = new RSAKeyValue();
+            RsaKeyValue rsa = new RsaKeyValue();
 
             // FormatException exception because desktop does not
             // check if Convert.FromBase64String throws
@@ -158,11 +158,11 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             XmlDocument xmlDocument = new XmlDocument();
             xmlDocument.LoadXml(xml);
 
-            RSAKeyValue rsa = new RSAKeyValue();
+            RsaKeyValue rsa = new RsaKeyValue();
             rsa.LoadXml(xmlDocument.DocumentElement);
 
-            Assert.Equal(expectedModulus, rsa.Key.Modulus.ToByteArrayUnsigned());
-            Assert.Equal(expectedExponent, rsa.Key.Exponent.ToByteArrayUnsigned());
+            Assert.Equal(expectedModulus, rsa.GetKey().Modulus.ToByteArrayUnsigned());
+            Assert.Equal(expectedExponent, rsa.GetKey().Exponent.ToByteArrayUnsigned());
         }
 
         public static object[][] LoadXml_ValidXml_Source()

@@ -6,11 +6,7 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Security;
-using System.Text;
-using System.Xml;
-using System.Xml.XPath;
-using System.Xml.Xsl;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -19,7 +15,7 @@ namespace Org.BouncyCastle.Crypto.Xml
         public XmlDsigC14NWithCommentsTransform()
             : base(true)
         {
-            Algorithm = SignedConstants.XmlDsigC14NWithCommentsTransformUrl;
+            Algorithm = NS.XmlDsigC14NWithCommentsTransformUrl;
         }
     }
 }

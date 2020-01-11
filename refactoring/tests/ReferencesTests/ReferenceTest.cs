@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Xml;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 using Xunit;
 
 namespace Org.BouncyCastle.Crypto.Xml.Tests
@@ -31,7 +32,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             Reference reference = new Reference();
             Assert.Null(reference.Uri);
             Assert.NotNull(reference.TransformChain);
-            Assert.Null(reference.Id);
+            Assert.Null(reference.GetId());
             Assert.Null(reference.Type);
             Assert.Null(reference.Uri);
             Assert.Throws<System.Security.Cryptography.CryptographicException>(() => reference.GetXml());
@@ -50,7 +51,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             Assert.Equal("http://www.w3.org/2001/04/xmlenc#sha256", reference.DigestMethod);
 
             Assert.Null(reference.DigestValue);
-            Assert.Null(reference.Id);
+            Assert.Null(reference.GetId());
             Assert.Null(reference.Type);
             Assert.Equal(uri, reference.Uri);
             Assert.Throws<System.Security.Cryptography.CryptographicException>(() => reference.GetXml());
@@ -70,7 +71,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                 Assert.Equal("http://www.w3.org/2001/04/xmlenc#sha256", reference.DigestMethod);
 
                 Assert.Null(reference.DigestValue);
-                Assert.Null(reference.Id);
+                Assert.Null(reference.GetId());
                 Assert.Null(reference.Type);
                 Assert.Null(reference.Uri);
                 Assert.Throws<System.Security.Cryptography.CryptographicException>(() => reference.GetXml());
@@ -194,7 +195,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             Reference reference = new Reference();
             // adding an empty hash value
             byte[] hash = new byte[20];
-            reference.DigestMethod = SignedConstants.XmlDsigSHA1Url;
+            reference.DigestMethod = XmlNameSpace.Url[NS.XmlDsigSHA1Url];
             reference.DigestValue = hash;
             XmlElement xel = reference.GetXml();
             // this is the minimal Reference (DigestValue)!

@@ -10,7 +10,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 {
     internal class CanonicalXmlNodeList : XmlNodeList, IList
     {
-        private ArrayList _nodeArray;
+        private readonly ArrayList _nodeArray;
 
         internal CanonicalXmlNodeList()
         {
@@ -36,7 +36,11 @@ namespace Org.BouncyCastle.Crypto.Xml
         public int Add(object value)
         {
             if (!(value is XmlNode))
-                throw new ArgumentException(SR.Cryptography_Xml_IncorrectObjectType, "node");
+            {
+                ArgumentException argumentException = new ArgumentException(SR.Cryptography_Xml_IncorrectObjectType, "node");
+                throw argumentException;
+            }
+
             return _nodeArray.Add(value);
         }
 

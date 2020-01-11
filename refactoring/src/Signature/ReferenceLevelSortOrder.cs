@@ -1,41 +1,37 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
     public class ReferenceLevelSortOrder : IComparer, IReferenceLevelSortOrder
     {
-        SignedXml signedXml = new SignedXml();
+        readonly SignedXml signedXml = new SignedXml();
         private ArrayList _references = null;
         public ReferenceLevelSortOrder() { }
 
-        public ArrayList References
-        {
-            get { return _references; }
-            set { _references = value; }
-        }
+        public ArrayList GetReferences()
+        { return _references; }
 
-        public int Compare(object a, object b)
+        public void SetReferences(ArrayList value)
+        { _references = value; }
+
+        public int Compare(object x, object y)
         {
-            Reference referenceA = a as Reference;
-            Reference referenceB = b as Reference;
+            Reference referenceA = x as Reference;
+            Reference referenceB = y as Reference;
 
             // Get the indexes
             int iIndexA = 0;
             int iIndexB = 0;
             int i = 0;
-            foreach (Reference reference in References)
+            foreach (Reference reference in GetReferences())
             {
                 if (reference == referenceA) iIndexA = i;
                 if (reference == referenceB) iIndexB = i;
                 i++;
             }
 
-            int iLevelA = signedXml.GetReferenceLevel(iIndexA, References);
-            int iLevelB = signedXml.GetReferenceLevel(iIndexB, References);
+            int iLevelA = signedXml.GetReferenceLevel(iIndexA, GetReferences());
+            int iLevelB = signedXml.GetReferenceLevel(iIndexB, GetReferences());
             return iLevelA.CompareTo(iLevelB);
         }
     }

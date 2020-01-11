@@ -34,14 +34,14 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         {
             string uri = "http://www.go-mono.com/";
             KeyInfoRetrievalMethod uri1 = new KeyInfoRetrievalMethod();
-            uri1.Uri = uri;
+            uri1.SetUri(uri);
             XmlElement xel = uri1.GetXml();
 
-            KeyInfoRetrievalMethod uri2 = new KeyInfoRetrievalMethod(uri1.Uri);
+            KeyInfoRetrievalMethod uri2 = new KeyInfoRetrievalMethod(uri1.GetUri());
             uri2.LoadXml(xel);
 
             Assert.Equal((uri1.GetXml().OuterXml), (uri2.GetXml().OuterXml));
-            Assert.Equal(uri, uri1.Uri);
+            Assert.Equal(uri, uri1.GetUri());
         }
 
         [Fact]
@@ -59,7 +59,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             Assert.Equal(value, s);
 
             // verify that property is parsed correctly
-            Assert.Equal("http://www.go-mono.com/", uri1.Uri);
+            Assert.Equal("http://www.go-mono.com/", uri1.GetUri());
         }
 
         [Fact]

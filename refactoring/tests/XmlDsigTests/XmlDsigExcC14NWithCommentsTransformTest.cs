@@ -21,6 +21,7 @@
 using System;
 using System.IO;
 using System.Xml;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 using Xunit;
 
 namespace Org.BouncyCastle.Crypto.Xml.Tests
@@ -76,7 +77,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
         void CheckProperties(XmlDsigExcC14NWithCommentsTransform transform)
         {
-            Assert.Equal("http://www.w3.org/2001/10/xml-exc-c14n#WithComments", transform.Algorithm);
+            Assert.Equal("http://www.w3.org/2001/10/xml-exc-c14n#WithComments", XmlNameSpace.Url[transform.Algorithm]);
 
             Type[] input = transform.InputTypes;
             Assert.Equal(3, input.Length);

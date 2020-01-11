@@ -3,8 +3,8 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections;
 using System.Xml;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -22,7 +22,7 @@ namespace Org.BouncyCastle.Crypto.Xml
         {
             if (elementProperty == null)
                 throw new ArgumentNullException(nameof(elementProperty));
-            if (elementProperty.LocalName != "EncryptionProperty" || elementProperty.NamespaceURI != EncryptedXml.XmlEncNamespaceUrl)
+            if (elementProperty.LocalName != "EncryptionProperty" || elementProperty.NamespaceURI != XmlNameSpace.Url[NS.XmlEncNamespaceUrl])
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidEncryptionProperty);
 
             _elemProp = elementProperty;
@@ -46,7 +46,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             {
                 if (value == null)
                     throw new ArgumentNullException(nameof(value));
-                if (value.LocalName != "EncryptionProperty" || value.NamespaceURI != EncryptedXml.XmlEncNamespaceUrl)
+                if (value.LocalName != "EncryptionProperty" || value.NamespaceURI != XmlNameSpace.Url[NS.XmlEncNamespaceUrl])
                     throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidEncryptionProperty);
 
                 _elemProp = value;
@@ -80,13 +80,13 @@ namespace Org.BouncyCastle.Crypto.Xml
         {
             if (value == null)
                 throw new ArgumentNullException(nameof(value));
-            if (value.LocalName != "EncryptionProperty" || value.NamespaceURI != EncryptedXml.XmlEncNamespaceUrl)
+            if (value.LocalName != "EncryptionProperty" || value.NamespaceURI != XmlNameSpace.Url[NS.XmlEncNamespaceUrl])
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidEncryptionProperty);
 
             // cache the Xml
             _cachedXml = value;
-            _id = Utils.GetAttribute(value, "Id", EncryptedXml.XmlEncNamespaceUrl);
-            _target = Utils.GetAttribute(value, "Target", EncryptedXml.XmlEncNamespaceUrl);
+            _id = Utils.GetAttribute(value, "Id", NS.XmlEncNamespaceUrl);
+            _target = Utils.GetAttribute(value, "Target", NS.XmlEncNamespaceUrl);
             _elemProp = value;
         }
     }

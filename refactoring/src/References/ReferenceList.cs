@@ -9,7 +9,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 {
     public sealed class ReferenceList : IList
     {
-        private ArrayList _references;
+        private readonly ArrayList _references;
 
         public ReferenceList()
         {

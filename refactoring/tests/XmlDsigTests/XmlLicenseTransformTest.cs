@@ -21,6 +21,7 @@ using System;
 using System.IO;
 using System.Xml;
 using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 using Org.BouncyCastle.Security;
 using Xunit;
 
@@ -63,7 +64,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact] // ctor ()
         public void Constructor1()
         {
-            Assert.Equal(LicenseTransformUrl, transform.Algorithm);
+            Assert.Equal(LicenseTransformUrl, XmlNameSpace.Url[transform.Algorithm]);
             Assert.Null(transform.Decryptor);
 
             Type[] input = transform.InputTypes;
@@ -306,8 +307,8 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             XmlDocument doc = context.OwnerDocument;
 
             var nsMgr = new XmlNamespaceManager(doc.NameTable);
-            nsMgr.AddNamespace("dsig", SignedConstants.XmlDsigNamespaceUrl);
-            nsMgr.AddNamespace("enc", EncryptedXml.XmlEncNamespaceUrl);
+            nsMgr.AddNamespace("dsig", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
+            nsMgr.AddNamespace("enc", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
             nsMgr.AddNamespace("r", LicenseTransformNsUrl);
 
             XmlElement currentIssuerContext = context.SelectSingleNode("ancestor-or-self::r:issuer[1]", nsMgr) as XmlElement;

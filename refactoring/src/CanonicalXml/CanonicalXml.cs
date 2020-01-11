@@ -11,8 +11,8 @@ namespace Org.BouncyCastle.Crypto.Xml
 {
     internal class CanonicalXml
     {
-        private CanonicalXmlDocument _c14nDoc;
-        private C14NAncestralNamespaceContextManager _ancMgr;
+        private readonly CanonicalXmlDocument _c14nDoc;
+        private readonly C14NAncestralNamespaceContextManager _ancMgr;
 
         internal CanonicalXml(Stream inputStream, bool includeComments, XmlResolver resolver, string strBaseUri)
         {
@@ -57,7 +57,9 @@ namespace Org.BouncyCastle.Crypto.Xml
         private static void MarkNodeAsIncluded(XmlNode node)
         {
             if (node is ICanonicalizableNode)
-                ((ICanonicalizableNode)node).IsInNodeSet = true;
+            {
+                ((ICanonicalizableNode)node).SetIsInNodeSet(true);
+            }
         }
         
         internal byte[] GetBytes()
@@ -83,8 +85,8 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             do
             {
-                XmlNode currentNode = (XmlNode)elementList[index];
-                XmlNode currentNodeCanonical = (XmlNode)elementListCanonical[index];
+                XmlNode currentNode = elementList[index];
+                XmlNode currentNodeCanonical = elementListCanonical[index];
                 XmlNodeList childNodes = currentNode.ChildNodes;
                 XmlNodeList childNodesCanonical = currentNodeCanonical.ChildNodes;
                 for (int i = 0; i < childNodes.Count; i++)

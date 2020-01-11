@@ -23,12 +23,13 @@ using System.Text;
 using System.Xml;
 using System.Xml.XPath;
 using System.Xml.Xsl;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
     public abstract class Transform
     {
-        private string _algorithm;
+        private NS _algorithm;
         private string _baseUri = null;
         internal XmlResolver _xmlResolver = null;
         private bool _bResolverSet = false;
@@ -65,7 +66,7 @@ namespace Org.BouncyCastle.Crypto.Xml
         // public properties
         //
 
-        public string Algorithm
+        public NS Algorithm
         {
             get { return _algorithm; }
             set { _algorithm = value; }
@@ -133,9 +134,9 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         internal XmlElement GetXml(XmlDocument document, string name)
         {
-            XmlElement transformElement = document.CreateElement(name, SignedConstants.XmlDsigNamespaceUrl);
-            if (!string.IsNullOrEmpty(Algorithm))
-                transformElement.SetAttribute("Algorithm", Algorithm);
+            XmlElement transformElement = document.CreateElement(name, XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
+            if (Algorithm != NS.None)
+                transformElement.SetAttribute("Algorithm", XmlNameSpace.Url[Algorithm]);
             XmlNodeList children = GetInnerXml();
             if (children != null)
             {
@@ -177,7 +178,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                     return _context;
 
                 Reference reference = Reference;
-                SignedXml signedXml = (reference == null ? SignedXml : reference.SignedXml);
+                SignedXml signedXml = (reference == null ? SignedXml : reference.GetSignedXml());
                 if (signedXml == null)
                     return null;
 
@@ -197,7 +198,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                     return _propagatedNamespaces;
 
                 Reference reference = Reference;
-                SignedXml signedXml = (reference == null ? SignedXml : reference.SignedXml);
+                SignedXml signedXml = (reference == null ? SignedXml : reference.GetSignedXml());
 
                 // If the reference is not a Uri reference with a DataObject target, return an empty hashtable.
                 if (reference != null &&

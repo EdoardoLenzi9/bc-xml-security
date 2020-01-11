@@ -4,8 +4,6 @@
 
 using System;
 using System.Xml;
-using System.IO;
-using System.Text;
 using System.Collections;
 
 namespace Org.BouncyCastle.Crypto.Xml
@@ -14,12 +12,16 @@ namespace Org.BouncyCastle.Crypto.Xml
     {
         internal NamespaceSortOrder() { }
 
-        public int Compare(object a, object b)
+        public int Compare(object x, object y)
         {
-            XmlNode nodeA = a as XmlNode;
-            XmlNode nodeB = b as XmlNode;
+            XmlNode nodeA = x as XmlNode;
+            XmlNode nodeB = y as XmlNode;
             if ((nodeA == null) || (nodeB == null))
-                throw new ArgumentException();
+            {
+                ArgumentException argumentException = new ArgumentException();
+                throw argumentException;
+            }
+
             bool nodeAdefault = Utils.IsDefaultNamespaceNode(nodeA);
             bool nodeBdefault = Utils.IsDefaultNamespaceNode(nodeB);
             if (nodeAdefault && nodeBdefault) return 0;

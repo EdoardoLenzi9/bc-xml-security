@@ -1,16 +1,13 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
+// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Xml;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 
 namespace _SignedXml.Samples
 {
@@ -47,7 +44,7 @@ namespace _SignedXml.Samples
 
             var encryptedData = new EncryptedData()
             {
-                Type = EncryptedXml.XmlEncElementUrl,
+                Type = XmlNameSpace.Url[NS.XmlEncElementUrl],
                 Id = encryptionElementID,
 
                 // Create an EncryptionMethod element so that the
