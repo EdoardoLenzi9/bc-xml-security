@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 using System;
 using System.Globalization;
 using System.IO;
@@ -13,8 +14,6 @@ namespace Org.BouncyCastle.Crypto.Xml
 {
     public class Reference
     {
-        internal const string DefaultDigestMethod = SignedConstants.XmlDsigSHA256Url;
-
         private string _id;
         private string _uri;
         private string _type;
@@ -39,7 +38,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             _refTarget = null;
             _refTargetType = ReferenceTargetType.UriReference;
             _cachedXml = null;
-            _digestMethod = DefaultDigestMethod;
+            _digestMethod = XmlNameSpace.Url[NS.XmlDsigSHA256Url];
         }
 
         public Reference(Stream stream)
@@ -48,7 +47,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             _refTarget = stream;
             _refTargetType = ReferenceTargetType.Stream;
             _cachedXml = null;
-            _digestMethod = DefaultDigestMethod;
+            _digestMethod = XmlNameSpace.Url[NS.XmlDsigSHA256Url];
         }
 
         public Reference(string uri)
@@ -58,7 +57,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             _uri = uri;
             _refTargetType = ReferenceTargetType.UriReference;
             _cachedXml = null;
-            _digestMethod = DefaultDigestMethod;
+            _digestMethod = XmlNameSpace.Url[NS.XmlDsigSHA256Url];
         }
 
         internal Reference(XmlElement element)
@@ -67,7 +66,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             _refTarget = element;
             _refTargetType = ReferenceTargetType.XmlElement;
             _cachedXml = null;
-            _digestMethod = DefaultDigestMethod;
+            _digestMethod = XmlNameSpace.Url[NS.XmlDsigSHA256Url];
         }
 
         //
@@ -177,7 +176,7 @@ namespace Org.BouncyCastle.Crypto.Xml
         internal XmlElement GetXml(XmlDocument document)
         {
             // Create the Reference
-            XmlElement referenceElement = document.CreateElement("Reference", SignedConstants.XmlDsigNamespaceUrl);
+            XmlElement referenceElement = document.CreateElement("Reference", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
 
             if (!string.IsNullOrEmpty(_id))
                 referenceElement.SetAttribute("Id", _id);
@@ -190,13 +189,13 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             // Add the transforms to the Reference
             if (TransformChain.Count != 0)
-                referenceElement.AppendChild(TransformChain.GetXml(document, SignedConstants.XmlDsigNamespaceUrl));
+                referenceElement.AppendChild(TransformChain.GetXml(document, NS.XmlDsigNamespaceUrl));
 
             // Add the DigestMethod
             if (string.IsNullOrEmpty(_digestMethod))
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_DigestMethodRequired);
 
-            XmlElement digestMethodElement = document.CreateElement("DigestMethod", SignedConstants.XmlDsigNamespaceUrl);
+            XmlElement digestMethodElement = document.CreateElement("DigestMethod", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
             digestMethodElement.SetAttribute("Algorithm", _digestMethod);
             referenceElement.AppendChild(digestMethodElement);
 
@@ -207,7 +206,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 DigestValue = _hashval;
             }
 
-            XmlElement digestValueElement = document.CreateElement("DigestValue", SignedConstants.XmlDsigNamespaceUrl);
+            XmlElement digestValueElement = document.CreateElement("DigestValue", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
             digestValueElement.AppendChild(document.CreateTextNode(Convert.ToBase64String(_digestValue)));
             referenceElement.AppendChild(digestValueElement);
 
@@ -219,14 +218,14 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (value == null)
                 throw new ArgumentNullException(nameof(value));
 
-            _id = Utils.GetAttribute(value, "Id", SignedConstants.XmlDsigNamespaceUrl);
-            _uri = Utils.GetAttribute(value, "URI", SignedConstants.XmlDsigNamespaceUrl);
-            _type = Utils.GetAttribute(value, "Type", SignedConstants.XmlDsigNamespaceUrl);
+            _id = Utils.GetAttribute(value, "Id", NS.XmlDsigNamespaceUrl);
+            _uri = Utils.GetAttribute(value, "URI", NS.XmlDsigNamespaceUrl);
+            _type = Utils.GetAttribute(value, "Type", NS.XmlDsigNamespaceUrl);
             if (!Utils.VerifyAttributes(value, new string[] { "Id", "URI", "Type" }))
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "Reference");
 
             XmlNamespaceManager nsm = new XmlNamespaceManager(value.OwnerDocument.NameTable);
-            nsm.AddNamespace("ds", SignedConstants.XmlDsigNamespaceUrl);
+            nsm.AddNamespace("ds", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
 
             // Transforms
             bool hasTransforms = false;
@@ -259,7 +258,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                     foreach (XmlNode transformNode in transformNodes)
                     {
                         XmlElement transformElement = transformNode as XmlElement;
-                        string algorithm = Utils.GetAttribute(transformElement, "Algorithm", SignedConstants.XmlDsigNamespaceUrl);
+                        string algorithm = Utils.GetAttribute(transformElement, "Algorithm", NS.XmlDsigNamespaceUrl);
                         if (algorithm == null || !Utils.VerifyAttributes(transformElement, "Algorithm"))
                         {
                             throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_UnknownTransform);
@@ -302,7 +301,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (digestMethodNodes == null || digestMethodNodes.Count == 0 || digestMethodNodes.Count > 1)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "Reference/DigestMethod");
             XmlElement digestMethodElement = digestMethodNodes[0] as XmlElement;
-            _digestMethod = Utils.GetAttribute(digestMethodElement, "Algorithm", SignedConstants.XmlDsigNamespaceUrl);
+            _digestMethod = Utils.GetAttribute(digestMethodElement, "Algorithm", NS.XmlDsigNamespaceUrl);
             if (_digestMethod == null || !Utils.VerifyAttributes(digestMethodElement, "Algorithm"))
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "Reference/DigestMethod");
 
@@ -430,8 +429,8 @@ namespace Org.BouncyCastle.Crypto.Xml
                                 foreach (XmlNode node in refList)
                                 {
                                     XmlElement tempElem = node as XmlElement;
-                                    if ((tempElem != null) && (Utils.HasAttribute(tempElem, "Id", SignedConstants.XmlDsigNamespaceUrl))
-                                        && (Utils.GetAttribute(tempElem, "Id", SignedConstants.XmlDsigNamespaceUrl).Equals(idref)))
+                                    if ((tempElem != null) && (Utils.HasAttribute(tempElem, "Id", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]))
+                                        && (Utils.GetAttribute(tempElem, "Id", NS.XmlDsigNamespaceUrl).Equals(idref)))
                                     {
                                         elem = tempElem;
                                         if (_signedXml._context != null)

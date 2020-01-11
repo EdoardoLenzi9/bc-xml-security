@@ -23,6 +23,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Resolvers;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 using Xunit;
 
 namespace Org.BouncyCastle.Crypto.Xml.Tests
@@ -70,7 +71,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact] // ctor ()
         public void Constructor1()
         {
-            Assert.Equal("http://www.w3.org/2001/10/xml-exc-c14n#", transform.Algorithm);
+            Assert.Equal("http://www.w3.org/2001/10/xml-exc-c14n#", XmlNameSpace.Url[transform.Algorithm]);
             Assert.Null(transform.InclusiveNamespacesPrefixList);
             CheckProperties(transform);
         }
@@ -79,12 +80,12 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         public void Constructor2()
         {
             transform = new UnprotectedXmlDsigExcC14NTransform(true);
-            Assert.Equal("http://www.w3.org/2001/10/xml-exc-c14n#WithComments", transform.Algorithm);
+            Assert.Equal("http://www.w3.org/2001/10/xml-exc-c14n#WithComments", XmlNameSpace.Url[transform.Algorithm]);
             Assert.Null(transform.InclusiveNamespacesPrefixList);
             CheckProperties(transform);
 
             transform = new UnprotectedXmlDsigExcC14NTransform(false);
-            Assert.Equal("http://www.w3.org/2001/10/xml-exc-c14n#", transform.Algorithm);
+            Assert.Equal("http://www.w3.org/2001/10/xml-exc-c14n#", XmlNameSpace.Url[transform.Algorithm]);
             Assert.Null(transform.InclusiveNamespacesPrefixList);
             CheckProperties(transform);
         }
@@ -93,17 +94,17 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         public void Constructor3()
         {
             transform = new UnprotectedXmlDsigExcC14NTransform(null);
-            Assert.Equal("http://www.w3.org/2001/10/xml-exc-c14n#", transform.Algorithm);
+            Assert.Equal("http://www.w3.org/2001/10/xml-exc-c14n#", XmlNameSpace.Url[transform.Algorithm]);
             Assert.Null(transform.InclusiveNamespacesPrefixList);
             CheckProperties(transform);
 
             transform = new UnprotectedXmlDsigExcC14NTransform(string.Empty);
-            Assert.Equal("http://www.w3.org/2001/10/xml-exc-c14n#", transform.Algorithm);
+            Assert.Equal("http://www.w3.org/2001/10/xml-exc-c14n#", XmlNameSpace.Url[transform.Algorithm]);
             Assert.Equal(string.Empty, transform.InclusiveNamespacesPrefixList);
             CheckProperties(transform);
 
             transform = new UnprotectedXmlDsigExcC14NTransform("#default xsd");
-            Assert.Equal("http://www.w3.org/2001/10/xml-exc-c14n#", transform.Algorithm);
+            Assert.Equal("http://www.w3.org/2001/10/xml-exc-c14n#", XmlNameSpace.Url[transform.Algorithm]);
             Assert.Equal("#default xsd", transform.InclusiveNamespacesPrefixList);
             CheckProperties(transform);
         }
@@ -112,32 +113,32 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         public void Constructor4()
         {
             transform = new UnprotectedXmlDsigExcC14NTransform(true, null);
-            Assert.Equal("http://www.w3.org/2001/10/xml-exc-c14n#WithComments", transform.Algorithm);
+            Assert.Equal("http://www.w3.org/2001/10/xml-exc-c14n#WithComments", XmlNameSpace.Url[transform.Algorithm]);
             Assert.Null(transform.InclusiveNamespacesPrefixList);
             CheckProperties(transform);
 
             transform = new UnprotectedXmlDsigExcC14NTransform(true, string.Empty);
-            Assert.Equal("http://www.w3.org/2001/10/xml-exc-c14n#WithComments", transform.Algorithm);
+            Assert.Equal("http://www.w3.org/2001/10/xml-exc-c14n#WithComments", XmlNameSpace.Url[transform.Algorithm]);
             Assert.Equal(string.Empty, transform.InclusiveNamespacesPrefixList);
             CheckProperties(transform);
 
             transform = new UnprotectedXmlDsigExcC14NTransform(true, "#default xsd");
-            Assert.Equal("http://www.w3.org/2001/10/xml-exc-c14n#WithComments", transform.Algorithm);
+            Assert.Equal("http://www.w3.org/2001/10/xml-exc-c14n#WithComments", XmlNameSpace.Url[transform.Algorithm]);
             Assert.Equal("#default xsd", transform.InclusiveNamespacesPrefixList);
             CheckProperties(transform);
 
             transform = new UnprotectedXmlDsigExcC14NTransform(false, null);
-            Assert.Equal("http://www.w3.org/2001/10/xml-exc-c14n#", transform.Algorithm);
+            Assert.Equal("http://www.w3.org/2001/10/xml-exc-c14n#", XmlNameSpace.Url[transform.Algorithm]);
             Assert.Null(transform.InclusiveNamespacesPrefixList);
             CheckProperties(transform);
 
             transform = new UnprotectedXmlDsigExcC14NTransform(false, string.Empty);
-            Assert.Equal("http://www.w3.org/2001/10/xml-exc-c14n#", transform.Algorithm);
+            Assert.Equal("http://www.w3.org/2001/10/xml-exc-c14n#", XmlNameSpace.Url[transform.Algorithm]);
             Assert.Equal(string.Empty, transform.InclusiveNamespacesPrefixList);
             CheckProperties(transform);
 
             transform = new UnprotectedXmlDsigExcC14NTransform(false, "#default xsd");
-            Assert.Equal("http://www.w3.org/2001/10/xml-exc-c14n#", transform.Algorithm);
+            Assert.Equal("http://www.w3.org/2001/10/xml-exc-c14n#", XmlNameSpace.Url[transform.Algorithm]);
             Assert.Equal("#default xsd", transform.InclusiveNamespacesPrefixList);
             CheckProperties(transform);
         }

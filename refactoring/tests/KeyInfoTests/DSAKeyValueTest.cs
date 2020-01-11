@@ -12,6 +12,7 @@
 // See the LICENSE file in the project root for more information.
 
 using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,7 +58,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             XmlElement xmlkey = dsa.GetXml();
 
             XmlNamespaceManager ns = new XmlNamespaceManager(xmlkey.OwnerDocument.NameTable);
-            ns.AddNamespace("schema", SignedConstants.XmlDsigNamespaceUrl);
+            ns.AddNamespace("schema", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
 
             IEnumerable<XmlNode> elements =
                 new[] { "P", "Q", "G", "Y", "J", "Seed", "PgenCounter" }

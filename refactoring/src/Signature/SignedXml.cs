@@ -6,6 +6,7 @@ using Org.BouncyCastle.Asn1;
 using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Crypto.Macs;
 using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 using Org.BouncyCastle.X509;
 using System;
 using System.Collections;
@@ -329,11 +330,11 @@ namespace Org.BouncyCastle.Crypto.Xml
                 if (key is DsaKeyParameters)
                 {
 
-                    SignedInfo.SignatureMethod = SignedConstants.XmlDsigDSAUrl;
+                    SignedInfo.SignatureMethod = XmlNameSpace.Url[NS.XmlDsigDSAUrl];
                 }
                 else if (key is RsaKeyParameters)
                 {
-                    SignedInfo.SignatureMethod = SignedConstants.XmlDsigRSASHA256Url;
+                    SignedInfo.SignatureMethod = XmlNameSpace.Url[NS.XmlDsigRSASHA256Url];
                 }
                 else
                 {
@@ -375,19 +376,19 @@ namespace Org.BouncyCastle.Crypto.Xml
             ReferenceManager.BuildDigestedReferences(this);
 
             var algorithmName = macAlg.AlgorithmName.Substring(0, macAlg.AlgorithmName.IndexOf('/')).ToUpperInvariant();
-            var signedXmlDictionary = new Dictionary<string, string>()
+            var signedXmlDictionary = new Dictionary<string, NS>()
             {
-                { "SHA-1", SignedConstants.XmlDsigHMACSHA1Url },
-                { "SHA-256", SignedConstants.XmlDsigMoreHMACSHA256Url },
-                { "SHA-384", SignedConstants.XmlDsigMoreHMACSHA384Url},
-                { "SHA-512", SignedConstants.XmlDsigMoreHMACSHA512Url },
-                { "MD5", SignedConstants.XmlDsigMoreHMACMD5Url },
-                { "RIPEMD160", SignedConstants.XmlDsigMoreHMACRIPEMD160Url }
+                { "SHA-1", NS.XmlDsigHMACSHA1Url },
+                { "SHA-256", NS.XmlDsigMoreHMACSHA256Url },
+                { "SHA-384", NS.XmlDsigMoreHMACSHA384Url},
+                { "SHA-512", NS.XmlDsigMoreHMACSHA512Url },
+                { "MD5", NS.XmlDsigMoreHMACMD5Url },
+                { "RIPEMD160", NS.XmlDsigMoreHMACRIPEMD160Url }
             };
 
             try
             {
-                SignedInfo.SignatureMethod = signedXmlDictionary[algorithmName];
+                SignedInfo.SignatureMethod = XmlNameSpace.Url[signedXmlDictionary[algorithmName]];
             }
             catch (Exception)
             {
@@ -541,10 +542,10 @@ namespace Org.BouncyCastle.Crypto.Xml
                     List<string> safeAlgorithms = new List<string>();
 
                     // Built in algorithms
-                    safeAlgorithms.Add(SignedConstants.XmlDsigC14NTransformUrl);
-                    safeAlgorithms.Add(SignedConstants.XmlDsigC14NWithCommentsTransformUrl);
-                    safeAlgorithms.Add(SignedConstants.XmlDsigExcC14NTransformUrl);
-                    safeAlgorithms.Add(SignedConstants.XmlDsigExcC14NWithCommentsTransformUrl);
+                    safeAlgorithms.Add(XmlNameSpace.Url[NS.XmlDsigC14NTransformUrl]);
+                    safeAlgorithms.Add(XmlNameSpace.Url[NS.XmlDsigC14NWithCommentsTransformUrl]);
+                    safeAlgorithms.Add(XmlNameSpace.Url[NS.XmlDsigExcC14NTransformUrl]);
+                    safeAlgorithms.Add(XmlNameSpace.Url[NS.XmlDsigExcC14NWithCommentsTransformUrl]);
 
                     s_knownCanonicalizationMethods = safeAlgorithms;
                 }

@@ -2,6 +2,7 @@
 // See the LICENSE file in the project root for more information.
 
 using System.Xml;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 using Xunit;
 
 namespace Org.BouncyCastle.Crypto.Xml.Tests
@@ -14,7 +15,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             xmlDoc.PreserveWhitespace = true;
             xmlDoc.LoadXml(xml);
 
-            var signatureNode = (XmlElement)xmlDoc.GetElementsByTagName("Signature", SignedConstants.XmlDsigNamespaceUrl)[0];
+            var signatureNode = (XmlElement)xmlDoc.GetElementsByTagName("Signature", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl])[0];
 
             SignedXml signedXml = new SignedXml(xmlDoc);
             if (loadXmlThrows)

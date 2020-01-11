@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using System.Xml;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 using Xunit;
 
 namespace Org.BouncyCastle.Crypto.Xml.Tests
@@ -21,9 +22,9 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
         [Theory]
         [InlineData(null)]
-        [InlineData("")]
-        [InlineData("algorithm")]
-        public void Ctor_String(string algorithm)
+        [InlineData(NS.None)]
+        [InlineData(NS.Algorithm)]
+        public void Ctor_String(NS algorithm)
         {
             EncryptionMethod method = new EncryptionMethod(algorithm);
             Assert.Equal(0, method.KeySize);
@@ -50,9 +51,9 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
         [Theory]
         [InlineData(null)]
-        [InlineData("")]
-        [InlineData("algorithm")]
-        public void KeyAlgorithm_Set_SetsValue(string value)
+        [InlineData(NS.None)]
+        [InlineData(NS.Algorithm)]
+        public void KeyAlgorithm_Set_SetsValue(NS value)
         {
             EncryptionMethod method = new EncryptionMethod() { KeyAlgorithm = value };
             Assert.Equal(value, method.KeyAlgorithm);
@@ -68,13 +69,13 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             yield return new object[]
             {
-                new EncryptionMethod("algorithm"),
+                new EncryptionMethod(NS.Algorithm),
                 "<EncryptionMethod Algorithm=\"algorithm\" xmlns=\"http://www.w3.org/2001/04/xmlenc#\" />"
             };
 
             yield return new object[]
             {
-                new EncryptionMethod("algorithm") { KeySize = 1 },
+                new EncryptionMethod(NS.Algorithm) { KeySize = 1 },
                 "<EncryptionMethod Algorithm=\"algorithm\" xmlns=\"http://www.w3.org/2001/04/xmlenc#\"><KeySize>1</KeySize></EncryptionMethod>"
             };
         }
@@ -138,7 +139,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             EncryptionMethod method = new EncryptionMethod();
             method.LoadXml(value);
 
-            Assert.Equal(expectedKeyAlgorithm, method.KeyAlgorithm);
+            Assert.Equal(expectedKeyAlgorithm, XmlNameSpace.Url[method.KeyAlgorithm]);
             Assert.Equal(expectedKeySize, method.KeySize);
 
             Assert.Same(value, method.GetXml());

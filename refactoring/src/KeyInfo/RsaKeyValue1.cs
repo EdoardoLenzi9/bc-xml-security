@@ -3,6 +3,7 @@
 // See the LICENSE file in the project root for more information.
 
 using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 using System;
 using System.Xml;
 
@@ -68,14 +69,14 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         internal override XmlElement GetXml(XmlDocument xmlDocument)
         {
-            XmlElement keyValueElement = xmlDocument.CreateElement(KeyValueElementName, SignedConstants.XmlDsigNamespaceUrl);
-            XmlElement rsaKeyValueElement = xmlDocument.CreateElement(RSAKeyValueElementName, SignedConstants.XmlDsigNamespaceUrl);
+            XmlElement keyValueElement = xmlDocument.CreateElement(KeyValueElementName, XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
+            XmlElement rsaKeyValueElement = xmlDocument.CreateElement(RSAKeyValueElementName, XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
 
-            XmlElement modulusElement = xmlDocument.CreateElement(ModulusElementName, SignedConstants.XmlDsigNamespaceUrl);
+            XmlElement modulusElement = xmlDocument.CreateElement(ModulusElementName, XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
             modulusElement.AppendChild(xmlDocument.CreateTextNode(Convert.ToBase64String(_key.Modulus.ToByteArrayUnsigned())));
             rsaKeyValueElement.AppendChild(modulusElement);
 
-            XmlElement exponentElement = xmlDocument.CreateElement(ExponentElementName, SignedConstants.XmlDsigNamespaceUrl);
+            XmlElement exponentElement = xmlDocument.CreateElement(ExponentElementName, XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
             exponentElement.AppendChild(xmlDocument.CreateTextNode(Convert.ToBase64String(_key.Exponent.ToByteArrayUnsigned())));
             rsaKeyValueElement.AppendChild(exponentElement);
 
@@ -106,14 +107,14 @@ namespace Org.BouncyCastle.Crypto.Xml
                 throw new ArgumentNullException(nameof(element));
             }
             if (element.LocalName != KeyValueElementName
-                || element.NamespaceURI != SignedConstants.XmlDsigNamespaceUrl)
+                || element.NamespaceURI != XmlNameSpace.Url[NS.XmlDsigNamespaceUrl])
             {
-                throw new System.Security.Cryptography.CryptographicException($"Root element must be {KeyValueElementName} element in namespace {SignedConstants.XmlDsigNamespaceUrl}");
+                throw new System.Security.Cryptography.CryptographicException($"Root element must be {KeyValueElementName} element in namespace {NS.XmlDsigNamespaceUrl}");
             }
 
             const string xmlDsigNamespacePrefix = "dsig";
             XmlNamespaceManager xmlNamespaceManager = new XmlNamespaceManager(element.OwnerDocument.NameTable);
-            xmlNamespaceManager.AddNamespace(xmlDsigNamespacePrefix, SignedConstants.XmlDsigNamespaceUrl);
+            xmlNamespaceManager.AddNamespace(xmlDsigNamespacePrefix, XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
 
             XmlNode rsaKeyValueElement = element.SelectSingleNode($"{xmlDsigNamespacePrefix}:{RSAKeyValueElementName}", xmlNamespaceManager);
             if (rsaKeyValueElement == null)

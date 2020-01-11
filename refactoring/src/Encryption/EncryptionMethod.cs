@@ -3,7 +3,9 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
+using System.Linq;
 using System.Xml;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -11,14 +13,14 @@ namespace Org.BouncyCastle.Crypto.Xml
     {
         private XmlElement _cachedXml = null;
         private int _keySize = 0;
-        private string _algorithm;
+        private NS _algorithm;
 
         public EncryptionMethod()
         {
             _cachedXml = null;
         }
 
-        public EncryptionMethod(string algorithm)
+        public EncryptionMethod(NS algorithm)
         {
             _algorithm = algorithm;
             _cachedXml = null;
@@ -44,7 +46,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             }
         }
 
-        public string KeyAlgorithm
+        public NS KeyAlgorithm
         {
             get { return _algorithm; }
             set
@@ -66,13 +68,13 @@ namespace Org.BouncyCastle.Crypto.Xml
         internal XmlElement GetXml(XmlDocument document)
         {
             // Create the EncryptionMethod element
-            XmlElement encryptionMethodElement = document.CreateElement("EncryptionMethod", EncryptedXml.XmlEncNamespaceUrl);
-            if (!string.IsNullOrEmpty(_algorithm))
-                encryptionMethodElement.SetAttribute("Algorithm", _algorithm);
+            XmlElement encryptionMethodElement = document.CreateElement("EncryptionMethod", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
+            if (!(_algorithm == NS.None))
+                encryptionMethodElement.SetAttribute("Algorithm", XmlNameSpace.Url[_algorithm]);
             if (_keySize > 0)
             {
                 // Construct a KeySize element
-                XmlElement keySizeElement = document.CreateElement("KeySize", EncryptedXml.XmlEncNamespaceUrl);
+                XmlElement keySizeElement = document.CreateElement("KeySize", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
                 keySizeElement.AppendChild(document.CreateTextNode(_keySize.ToString(null, null)));
                 encryptionMethodElement.AppendChild(keySizeElement);
             }
@@ -85,10 +87,11 @@ namespace Org.BouncyCastle.Crypto.Xml
                 throw new ArgumentNullException(nameof(value));
 
             XmlNamespaceManager nsm = new XmlNamespaceManager(value.OwnerDocument.NameTable);
-            nsm.AddNamespace("enc", EncryptedXml.XmlEncNamespaceUrl);
+            nsm.AddNamespace("enc", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
 
             XmlElement encryptionMethodElement = value;
-            _algorithm = Utils.GetAttribute(encryptionMethodElement, "Algorithm", EncryptedXml.XmlEncNamespaceUrl);
+            var algorithmUrl = Utils.GetAttribute(encryptionMethodElement, "Algorithm", NS.XmlEncNamespaceUrl);
+            _algorithm = XmlNameSpace.Url.FirstOrDefault(x => x.Value == algorithmUrl).Key;
 
             XmlNode keySizeNode = value.SelectSingleNode("enc:KeySize", nsm);
             if (keySizeNode != null)

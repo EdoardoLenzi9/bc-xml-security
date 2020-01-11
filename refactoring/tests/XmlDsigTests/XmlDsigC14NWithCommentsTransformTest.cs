@@ -18,6 +18,7 @@ using System.IO;
 using System.Text;
 using System.Xml;
 using System.Xml.Resolvers;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 using Xunit;
 
 namespace Org.BouncyCastle.Crypto.Xml.Tests
@@ -40,7 +41,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         {
             XmlDsigC14NWithCommentsTransform xmlDsigC14NWithCommentsTransform = new XmlDsigC14NWithCommentsTransform();
             Assert.Null(xmlDsigC14NWithCommentsTransform.Context);
-            Assert.Equal("http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments", xmlDsigC14NWithCommentsTransform.Algorithm);
+            Assert.Equal("http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments", XmlNameSpace.Url[xmlDsigC14NWithCommentsTransform.Algorithm]);
             Assert.Equal(new[] { typeof(Stream), typeof(XmlDocument), typeof(XmlNodeList) }, xmlDsigC14NWithCommentsTransform.InputTypes);
             Assert.Equal(new[] { typeof(Stream) }, xmlDsigC14NWithCommentsTransform.OutputTypes);
         }

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -60,12 +61,12 @@ namespace Org.BouncyCastle.Crypto.Xml
             return true;
         }
 
-        private static bool IsSafeTransform(string transformAlgorithm, SignedXml signedXml)
+        private static bool IsSafeTransform(NS transformAlgorithm, SignedXml signedXml)
         {
             // All canonicalization algorithms are valid transform algorithms.
             foreach (string safeAlgorithm in signedXml.SafeCanonicalizationMethods)
             {
-                if (string.Equals(safeAlgorithm, transformAlgorithm, StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(safeAlgorithm, XmlNameSpace.Url[transformAlgorithm], StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }
@@ -73,7 +74,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             foreach (string safeAlgorithm in DefaultSafeTransformMethods(SignedXml.s_defaultSafeTransformMethods))
             {
-                if (string.Equals(safeAlgorithm, transformAlgorithm, StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(safeAlgorithm, XmlNameSpace.Url[transformAlgorithm], StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }
@@ -81,7 +82,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             SignedXmlDebugLog.LogUnsafeTransformMethod(
                 signedXml,
-                transformAlgorithm,
+                XmlNameSpace.Url[transformAlgorithm],
                 signedXml.SafeCanonicalizationMethods,
                 DefaultSafeTransformMethods(SignedXml.s_defaultSafeTransformMethods));
 
@@ -102,10 +103,10 @@ namespace Org.BouncyCastle.Crypto.Xml
                     // xmldsig 6.6.1:
                     //     Any canonicalization algorithm that can be used for
                     //     CanonicalizationMethod can be used as a Transform.
-                    safeAlgorithms.Add(SignedConstants.XmlDsigEnvelopedSignatureTransformUrl);
-                    safeAlgorithms.Add(SignedConstants.XmlDsigBase64TransformUrl);
-                    safeAlgorithms.Add(SignedConstants.XmlLicenseTransformUrl);
-                    safeAlgorithms.Add(SignedConstants.XmlDecryptionTransformUrl);
+                    safeAlgorithms.Add(XmlNameSpace.Url[NS.XmlDsigEnvelopedSignatureTransformUrl]);
+                    safeAlgorithms.Add(XmlNameSpace.Url[NS.XmlDsigBase64TransformUrl]);
+                    safeAlgorithms.Add(XmlNameSpace.Url[NS.XmlLicenseTransformUrl]);
+                    safeAlgorithms.Add(XmlNameSpace.Url[NS.XmlDecryptionTransformUrl]);
 
                     s_defaultSafeTransformMethods = safeAlgorithms;
                 }
@@ -174,7 +175,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             {
                 // If no DigestMethod has yet been set, default it to sha1
                 if (reference.DigestMethod == null)
-                    reference.DigestMethod = Reference.DefaultDigestMethod;
+                    reference.DigestMethod = XmlNameSpace.Url[NS.XmlDsigSHA256Url];
 
                 SignedXmlDebugLog.LogSigningReference(signedXml, reference);
 

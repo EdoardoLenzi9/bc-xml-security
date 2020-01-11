@@ -4,6 +4,7 @@
 
 using System;
 using System.Xml;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -59,7 +60,7 @@ namespace Org.BouncyCastle.Crypto.Xml
         internal override XmlElement GetXml(XmlDocument xmlDocument)
         {
             // Create the actual element
-            XmlElement retrievalMethodElement = xmlDocument.CreateElement("RetrievalMethod", SignedConstants.XmlDsigNamespaceUrl);
+            XmlElement retrievalMethodElement = xmlDocument.CreateElement("RetrievalMethod", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
 
             if (!string.IsNullOrEmpty(_uri))
                 retrievalMethodElement.SetAttribute("URI", _uri);
@@ -73,8 +74,8 @@ namespace Org.BouncyCastle.Crypto.Xml
         {
             if (element == null)
                 throw new ArgumentNullException(nameof(element));
-            _uri = Utils.GetAttribute(element, "URI", SignedConstants.XmlDsigNamespaceUrl);
-            _type = Utils.GetAttribute(element, "Type", SignedConstants.XmlDsigNamespaceUrl);
+            _uri = Utils.GetAttribute(element, "URI", NS.XmlDsigNamespaceUrl);
+            _type = Utils.GetAttribute(element, "Type", NS.XmlDsigNamespaceUrl);
         }
     }
 }

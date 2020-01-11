@@ -8,6 +8,7 @@ using System.Linq;
 using System.Xml;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Xml;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.X509;
 
@@ -33,13 +34,13 @@ namespace _SignedXml.Samples
             var reference = new Reference();
             reference.Uri = "";
             reference.AddTransform(new XmlDsigEnvelopedSignatureTransform());
-            reference.DigestMethod = SignedConstants.XmlDsigGost3411_2012_512_Url;
+            reference.DigestMethod = XmlNameSpace.Url[NS.XmlDsigGost3411_2012_512_Url];
             signedXml.AddReference(reference);
 
             signedXml.KeyInfo = new KeyInfo();
             signedXml.KeyInfo.AddClause(new KeyInfoX509Data(cert));
 
-            signedXml.SignedInfo.SignatureMethod = SignedConstants.XmlDsigGost3410_2012_512_Url;
+            signedXml.SignedInfo.SignatureMethod = XmlNameSpace.Url[NS.XmlDsigGost3410_2012_512_Url];
 
             signedXml.ComputeSignature();
 
