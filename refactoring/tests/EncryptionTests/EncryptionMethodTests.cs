@@ -17,7 +17,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         {
             EncryptionMethod method = new EncryptionMethod();
             Assert.Equal(0, method.KeySize);
-            Assert.Null(method.KeyAlgorithm);
+            Assert.Equal(NS.None, method.KeyAlgorithm);
         }
 
         [Theory]
@@ -109,23 +109,23 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
         public static IEnumerable<object[]> LoadXml_TestData()
         {
-            yield return new object[] { "<name />", null, 0 };
+            yield return new object[] { "<name />", string.Empty, 0 };
             yield return new object[] { "<name Algorithm=\"algorithm\"/>", "algorithm", 0 };
-            yield return new object[] { "<name xmlns:enc=\"http://www.w3.org/2001/04/xmlenc#\"><enc:KeySize>1</enc:KeySize></name>", null, 1 };
-            yield return new object[] { "<name xmlns:enc=\"http://www.w3.org/2001/04/xmlenc#\"><enc:KeySize>  1   </enc:KeySize></name>", null, 1 };
+            yield return new object[] { "<name xmlns:enc=\"http://www.w3.org/2001/04/xmlenc#\"><enc:KeySize>1</enc:KeySize></name>", string.Empty, 1 };
+            yield return new object[] { "<name xmlns:enc=\"http://www.w3.org/2001/04/xmlenc#\"><enc:KeySize>  1   </enc:KeySize></name>", string.Empty, 1 };
             yield return new object[] { "<name xmlns:enc=\"http://www.w3.org/2001/04/xmlenc#\" Algorithm=\"algorithm\" ><enc:KeySize>1</enc:KeySize></name>", "algorithm", 1 };
 
             // Custom namespace
             yield return new object[] { "<name xmlns:enc=\"http://www.w3.org/2001/04/xmlenc#\" enc:Algorithm=\"algorithm\"/>", "algorithm", 0 };
             yield return new object[] { "<name xmlns:abc=\"http://www.w3.org/2001/04/xmlenc#\" abc:Algorithm=\"algorithm\"/>", "algorithm", 0 };
-            yield return new object[] { "<name xmlns:abc=\"http://www.w3.org/2001/04/xmlenc#\"><abc:KeySize>1</abc:KeySize></name>", null, 1 };
+            yield return new object[] { "<name xmlns:abc=\"http://www.w3.org/2001/04/xmlenc#\"><abc:KeySize>1</abc:KeySize></name>", string.Empty, 1 };
             yield return new object[] { "<name Algorithm=\"originalAlgorithm\" xmlns:enc=\"http://www.w3.org/2001/04/xmlenc#\" enc:Algorithm=\"namespacedAlgorith\"/>", "originalAlgorithm", 0 };
-            yield return new object[] { "<name xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:Algorithm=\"algorithm\"/>", null, 0 };
+            yield return new object[] { "<name xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:Algorithm=\"algorithm\"/>", string.Empty, 0 };
 
 
-            yield return new object[] { "<name algorithm=\"algorithm\"/>", null, 0 };
+            yield return new object[] { "<name algorithm=\"algorithm\"/>", string.Empty, 0 };
             yield return new object[] { "<name Algorithm=\"algorithm\"><KeySize>1</KeySize></name>", "algorithm", 0 };
-            yield return new object[] { "<name xmlns:enc=\"http://www.w3.org/2001/04/xmlenc#\"><KeySize>1</KeySize></name>", null, 0 };
+            yield return new object[] { "<name xmlns:enc=\"http://www.w3.org/2001/04/xmlenc#\"><KeySize>1</KeySize></name>", string.Empty, 0 };
         }
 
         [Theory]

@@ -90,6 +90,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             nsm.AddNamespace("enc", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
 
             XmlElement encryptionMethodElement = value;
+
             var algorithmUrl = Utils.GetAttribute(encryptionMethodElement, "Algorithm", NS.XmlEncNamespaceUrl);
             _algorithm = XmlNameSpace.Url.FirstOrDefault(x => x.Value == algorithmUrl).Key;
 

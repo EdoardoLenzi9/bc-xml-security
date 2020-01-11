@@ -12,7 +12,6 @@ using System.Text;
 using System.Xml;
 using Org.BouncyCastle.Crypto.Xml.RSAKey;
 using Org.BouncyCastle.Crypto.Xml.Constants;
-using System.Linq;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -231,7 +230,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             int initBytesSize = 0;
             // If the Uri is not provided by the application, try to get it from the EncryptionMethod
-            if (symmetricAlgorithmUri == null)
+            if (symmetricAlgorithmUri == NS.None)
             {
                 if (encryptedData.EncryptionMethod == null)
                     throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_MissingAlgorithm);
