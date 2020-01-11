@@ -4,6 +4,7 @@
 
 using System;
 using System.Xml;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 using Xunit;
 
 namespace Org.BouncyCastle.Crypto.Xml.Tests
@@ -35,7 +36,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             Assert.NotNull(signedXml.EncryptedXml);
 
             Assert.Equal(0, signedXml.KeyInfo.Count);
-            Assert.Equal(null, signedXml.KeyInfo.Id);
+            Assert.Equal(null, signedXml.KeyInfo.GetId());
 
             // TODO: Expand
             Assert.NotNull(signedXml.Signature);
@@ -44,10 +45,10 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             Assert.Equal(signedXml.SafeCanonicalizationMethods,
                 new []
                 {
-                    SignedConstants.XmlDsigC14NTransformUrl,
-                    SignedConstants.XmlDsigC14NWithCommentsTransformUrl,
-                    SignedConstants.XmlDsigExcC14NTransformUrl,
-                    SignedConstants.XmlDsigExcC14NWithCommentsTransformUrl
+                    XmlNameSpace.Url[NS.XmlDsigC14NTransformUrl],
+                    XmlNameSpace.Url[NS.XmlDsigC14NWithCommentsTransformUrl],
+                    XmlNameSpace.Url[NS.XmlDsigExcC14NTransformUrl],
+                    XmlNameSpace.Url[NS.XmlDsigExcC14NWithCommentsTransformUrl]
                 });
             Assert.NotNull(signedXml.SignatureFormatValidator);
 

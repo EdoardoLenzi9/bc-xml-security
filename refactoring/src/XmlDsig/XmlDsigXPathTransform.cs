@@ -11,6 +11,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.XPath;
 using System.Xml.Xsl;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -26,7 +27,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public XmlDsigXPathTransform()
         {
-            Algorithm = SignedConstants.XmlDsigXPathTransformUrl;
+            Algorithm = NS.XmlDsigXPathTransformUrl;
         }
 
         public override Type[] InputTypes
@@ -93,7 +94,7 @@ namespace Org.BouncyCastle.Crypto.Xml
         protected override XmlNodeList GetInnerXml()
         {
             XmlDocument document = new XmlDocument();
-            XmlElement element = document.CreateElement(null, "XPath", SignedConstants.XmlDsigNamespaceUrl);
+            XmlElement element = document.CreateElement(null, "XPath", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
 
             if (_nsm != null)
             {

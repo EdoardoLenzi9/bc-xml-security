@@ -2,76 +2,31 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using Org.BouncyCastle.Crypto.Engines;
-using Org.BouncyCastle.Crypto.Paddings;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509;
 using System;
 using System.Collections;
 using System.IO;
-using System.Net;
-using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
 using Org.BouncyCastle.Crypto.Xml.RSAKey;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
     public class EncryptedXml
     {
         //
-        // public constant Url identifiers used within the XML Encryption classes
-        //
-
-        public const string XmlEncNamespaceUrl = "http://www.w3.org/2001/04/xmlenc#";
-        public const string XmlEncElementUrl = "http://www.w3.org/2001/04/xmlenc#Element";
-        public const string XmlEncElementContentUrl = "http://www.w3.org/2001/04/xmlenc#Content";
-        public const string XmlEncEncryptedKeyUrl = "http://www.w3.org/2001/04/xmlenc#EncryptedKey";
-
-        //
-        // Symmetric Block Encryption
-        //
-
-        public const string XmlEncDESUrl = "http://www.w3.org/2001/04/xmlenc#des-cbc";
-        public const string XmlEncTripleDESUrl = "http://www.w3.org/2001/04/xmlenc#tripledes-cbc";
-        public const string XmlEncAES128Url = "http://www.w3.org/2001/04/xmlenc#aes128-cbc";
-        public const string XmlEncAES256Url = "http://www.w3.org/2001/04/xmlenc#aes256-cbc";
-        public const string XmlEncAES192Url = "http://www.w3.org/2001/04/xmlenc#aes192-cbc";
-
-        //
-        // Key Transport
-        //
-
-        public const string XmlEncRSA15Url = "http://www.w3.org/2001/04/xmlenc#rsa-1_5";
-        public const string XmlEncRSAOAEPUrl = "http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p";
-
-        //
-        // Symmetric Key Wrap
-        //
-
-        public const string XmlEncTripleDESKeyWrapUrl = "http://www.w3.org/2001/04/xmlenc#kw-tripledes";
-        public const string XmlEncAES128KeyWrapUrl = "http://www.w3.org/2001/04/xmlenc#kw-aes128";
-        public const string XmlEncAES256KeyWrapUrl = "http://www.w3.org/2001/04/xmlenc#kw-aes256";
-        public const string XmlEncAES192KeyWrapUrl = "http://www.w3.org/2001/04/xmlenc#kw-aes192";
-
-        //
-        // Message Digest
-        //
-
-        public const string XmlEncSHA256Url = "http://www.w3.org/2001/04/xmlenc#sha256";
-        public const string XmlEncSHA512Url = "http://www.w3.org/2001/04/xmlenc#sha512";
-
-        //
         // private members
         //
 
-        private XmlDocument _document;
+        private readonly XmlDocument _document;
         private XmlResolver _xmlResolver;
         // hash table defining the key name mapping
         private const int _capacity = 4; // 4 is a reasonable capacity for
                                           // the key name mapping hash table
-        private Hashtable _keyNameMapping;
+        private readonly Hashtable _keyNameMapping;
         private string _padding;
         private string _mode;
         private Encoding _encoding;
@@ -105,7 +60,7 @@ namespace Org.BouncyCastle.Crypto.Xml
         /// <returns>returns true if the limit has reached otherwise false</returns>
         private bool IsOverXmlDsigRecursionLimit()
         {
-            if (_xmlDsigSearchDepthCounter > XmlDSigSearchDepth)
+            if (_xmlDsigSearchDepthCounter > GetXmlDSigSearchDepth())
             {
                 return true;
             }
@@ -115,47 +70,54 @@ namespace Org.BouncyCastle.Crypto.Xml
         /// <summary>
         /// Gets / Sets the max limit for recursive search of encryption key in signed XML
         /// </summary>
-        public int XmlDSigSearchDepth
+        public int GetXmlDSigSearchDepth()
         {
-            get
-            {
-                return _xmlDsigSearchDepth;
-            }
-            set
-            {
-                _xmlDsigSearchDepth = value;
-            }
+            return _xmlDsigSearchDepth;
+        }
+
+        /// <summary>
+        /// Gets / Sets the max limit for recursive search of encryption key in signed XML
+        /// </summary>
+        public void SetXmlDSigSearchDepth(int value)
+        {
+            _xmlDsigSearchDepth = value;
         }
 
         // The resolver to use for external entities
-        public XmlResolver Resolver
-        {
-            get { return _xmlResolver; }
-            set { _xmlResolver = value; }
-        }
+        public XmlResolver GetResolver()
+        { return _xmlResolver; }
+
+        // The resolver to use for external entities
+        public void SetResolver(XmlResolver value)
+        { _xmlResolver = value; }
 
         // The padding to be used. XML Encryption uses ISO 10126
         // but it's nice to provide a way to extend this to include other forms of paddings
-        public string Padding
-        {
-            get { return _padding; }
-            set { _padding = value; }
-        }
+        public string GetPadding()
+        { return _padding; }
+
+        // The padding to be used. XML Encryption uses ISO 10126
+        // but it's nice to provide a way to extend this to include other forms of paddings
+        public void SetPadding(string value)
+        { _padding = value; }
 
         // The cipher mode to be used. XML Encryption uses CBC padding
         // but it's nice to provide a way to extend this to include other cipher modes
-        public string Mode
-        {
-            get { return _mode; }
-            set { _mode = value; }
-        }
+        public string GetMode()
+        { return _mode; }
+
+        // The cipher mode to be used. XML Encryption uses CBC padding
+        // but it's nice to provide a way to extend this to include other cipher modes
+        public void SetMode(string value)
+        { _mode = value; }
 
         // The encoding of the XML document
-        public Encoding Encoding
-        {
-            get { return _encoding; }
-            set { _encoding = value; }
-        }
+        public Encoding GetEncoding()
+        { return _encoding; }
+
+        // The encoding of the XML document
+        public void SetEncoding(Encoding value)
+        { _encoding = value; }
 
         // This is used to specify the EncryptedKey elements that should be considered
         // when an EncyptedData references an EncryptedKey using a CarriedKeyName and Recipient
@@ -261,34 +223,36 @@ namespace Org.BouncyCastle.Crypto.Xml
         }
 
         // default behaviour is to look for the IV in the CipherValue
-        public virtual byte[] GetDecryptionIV(EncryptedData encryptedData, string symmetricAlgorithmUri)
+        public virtual byte[] GetDecryptionIV(EncryptedData encryptedData, NS symmetricAlgorithmUri)
         {
             if (encryptedData == null)
                 throw new ArgumentNullException(nameof(encryptedData));
 
             int initBytesSize = 0;
             // If the Uri is not provided by the application, try to get it from the EncryptionMethod
-            if (symmetricAlgorithmUri == null)
+            if (symmetricAlgorithmUri == NS.None)
             {
                 if (encryptedData.EncryptionMethod == null)
                     throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_MissingAlgorithm);
                 symmetricAlgorithmUri = encryptedData.EncryptionMethod.KeyAlgorithm;
             }
+
             switch (symmetricAlgorithmUri)
             {
-                case EncryptedXml.XmlEncDESUrl:
-                case EncryptedXml.XmlEncTripleDESUrl:
+                case NS.XmlEncDESUrl:
+                case NS.XmlEncTripleDESUrl:
                     initBytesSize = 8;
                     break;
-                case EncryptedXml.XmlEncAES128Url:
-                case EncryptedXml.XmlEncAES192Url:
-                case EncryptedXml.XmlEncAES256Url:
+                case NS.XmlEncAES128Url:
+                case NS.XmlEncAES192Url:
+                case NS.XmlEncAES256Url:
                     initBytesSize = 16;
                     break;
                 default:
                     // The Uri is not supported.
                     throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_UriNotSupported);
             }
+
             byte[] IV = new byte[initBytesSize];
             byte[] cipherValue = GetCipherValue(encryptedData.CipherData);
             Buffer.BlockCopy(cipherValue, 0, IV, 0, IV.Length);
@@ -297,7 +261,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         // default behaviour is to look for keys defined by an EncryptedKey clause
         // either directly or through a KeyInfoRetrievalMethod, and key names in the key mapping
-        public virtual ICipherParameters GetDecryptionKey(EncryptedData encryptedData, string symmetricAlgorithmUri)
+        public virtual ICipherParameters GetDecryptionKey(EncryptedData encryptedData, NS symmetricAlgorithmUri)
         {
             if (encryptedData == null)
                 throw new ArgumentNullException(nameof(encryptedData));
@@ -317,11 +281,13 @@ namespace Org.BouncyCastle.Crypto.Xml
                 {
                     // Get the decryption key from the key mapping
                     string keyName = kiName.Value;
-                    if (_keyNameMapping[keyName] as ICipherParameters != null)
+                    if (_keyNameMapping[keyName] is ICipherParameters)
+                    {
                         return (ICipherParameters)_keyNameMapping[keyName];
+                    }
                     // try to get it from a CarriedKeyName
                     XmlNamespaceManager nsm = new XmlNamespaceManager(_document.NameTable);
-                    nsm.AddNamespace("enc", EncryptedXml.XmlEncNamespaceUrl);
+                    nsm.AddNamespace("enc", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
                     XmlNodeList encryptedKeyList = _document.SelectNodes("//enc:EncryptedKey", nsm);
                     if (encryptedKeyList != null)
                     {
@@ -342,7 +308,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 kiRetrievalMethod = keyInfoEnum.Current as KeyInfoRetrievalMethod;
                 if (kiRetrievalMethod != null)
                 {
-                    string idref = Utils.ExtractIdFromLocalUri(kiRetrievalMethod.Uri);
+                    string idref = Utils.ExtractIdFromLocalUri(kiRetrievalMethod.GetUri());
                     ek = new EncryptedKey();
                     ek.LoadXml(GetIdElement(_document, idref));
                     break;
@@ -350,7 +316,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 kiEncKey = keyInfoEnum.Current as KeyInfoEncryptedKey;
                 if (kiEncKey != null)
                 {
-                    ek = kiEncKey.EncryptedKey;
+                    ek = kiEncKey.GetEncryptedKey();
                     break;
                 }
             }
@@ -360,7 +326,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             {
                 // now process the EncryptedKey, loop recursively 
                 // If the Uri is not provided by the application, try to get it from the EncryptionMethod
-                if (symmetricAlgorithmUri == null)
+                if (symmetricAlgorithmUri == NS.None)
                 {
                     if (encryptedData.EncryptionMethod == null)
                         throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_MissingAlgorithm);
@@ -370,7 +336,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 if (key == null)
                     throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_MissingDecryptionKey);
 
-                IBufferedCipher symAlg = CryptoHelpers.CreateFromName<IBufferedCipher>(symmetricAlgorithmUri);
+                IBufferedCipher symAlg = CryptoHelpers.CreateFromName<IBufferedCipher>(XmlNameSpace.Url[symmetricAlgorithmUri]);
                 if (symAlg == null)
                 {
                     throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_MissingAlgorithm);
@@ -426,7 +392,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                             return EncryptedXml.DecryptKey(encryptedKey.CipherData.CipherValue, piv.Parameters as KeyParameter);
 
                         // kek is an RSA key: get fOAEP from the algorithm, default to false
-                        fOAEP = (encryptedKey.EncryptionMethod != null && encryptedKey.EncryptionMethod.KeyAlgorithm == EncryptedXml.XmlEncRSAOAEPUrl);
+                        fOAEP = (encryptedKey.EncryptionMethod != null && encryptedKey.EncryptionMethod.KeyAlgorithm == NS.XmlEncRSAOAEPUrl);
                         return EncryptedXml.DecryptKey(encryptedKey.CipherData.CipherValue, (RsaKeyParameters)kek, fOAEP);
                     }
                     break;
@@ -443,7 +409,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                             {
                                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_MissingAlgorithm);
                             }
-                            fOAEP = (encryptedKey.EncryptionMethod != null && encryptedKey.EncryptionMethod.KeyAlgorithm == EncryptedXml.XmlEncRSAOAEPUrl);
+                            fOAEP = (encryptedKey.EncryptionMethod != null && encryptedKey.EncryptionMethod.KeyAlgorithm == NS.XmlEncRSAOAEPUrl);
                             return EncryptedXml.DecryptKey(encryptedKey.CipherData.CipherValue, privateKey, fOAEP);
                         }
                     }
@@ -452,7 +418,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 kiRetrievalMethod = keyInfoEnum.Current as KeyInfoRetrievalMethod;
                 if (kiRetrievalMethod != null)
                 {
-                    string idref = Utils.ExtractIdFromLocalUri(kiRetrievalMethod.Uri);
+                    string idref = Utils.ExtractIdFromLocalUri(kiRetrievalMethod.GetUri());
                     ek = new EncryptedKey();
                     ek.LoadXml(GetIdElement(_document, idref));
                     try
@@ -478,16 +444,16 @@ namespace Org.BouncyCastle.Crypto.Xml
                 kiEncKey = keyInfoEnum.Current as KeyInfoEncryptedKey;
                 if (kiEncKey != null)
                 {
-                    ek = kiEncKey.EncryptedKey;
+                    ek = kiEncKey.GetEncryptedKey();
                     // recursively process EncryptedKey elements
                     byte[] encryptionKey = DecryptEncryptedKey(ek, privateKey);
                     if (encryptionKey != null)
                     {
                         // this is a symmetric algorithm for sure
-                        IBlockCipher blockSymAlg = CryptoHelpers.CreateFromName<IBlockCipher>(encryptedKey.EncryptionMethod.KeyAlgorithm);
+                        IBlockCipher blockSymAlg = CryptoHelpers.CreateFromName<IBlockCipher>(XmlNameSpace.Url[encryptedKey.EncryptionMethod.KeyAlgorithm]);
                         if (blockSymAlg == null)
                         {
-                            IBufferedCipher bufferedSymAlg = CryptoHelpers.CreateFromName<IBufferedCipher>(encryptedKey.EncryptionMethod.KeyAlgorithm);
+                            IBufferedCipher bufferedSymAlg = CryptoHelpers.CreateFromName<IBufferedCipher>(XmlNameSpace.Url[encryptedKey.EncryptionMethod.KeyAlgorithm]);
                             if (bufferedSymAlg == null)
                             {
                                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_MissingAlgorithm);
@@ -538,17 +504,17 @@ namespace Org.BouncyCastle.Crypto.Xml
                 throw new ArgumentNullException(nameof(certificate));
 
             AsymmetricKeyParameter rsaPublicKey = certificate.GetPublicKey();
-            if (rsaPublicKey == null || !(rsaPublicKey is RsaKeyParameters))
+            if (!(rsaPublicKey is RsaKeyParameters))
                 throw new NotSupportedException(SR.NotSupported_KeyAlgorithm);
 
             // Create the EncryptedData object, using an AES-256 session key by default.
             EncryptedData ed = new EncryptedData();
-            ed.Type = EncryptedXml.XmlEncElementUrl;
-            ed.EncryptionMethod = new EncryptionMethod(EncryptedXml.XmlEncAES256Url);
+            ed.Type = XmlNameSpace.Url[NS.XmlEncElementUrl];
+            ed.EncryptionMethod = new EncryptionMethod(NS.XmlEncAES256Url);
 
             // Include the certificate in the EncryptedKey KeyInfo.
             EncryptedKey ek = new EncryptedKey();
-            ek.EncryptionMethod = new EncryptionMethod(EncryptedXml.XmlEncRSA15Url);
+            ek.EncryptionMethod = new EncryptionMethod(NS.XmlEncRSA15Url);
             ek.KeyInfo.AddClause(new KeyInfoX509Data(certificate));
 
             // Create a random AES session key and encrypt it with the public key associated with the certificate.
@@ -589,14 +555,14 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             // Create the EncryptedData object, using an AES-256 session key by default.
             EncryptedData ed = new EncryptedData();
-            ed.Type = EncryptedXml.XmlEncElementUrl;
-            ed.EncryptionMethod = new EncryptionMethod(EncryptedXml.XmlEncAES256Url);
+            ed.Type = XmlNameSpace.Url[NS.XmlEncElementUrl];
+            ed.EncryptionMethod = new EncryptionMethod(NS.XmlEncAES256Url);
 
             // Include the key name in the EncryptedKey KeyInfo.
-            string encryptionMethod = null;
+            NS encryptionMethod = NS.None;
             if (symKey == null && iv == null)
             {
-                encryptionMethod = EncryptedXml.XmlEncRSA15Url;
+                encryptionMethod = NS.XmlEncRSA15Url;
             }
             else if (iv != null)
             {
@@ -608,7 +574,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 if (symKey is DesParameters)
                 {
                     // CMS Triple DES Key Wrap
-                    encryptionMethod = EncryptedXml.XmlEncTripleDESKeyWrapUrl;
+                    encryptionMethod = NS.XmlEncTripleDESKeyWrapUrl;
                 }
                 else
                 {
@@ -616,13 +582,13 @@ namespace Org.BouncyCastle.Crypto.Xml
                     switch (symKey.GetKey().Length * 8)
                     {
                         case 128:
-                            encryptionMethod = EncryptedXml.XmlEncAES128KeyWrapUrl;
+                            encryptionMethod = NS.XmlEncAES128KeyWrapUrl;
                             break;
                         case 192:
-                            encryptionMethod = EncryptedXml.XmlEncAES192KeyWrapUrl;
+                            encryptionMethod = NS.XmlEncAES192KeyWrapUrl;
                             break;
                         case 256:
-                            encryptionMethod = EncryptedXml.XmlEncAES256KeyWrapUrl;
+                            encryptionMethod = NS.XmlEncAES256KeyWrapUrl;
                             break;
                     }
                 }
@@ -653,7 +619,7 @@ namespace Org.BouncyCastle.Crypto.Xml
         {
             // Look for all EncryptedData elements and decrypt them
             XmlNamespaceManager nsm = new XmlNamespaceManager(_document.NameTable);
-            nsm.AddNamespace("enc", EncryptedXml.XmlEncNamespaceUrl);
+            nsm.AddNamespace("enc", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
             XmlNodeList encryptedDataList = _document.SelectNodes("//enc:EncryptedData", nsm);
             if (encryptedDataList != null)
             {
@@ -662,7 +628,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                     XmlElement encryptedDataElement = encryptedDataNode as XmlElement;
                     EncryptedData ed = new EncryptedData();
                     ed.LoadXml(encryptedDataElement);
-                    ICipherParameters symAlg = GetDecryptionKey(ed, null);
+                    ICipherParameters symAlg = GetDecryptionKey(ed, NS.None);
                     if (symAlg == null)
                         throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_MissingDecryptionKey);
                     byte[] decrypted = DecryptData(ed, symAlg);
@@ -737,7 +703,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             // read the IV from cipherValue
             byte[] decryptionIV = null;
             if (!_mode.Equals("ECB", StringComparison.OrdinalIgnoreCase))
-                decryptionIV = GetDecryptionIV(encryptedData, null);
+                decryptionIV = GetDecryptionIV(encryptedData, NS.None);
 
             byte[] output = null;
             int lengthIV = 0;

@@ -12,6 +12,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.XPath;
 using System.Xml.Xsl;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -24,7 +25,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public XmlDsigBase64Transform()
         {
-            Algorithm = SignedConstants.XmlDsigBase64TransformUrl;
+            Algorithm = NS.XmlDsigBase64TransformUrl;
         }
 
         public override Type[] InputTypes

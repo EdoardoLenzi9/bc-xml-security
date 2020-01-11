@@ -16,8 +16,6 @@ using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.X509;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Xml;
 using Xunit;
 
@@ -87,7 +85,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             //Seed = Convert.FromBase64String(dsaSeed),
             //Counter = BitConverter.ToUInt16(Convert.FromBase64String(dsaPgenCounter), 0)
 
-            DSAKeyValue dsa = new DSAKeyValue(key);
+            DsaKeyValue dsa = new DsaKeyValue(key);
             info.AddClause(dsa);
             AssertCrypto.AssertXmlEquals("dsa",
                 "<KeyInfo xmlns=\"http://www.w3.org/2000/09/xmldsig#\"><KeyValue xmlns=\"http://www.w3.org/2000/09/xmldsig#\">" +
@@ -107,7 +105,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                 modulus: new BigInteger(1, Convert.FromBase64String(rsaModulus)),
                 exponent: new BigInteger(1, Convert.FromBase64String(rsaExponent))
             );
-            RSAKeyValue rsa = new RSAKeyValue(key);
+            RsaKeyValue rsa = new RsaKeyValue(key);
             info.AddClause(rsa);
             AssertCrypto.AssertXmlEquals("rsa",
                 "<KeyInfo xmlns=\"http://www.w3.org/2000/09/xmldsig#\"><KeyValue xmlns=\"http://www.w3.org/2000/09/xmldsig#\">" +
@@ -119,7 +117,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         public void RetrievalMethod()
         {
             KeyInfoRetrievalMethod retrieval = new KeyInfoRetrievalMethod();
-            retrieval.Uri = "http://www.go-mono.org/";
+            retrieval.SetUri("http://www.go-mono.org/");
             info.AddClause(retrieval);
             Assert.Equal("<KeyInfo xmlns=\"http://www.w3.org/2000/09/xmldsig#\"><RetrievalMethod URI=\"http://www.go-mono.org/\" /></KeyInfo>", (info.GetXml().OuterXml));
             Assert.Equal(1, info.Count);
@@ -158,7 +156,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                     g: new BigInteger(1, Convert.FromBase64String(dsaG))
                 )
             );
-            DSAKeyValue dsa = new DSAKeyValue(keyDSA);
+            DsaKeyValue dsa = new DsaKeyValue(keyDSA);
             info.AddClause(dsa);
 
             var keyRSA = new RsaKeyParameters(
@@ -166,11 +164,11 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                 modulus: new BigInteger(1, Convert.FromBase64String(rsaModulus)),
                 exponent: new BigInteger(1, Convert.FromBase64String(rsaExponent))
             );
-            RSAKeyValue rsa = new RSAKeyValue(keyRSA);
+            RsaKeyValue rsa = new RsaKeyValue(keyRSA);
             info.AddClause(rsa);
 
             KeyInfoRetrievalMethod retrieval = new KeyInfoRetrievalMethod();
-            retrieval.Uri = "https://github.com/dotnet/corefx";
+            retrieval.SetUri("https://github.com/dotnet/corefx");
             info.AddClause(retrieval);
 
             X509Certificate x509 = new X509CertificateParser().ReadCertificate(cert);
@@ -245,12 +243,12 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                     var name = clause as KeyInfoName;
                     Assert.Equal(keyName, name.Value);
                 }
-                else if (clause is DSAKeyValue)
+                else if (clause is DsaKeyValue)
                 {
                     pathsCovered |= 1 << 1;
 
-                    var dsaKV = clause as DSAKeyValue;
-                    var dsaKey = dsaKV.Key;
+                    var dsaKV = clause as DsaKeyValue;
+                    var dsaKey = dsaKV.GetKey();
                     var dsaParams = dsaKey.Parameters;
 
                     Assert.Equal(Convert.FromBase64String(dsaP), dsaParams.P.ToByteArrayUnsigned());
@@ -288,12 +286,12 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                         Assert.Equal(default(int), dsaParams.ValidationParameters.Counter);
                     }
                 }
-                else if (clause is RSAKeyValue)
+                else if (clause is RsaKeyValue)
                 {
                     pathsCovered |= 1 << 2;
 
-                    var rsaKV = clause as RSAKeyValue;
-                    var rsaKey = rsaKV.Key;
+                    var rsaKV = clause as RsaKeyValue;
+                    var rsaKey = rsaKV.GetKey();
 
                     Assert.Equal(Convert.FromBase64String(rsaModulus), rsaKey.Modulus.ToByteArrayUnsigned());
                     Assert.Equal(Convert.FromBase64String(rsaExponent), rsaKey.Exponent.ToByteArrayUnsigned());

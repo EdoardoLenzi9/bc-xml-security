@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 using Xunit;
 using Xunit.Extensions;
 
@@ -163,7 +164,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         public static object[] ToCipherDataTestCase(string xml, byte[] cipherData)
         {
             XmlDocument xmlDocument = new XmlDocument();
-            xmlDocument.LoadXml(string.Format(xml, EncryptedXml.XmlEncNamespaceUrl, Convert.ToBase64String(cipherData)));
+            xmlDocument.LoadXml(string.Format(xml, XmlNameSpace.Url[NS.XmlEncNamespaceUrl], Convert.ToBase64String(cipherData)));
             return new object[] { xmlDocument.DocumentElement, cipherData };
         }
 
@@ -195,7 +196,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         public static object[] ToCipherReferenceXmlElement(string xml, string uri)
         {
             XmlDocument xmlDocument = new XmlDocument();
-            xmlDocument.LoadXml(string.Format(xml, EncryptedXml.XmlEncNamespaceUrl, uri));
+            xmlDocument.LoadXml(string.Format(xml, XmlNameSpace.Url[NS.XmlEncNamespaceUrl], uri));
             return new object[] { xmlDocument.DocumentElement, uri };
         }
     }

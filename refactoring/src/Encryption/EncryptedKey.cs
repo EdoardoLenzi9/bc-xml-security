@@ -3,8 +3,8 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections;
 using System.Xml;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -68,14 +68,14 @@ namespace Org.BouncyCastle.Crypto.Xml
                 throw new ArgumentNullException(nameof(value));
 
             XmlNamespaceManager nsm = new XmlNamespaceManager(value.OwnerDocument.NameTable);
-            nsm.AddNamespace("enc", EncryptedXml.XmlEncNamespaceUrl);
-            nsm.AddNamespace("ds", SignedConstants.XmlDsigNamespaceUrl);
+            nsm.AddNamespace("enc", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
+            nsm.AddNamespace("ds", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
 
-            Id = Utils.GetAttribute(value, "Id", EncryptedXml.XmlEncNamespaceUrl);
-            Type = Utils.GetAttribute(value, "Type", EncryptedXml.XmlEncNamespaceUrl);
-            MimeType = Utils.GetAttribute(value, "MimeType", EncryptedXml.XmlEncNamespaceUrl);
-            Encoding = Utils.GetAttribute(value, "Encoding", EncryptedXml.XmlEncNamespaceUrl);
-            Recipient = Utils.GetAttribute(value, "Recipient", EncryptedXml.XmlEncNamespaceUrl);
+            Id = Utils.GetAttribute(value, "Id", NS.XmlEncNamespaceUrl);
+            Type = Utils.GetAttribute(value, "Type", NS.XmlEncNamespaceUrl);
+            MimeType = Utils.GetAttribute(value, "MimeType", NS.XmlEncNamespaceUrl);
+            Encoding = Utils.GetAttribute(value, "Encoding", NS.XmlEncNamespaceUrl);
+            Recipient = Utils.GetAttribute(value, "Recipient", NS.XmlEncNamespaceUrl);
 
             XmlNode encryptionMethodNode = value.SelectSingleNode("enc:EncryptionMethod", nsm);
 
@@ -166,7 +166,7 @@ namespace Org.BouncyCastle.Crypto.Xml
         internal XmlElement GetXml(XmlDocument document)
         {
             // Create the EncryptedKey element
-            XmlElement encryptedKeyElement = (XmlElement)document.CreateElement("EncryptedKey", EncryptedXml.XmlEncNamespaceUrl);
+            XmlElement encryptedKeyElement = document.CreateElement("EncryptedKey", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
 
             // Deal with attributes
             if (!string.IsNullOrEmpty(Id))
@@ -196,7 +196,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             // EncryptionProperties
             if (EncryptionProperties.Count > 0)
             {
-                XmlElement encryptionPropertiesElement = document.CreateElement("EncryptionProperties", EncryptedXml.XmlEncNamespaceUrl);
+                XmlElement encryptionPropertiesElement = document.CreateElement("EncryptionProperties", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
                 for (int index = 0; index < EncryptionProperties.Count; index++)
                 {
                     EncryptionProperty ep = EncryptionProperties.Item(index);
@@ -208,7 +208,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             // ReferenceList
             if (ReferenceList.Count > 0)
             {
-                XmlElement referenceListElement = document.CreateElement("ReferenceList", EncryptedXml.XmlEncNamespaceUrl);
+                XmlElement referenceListElement = document.CreateElement("ReferenceList", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
                 for (int index = 0; index < ReferenceList.Count; index++)
                 {
                     referenceListElement.AppendChild(ReferenceList[index].GetXml(document));
@@ -219,7 +219,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             // CarriedKeyName
             if (CarriedKeyName != null)
             {
-                XmlElement carriedKeyNameElement = (XmlElement)document.CreateElement("CarriedKeyName", EncryptedXml.XmlEncNamespaceUrl);
+                XmlElement carriedKeyNameElement = document.CreateElement("CarriedKeyName", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
                 XmlText carriedKeyNameText = document.CreateTextNode(CarriedKeyName);
                 carriedKeyNameElement.AppendChild(carriedKeyNameText);
                 encryptedKeyElement.AppendChild(carriedKeyNameElement);

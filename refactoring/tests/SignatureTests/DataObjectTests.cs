@@ -4,6 +4,7 @@
 
 using System;
 using System.Xml;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 using Xunit;
 
 namespace Org.BouncyCastle.Crypto.Xml.Tests
@@ -145,10 +146,10 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         private static XmlElement CreateTestElement(string name, string idValue, string mimeTypeValue, string encodingValue, int childs)
         {
             var doc = new XmlDocument();
-            XmlElement element = doc.CreateElement(name, SignedConstants.XmlDsigNamespaceUrl);
-            XmlAttribute idAttribute = doc.CreateAttribute(IdAttributeName, SignedConstants.XmlDsigNamespaceUrl);
-            XmlAttribute mimeTypeAttribute = doc.CreateAttribute(MimeTypeAttributeName, SignedConstants.XmlDsigNamespaceUrl);
-            XmlAttribute encodingAttribute = doc.CreateAttribute(EncodingAttributeName, SignedConstants.XmlDsigNamespaceUrl);
+            XmlElement element = doc.CreateElement(name, XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
+            XmlAttribute idAttribute = doc.CreateAttribute(IdAttributeName, XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
+            XmlAttribute mimeTypeAttribute = doc.CreateAttribute(MimeTypeAttributeName, XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
+            XmlAttribute encodingAttribute = doc.CreateAttribute(EncodingAttributeName, XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
             idAttribute.Value = idValue;
             mimeTypeAttribute.Value = mimeTypeValue;
             encodingAttribute.Value = encodingValue;

@@ -3,8 +3,8 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections;
 using System.Xml;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -76,10 +76,10 @@ namespace Org.BouncyCastle.Crypto.Xml
         internal XmlElement GetXml(XmlDocument document)
         {
             // Create the CipherData element
-            XmlElement cipherDataElement = (XmlElement)document.CreateElement("CipherData", EncryptedXml.XmlEncNamespaceUrl);
+            XmlElement cipherDataElement = document.CreateElement("CipherData", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
             if (CipherValue != null)
             {
-                XmlElement cipherValueElement = document.CreateElement("CipherValue", EncryptedXml.XmlEncNamespaceUrl);
+                XmlElement cipherValueElement = document.CreateElement("CipherValue", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
                 cipherValueElement.AppendChild(document.CreateTextNode(Convert.ToBase64String(CipherValue)));
                 cipherDataElement.AppendChild(cipherValueElement);
             }
@@ -99,7 +99,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 throw new ArgumentNullException(nameof(value));
 
             XmlNamespaceManager nsm = new XmlNamespaceManager(value.OwnerDocument.NameTable);
-            nsm.AddNamespace("enc", EncryptedXml.XmlEncNamespaceUrl);
+            nsm.AddNamespace("enc", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
 
             XmlNode cipherValueNode = value.SelectSingleNode("enc:CipherValue", nsm);
             XmlNode cipherReferenceNode = value.SelectSingleNode("enc:CipherReference", nsm);

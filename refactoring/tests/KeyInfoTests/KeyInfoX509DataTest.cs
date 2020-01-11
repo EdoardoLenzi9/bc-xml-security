@@ -73,7 +73,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         {
             KeyInfoX509Data data = new KeyInfoX509Data();
             Assert.Null(data.Certificates);
-            Assert.Null(data.CRL);
+            Assert.Null(data.GetCRL());
             Assert.Null(data.IssuerSerials);
             Assert.Null(data.SubjectKeyIds);
             Assert.Null(data.SubjectNames);
@@ -116,7 +116,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         {
             KeyInfoX509Data data = new KeyInfoX509Data(new X509CertificateParser().ReadCertificate(cert)/*, X509IncludeOption.EndCertOnly*/);
             Assert.Equal(1, data.Certificates.Count);
-            Assert.Null(data.CRL);
+            Assert.Null(data.GetCRL());
             Assert.Null(data.IssuerSerials);
             Assert.Null(data.SubjectKeyIds);
             Assert.Null(data.SubjectNames);
@@ -133,7 +133,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         {
             KeyInfoX509Data data = new KeyInfoX509Data(new X509CertificateParser().ReadCertificate(cert), Enumerable.Empty<X509Certificate>(), (X509IncludeOption)int.MinValue);
             Assert.Null(data.Certificates);
-            Assert.Null(data.CRL);
+            Assert.Null(data.GetCRL());
             Assert.Null(data.IssuerSerials);
             Assert.Null(data.SubjectKeyIds);
             Assert.Null(data.SubjectNames);
@@ -174,7 +174,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             KeyInfoX509Data data = new KeyInfoX509Data();
             data.AddSubjectKeyId((byte[])null);
             Assert.Null(data.Certificates);
-            Assert.Null(data.CRL);
+            Assert.Null(data.GetCRL());
             Assert.Null(data.IssuerSerials);
             Assert.Equal(1, data.SubjectKeyIds.Count);
             Assert.Null(data.SubjectNames);
@@ -199,7 +199,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             KeyInfoX509Data data = new KeyInfoX509Data();
             data.AddSubjectKeyId("Hello");
             Assert.Null(data.Certificates);
-            Assert.Null(data.CRL);
+            Assert.Null(data.GetCRL());
             Assert.Null(data.IssuerSerials);
             Assert.Equal(1, data.SubjectKeyIds.Count);
             Assert.Null(data.SubjectNames);
@@ -211,7 +211,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             KeyInfoX509Data data = new KeyInfoX509Data();
             data.AddSubjectName(null);
             Assert.Null(data.Certificates);
-            Assert.Null(data.CRL);
+            Assert.Null(data.GetCRL());
             Assert.Null(data.IssuerSerials);
             Assert.Null(data.SubjectKeyIds);
             Assert.Equal(1, data.SubjectNames.Count);
@@ -271,14 +271,14 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         public void CRL()
         {
             KeyInfoX509Data data1 = new KeyInfoX509Data();
-            data1.CRL = x509crl;
+            data1.SetCRL(x509crl);
             XmlElement xel = data1.GetXml();
 
             KeyInfoX509Data data2 = new KeyInfoX509Data();
             data2.LoadXml(xel);
 
             Assert.Equal((data1.GetXml().OuterXml), (data2.GetXml().OuterXml));
-            Assert.Equal(data1.CRL, data2.CRL);
+            Assert.Equal(data1.GetCRL(), data2.GetCRL());
         }
 
         [Fact]

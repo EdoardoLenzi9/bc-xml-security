@@ -15,6 +15,7 @@
 using System;
 using System.IO;
 using System.Xml;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 using Xunit;
 
 namespace Org.BouncyCastle.Crypto.Xml.Tests
@@ -44,7 +45,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact]
         public void Properties()
         {
-            Assert.Equal("http://www.w3.org/TR/1999/REC-xpath-19991116", transform.Algorithm);
+            Assert.Equal("http://www.w3.org/TR/1999/REC-xpath-19991116", XmlNameSpace.Url[transform.Algorithm]);
 
             Type[] input = transform.InputTypes;
             Assert.True((input.Length == 3), "Input #");

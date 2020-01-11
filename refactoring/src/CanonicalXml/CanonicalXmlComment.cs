@@ -13,17 +13,27 @@ namespace Org.BouncyCastle.Crypto.Xml
         public CanonicalXmlComment(string comment, XmlDocument doc, bool defaultNodeSetInclusionState, bool includeComments)
             : base(comment, doc)
         {
-            IsInNodeSet = defaultNodeSetInclusionState;
+            SetIsInNodeSet(defaultNodeSetInclusionState);
             IncludeComments = includeComments;
         }
 
-        public bool IsInNodeSet { get; set; }
+        private bool isInNodeSet;
+
+        public bool GetIsInNodeSet()
+        {
+            return isInNodeSet;
+        }
+
+        public void SetIsInNodeSet(bool value)
+        {
+            isInNodeSet = value;
+        }
 
         public bool IncludeComments { get; }
 
         public void Write(StringBuilder strBuilder, DocPosition docPos, AncestralNamespaceContextManager anc)
         {
-            if (!IsInNodeSet || !IncludeComments)
+            if (!GetIsInNodeSet() || !IncludeComments)
                 return;
 
             if (docPos == DocPosition.AfterRootElement)
@@ -37,7 +47,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public void WriteHash(IHash hash, DocPosition docPos, AncestralNamespaceContextManager anc)
         {
-            if (!IsInNodeSet || !IncludeComments)
+            if (!GetIsInNodeSet() || !IncludeComments)
                 return;
 
             UTF8Encoding utf8 = new UTF8Encoding(false);

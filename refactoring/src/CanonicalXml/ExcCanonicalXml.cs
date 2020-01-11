@@ -56,7 +56,7 @@ namespace Org.BouncyCastle.Crypto.Xml
         private static void MarkNodeAsIncluded(XmlNode node)
         {
             if (node is ICanonicalizableNode)
-                ((ICanonicalizableNode)node).IsInNodeSet = true;
+                ((ICanonicalizableNode)node).SetIsInNodeSet(true);
         }
 
         internal byte[] GetBytes()

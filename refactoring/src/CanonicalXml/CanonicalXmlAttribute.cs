@@ -13,10 +13,20 @@ namespace Org.BouncyCastle.Crypto.Xml
         public CanonicalXmlAttribute(string prefix, string localName, string namespaceURI, XmlDocument doc, bool defaultNodeSetInclusionState)
             : base(prefix, localName, namespaceURI, doc)
         {
-            IsInNodeSet = defaultNodeSetInclusionState;
+            SetIsInNodeSet(defaultNodeSetInclusionState);
         }
 
-        public bool IsInNodeSet { get; set; }
+        private bool isInNodeSet;
+
+        public bool GetIsInNodeSet()
+        {
+            return isInNodeSet;
+        }
+
+        public void SetIsInNodeSet(bool value)
+        {
+            isInNodeSet = value;
+        }
 
         public void Write(StringBuilder strBuilder, DocPosition docPos, AncestralNamespaceContextManager anc)
         {

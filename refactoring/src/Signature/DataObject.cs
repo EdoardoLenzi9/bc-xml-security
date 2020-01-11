@@ -4,6 +4,7 @@
 
 using System;
 using System.Xml;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -113,7 +114,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         internal XmlElement GetXml(XmlDocument document)
         {
-            XmlElement objectElement = document.CreateElement("Object", SignedConstants.XmlDsigNamespaceUrl);
+            XmlElement objectElement = document.CreateElement("Object", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
 
             if (!string.IsNullOrEmpty(_id))
                 objectElement.SetAttribute("Id", _id);
@@ -138,9 +139,9 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (value == null)
                 throw new ArgumentNullException(nameof(value));
 
-            _id = Utils.GetAttribute(value, "Id", SignedConstants.XmlDsigNamespaceUrl);
-            _mimeType = Utils.GetAttribute(value, "MimeType", SignedConstants.XmlDsigNamespaceUrl);
-            _encoding = Utils.GetAttribute(value, "Encoding", SignedConstants.XmlDsigNamespaceUrl);
+            _id = Utils.GetAttribute(value, "Id", NS.XmlDsigNamespaceUrl);
+            _mimeType = Utils.GetAttribute(value, "MimeType", NS.XmlDsigNamespaceUrl);
+            _encoding = Utils.GetAttribute(value, "Encoding", NS.XmlDsigNamespaceUrl);
 
             foreach (XmlNode node in value.ChildNodes)
             {

@@ -3,8 +3,8 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections;
 using System.Xml;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -16,13 +16,13 @@ namespace Org.BouncyCastle.Crypto.Xml
                 throw new ArgumentNullException(nameof(value));
 
             XmlNamespaceManager nsm = new XmlNamespaceManager(value.OwnerDocument.NameTable);
-            nsm.AddNamespace("enc", EncryptedXml.XmlEncNamespaceUrl);
-            nsm.AddNamespace("ds", SignedConstants.XmlDsigNamespaceUrl);
+            nsm.AddNamespace("enc", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
+            nsm.AddNamespace("ds", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
 
-            Id = Utils.GetAttribute(value, "Id", EncryptedXml.XmlEncNamespaceUrl);
-            Type = Utils.GetAttribute(value, "Type", EncryptedXml.XmlEncNamespaceUrl);
-            MimeType = Utils.GetAttribute(value, "MimeType", EncryptedXml.XmlEncNamespaceUrl);
-            Encoding = Utils.GetAttribute(value, "Encoding", EncryptedXml.XmlEncNamespaceUrl);
+            Id = Utils.GetAttribute(value, "Id", NS.XmlEncNamespaceUrl);
+            Type = Utils.GetAttribute(value, "Type", NS.XmlEncNamespaceUrl);
+            MimeType = Utils.GetAttribute(value, "MimeType", NS.XmlEncNamespaceUrl);
+            Encoding = Utils.GetAttribute(value, "Encoding", NS.XmlEncNamespaceUrl);
 
             XmlNode encryptionMethodNode = value.SelectSingleNode("enc:EncryptionMethod", nsm);
 
@@ -78,7 +78,7 @@ namespace Org.BouncyCastle.Crypto.Xml
         internal XmlElement GetXml(XmlDocument document)
         {
             // Create the EncryptedData element
-            XmlElement encryptedDataElement = (XmlElement)document.CreateElement("EncryptedData", EncryptedXml.XmlEncNamespaceUrl);
+            XmlElement encryptedDataElement = document.CreateElement("EncryptedData", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
 
             // Deal with attributes
             if (!string.IsNullOrEmpty(Id))
@@ -106,7 +106,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             // EncryptionProperties
             if (EncryptionProperties.Count > 0)
             {
-                XmlElement encryptionPropertiesElement = document.CreateElement("EncryptionProperties", EncryptedXml.XmlEncNamespaceUrl);
+                XmlElement encryptionPropertiesElement = document.CreateElement("EncryptionProperties", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
                 for (int index = 0; index < EncryptionProperties.Count; index++)
                 {
                     EncryptionProperty ep = EncryptionProperties.Item(index);

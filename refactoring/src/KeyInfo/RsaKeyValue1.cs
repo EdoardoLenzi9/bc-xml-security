@@ -3,15 +3,13 @@
 // See the LICENSE file in the project root for more information.
 
 using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 using System;
-using System.Collections;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Xml;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
-    public class RSAKeyValue : KeyInfoClause
+    public class RsaKeyValue : KeyInfoClause
     {
         private RsaKeyParameters _key;
 
@@ -19,13 +17,13 @@ namespace Org.BouncyCastle.Crypto.Xml
         // public constructors
         //
 
-        public RSAKeyValue()
+        public RsaKeyValue()
         {
             var pair = Utils.RSAGenerateKeyPair();
             _key = (RsaKeyParameters)pair.Public;
         }
 
-        public RSAKeyValue(RsaKeyParameters key)
+        public RsaKeyValue(RsaKeyParameters key)
         {
             _key = key;
         }
@@ -34,11 +32,15 @@ namespace Org.BouncyCastle.Crypto.Xml
         // public properties
         //
 
-        public RsaKeyParameters Key
-        {
-            get { return _key; }
-            set { _key = value; }
-        }
+        public RsaKeyParameters GetKey()
+        { return _key; }
+
+        //
+        // public properties
+        //
+
+        public void SetKey(RsaKeyParameters value)
+        { _key = value; }
 
         //
         // public methods
@@ -67,14 +69,14 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         internal override XmlElement GetXml(XmlDocument xmlDocument)
         {
-            XmlElement keyValueElement = xmlDocument.CreateElement(KeyValueElementName, SignedConstants.XmlDsigNamespaceUrl);
-            XmlElement rsaKeyValueElement = xmlDocument.CreateElement(RSAKeyValueElementName, SignedConstants.XmlDsigNamespaceUrl);
+            XmlElement keyValueElement = xmlDocument.CreateElement(KeyValueElementName, XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
+            XmlElement rsaKeyValueElement = xmlDocument.CreateElement(RSAKeyValueElementName, XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
 
-            XmlElement modulusElement = xmlDocument.CreateElement(ModulusElementName, SignedConstants.XmlDsigNamespaceUrl);
+            XmlElement modulusElement = xmlDocument.CreateElement(ModulusElementName, XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
             modulusElement.AppendChild(xmlDocument.CreateTextNode(Convert.ToBase64String(_key.Modulus.ToByteArrayUnsigned())));
             rsaKeyValueElement.AppendChild(modulusElement);
 
-            XmlElement exponentElement = xmlDocument.CreateElement(ExponentElementName, SignedConstants.XmlDsigNamespaceUrl);
+            XmlElement exponentElement = xmlDocument.CreateElement(ExponentElementName, XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
             exponentElement.AppendChild(xmlDocument.CreateTextNode(Convert.ToBase64String(_key.Exponent.ToByteArrayUnsigned())));
             rsaKeyValueElement.AppendChild(exponentElement);
 
@@ -89,32 +91,32 @@ namespace Org.BouncyCastle.Crypto.Xml
         /// <remarks>
         /// Based upon https://www.w3.org/TR/xmldsig-core/#sec-RSAKeyValue. 
         /// </remarks>
-        /// <param name="value">
+        /// <param name="element">
         /// An <see cref="XmlElement"/> containing the XML representation. This cannot be null.
         /// </param>
         /// <exception cref="ArgumentNullException">
-        /// <paramref name="value"/> cannot be null.
+        /// <paramref name="element"/> cannot be null.
         /// </exception>
         /// <exception cref="CryptographicException">
         /// The XML has the incorrect schema or the RSA parameters are invalid.
         /// </exception>
-        public override void LoadXml(XmlElement value)
+        public override void LoadXml(XmlElement element)
         {
-            if (value == null)
+            if (element == null)
             {
-                throw new ArgumentNullException(nameof(value));
+                throw new ArgumentNullException(nameof(element));
             }
-            if (value.LocalName != KeyValueElementName
-                || value.NamespaceURI != SignedConstants.XmlDsigNamespaceUrl)
+            if (element.LocalName != KeyValueElementName
+                || element.NamespaceURI != XmlNameSpace.Url[NS.XmlDsigNamespaceUrl])
             {
-                throw new System.Security.Cryptography.CryptographicException($"Root element must be {KeyValueElementName} element in namespace {SignedConstants.XmlDsigNamespaceUrl}");
+                throw new System.Security.Cryptography.CryptographicException($"Root element must be {KeyValueElementName} element in namespace {NS.XmlDsigNamespaceUrl}");
             }
 
             const string xmlDsigNamespacePrefix = "dsig";
-            XmlNamespaceManager xmlNamespaceManager = new XmlNamespaceManager(value.OwnerDocument.NameTable);
-            xmlNamespaceManager.AddNamespace(xmlDsigNamespacePrefix, SignedConstants.XmlDsigNamespaceUrl);
+            XmlNamespaceManager xmlNamespaceManager = new XmlNamespaceManager(element.OwnerDocument.NameTable);
+            xmlNamespaceManager.AddNamespace(xmlDsigNamespacePrefix, XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
 
-            XmlNode rsaKeyValueElement = value.SelectSingleNode($"{xmlDsigNamespacePrefix}:{RSAKeyValueElementName}", xmlNamespaceManager);
+            XmlNode rsaKeyValueElement = element.SelectSingleNode($"{xmlDsigNamespacePrefix}:{RSAKeyValueElementName}", xmlNamespaceManager);
             if (rsaKeyValueElement == null)
             {
                 throw new System.Security.Cryptography.CryptographicException($"{KeyValueElementName} must contain child element {RSAKeyValueElementName}");

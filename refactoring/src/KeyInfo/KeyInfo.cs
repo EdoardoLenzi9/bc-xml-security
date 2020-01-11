@@ -4,16 +4,15 @@
 
 using System;
 using System.Collections;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Xml;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
     public class KeyInfo : IEnumerable
     {
         private string _id = null;
-        private ArrayList _keyInfoClauses;
+        private readonly ArrayList _keyInfoClauses;
 
         //
         // public constructors
@@ -28,11 +27,15 @@ namespace Org.BouncyCastle.Crypto.Xml
         // public properties
         //
 
-        public string Id
-        {
-            get { return _id; }
-            set { _id = value; }
-        }
+        public string GetId()
+        { return _id; }
+
+        //
+        // public properties
+        //
+
+        public void SetId(string value)
+        { _id = value; }
 
         public XmlElement GetXml()
         {
@@ -44,7 +47,7 @@ namespace Org.BouncyCastle.Crypto.Xml
         internal XmlElement GetXml(XmlDocument xmlDocument)
         {
             // Create the KeyInfo element itself
-            XmlElement keyInfoElement = xmlDocument.CreateElement("KeyInfo", SignedConstants.XmlDsigNamespaceUrl);
+            XmlElement keyInfoElement = xmlDocument.CreateElement("KeyInfo", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
             if (!string.IsNullOrEmpty(_id))
             {
                 keyInfoElement.SetAttribute("Id", _id);
@@ -68,7 +71,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 throw new ArgumentNullException(nameof(value));
 
             XmlElement keyInfoElement = value;
-            _id = Utils.GetAttribute(keyInfoElement, "Id", SignedConstants.XmlDsigNamespaceUrl);
+            _id = Utils.GetAttribute(keyInfoElement, "Id", NS.XmlDsigNamespaceUrl);
             if (!Utils.VerifyAttributes(keyInfoElement, "Id"))
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "KeyInfo");
 

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -26,7 +24,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 byte[] calculatedHash = null;
                 try
                 {
-                    calculatedHash = digestedReference.CalculateHashValue(signedXml._containingDocument, m_signature.ReferencedItems);
+                    calculatedHash = digestedReference.CalculateHashValue(signedXml.ContainingDocument, m_signature.ReferencedItems);
                 }
                 catch (CryptoSignedXmlRecursionException)
                 {
@@ -63,12 +61,12 @@ namespace Org.BouncyCastle.Crypto.Xml
             return true;
         }
 
-        private static bool IsSafeTransform(string transformAlgorithm, SignedXml signedXml)
+        private static bool IsSafeTransform(NS transformAlgorithm, SignedXml signedXml)
         {
             // All canonicalization algorithms are valid transform algorithms.
             foreach (string safeAlgorithm in signedXml.SafeCanonicalizationMethods)
             {
-                if (string.Equals(safeAlgorithm, transformAlgorithm, StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(safeAlgorithm, XmlNameSpace.Url[transformAlgorithm], StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }
@@ -76,7 +74,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             foreach (string safeAlgorithm in DefaultSafeTransformMethods(SignedXml.s_defaultSafeTransformMethods))
             {
-                if (string.Equals(safeAlgorithm, transformAlgorithm, StringComparison.OrdinalIgnoreCase))
+                if (string.Equals(safeAlgorithm, XmlNameSpace.Url[transformAlgorithm], StringComparison.OrdinalIgnoreCase))
                 {
                     return true;
                 }
@@ -84,7 +82,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             SignedXmlDebugLog.LogUnsafeTransformMethod(
                 signedXml,
-                transformAlgorithm,
+                XmlNameSpace.Url[transformAlgorithm],
                 signedXml.SafeCanonicalizationMethods,
                 DefaultSafeTransformMethods(SignedXml.s_defaultSafeTransformMethods));
 
@@ -105,10 +103,10 @@ namespace Org.BouncyCastle.Crypto.Xml
                     // xmldsig 6.6.1:
                     //     Any canonicalization algorithm that can be used for
                     //     CanonicalizationMethod can be used as a Transform.
-                    safeAlgorithms.Add(SignedConstants.XmlDsigEnvelopedSignatureTransformUrl);
-                    safeAlgorithms.Add(SignedConstants.XmlDsigBase64TransformUrl);
-                    safeAlgorithms.Add(SignedConstants.XmlLicenseTransformUrl);
-                    safeAlgorithms.Add(SignedConstants.XmlDecryptionTransformUrl);
+                    safeAlgorithms.Add(XmlNameSpace.Url[NS.XmlDsigEnvelopedSignatureTransformUrl]);
+                    safeAlgorithms.Add(XmlNameSpace.Url[NS.XmlDsigBase64TransformUrl]);
+                    safeAlgorithms.Add(XmlNameSpace.Url[NS.XmlLicenseTransformUrl]);
+                    safeAlgorithms.Add(XmlNameSpace.Url[NS.XmlDecryptionTransformUrl]);
 
                     s_defaultSafeTransformMethods = safeAlgorithms;
                 }
@@ -148,6 +146,44 @@ namespace Org.BouncyCastle.Crypto.Xml
             }
 
             return (0 == result);
+        }
+
+        public static void BuildDigestedReferences(SignedXml signedXml)
+        {
+            // Default the DigestMethod and Canonicalization
+            ArrayList references = signedXml.SignedInfo.References;
+            // Reset the cache
+            signedXml.RefProcessed = new bool[references.Count];
+            signedXml.RefLevelCache = new int[references.Count];
+
+            ReferenceLevelSortOrder sortOrder = new ReferenceLevelSortOrder();
+            sortOrder.SetReferences(references);
+            // Don't alter the order of the references array list
+            ArrayList sortedReferences = new ArrayList();
+            foreach (Reference reference in references)
+            {
+                sortedReferences.Add(reference);
+            }
+            sortedReferences.Sort(sortOrder);
+
+            CanonicalXmlNodeList nodeList = new CanonicalXmlNodeList();
+            foreach (DataObject obj in signedXml.Signature.GetObjectList())
+            {
+                nodeList.Add(obj.GetXml());
+            }
+            foreach (Reference reference in sortedReferences)
+            {
+                // If no DigestMethod has yet been set, default it to sha1
+                if (reference.DigestMethod == null)
+                    reference.DigestMethod = XmlNameSpace.Url[NS.XmlDsigSHA256Url];
+
+                SignedXmlDebugLog.LogSigningReference(signedXml, reference);
+
+                reference.UpdateHashValue(signedXml.ContainingDocument, nodeList);
+                // If this reference has an Id attribute, add it
+                if (reference.GetId() != null)
+                    nodeList.Add(reference.GetXml());
+            }
         }
     }
 }
