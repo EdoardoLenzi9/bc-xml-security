@@ -664,7 +664,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                                                   SR.Log_SigningReference,
                                                   GetObjectId(reference),
                                                   reference.Uri,
-                                                  reference.Id,
+                                                  reference.GetId(),
                                                   reference.Type,
                                                   reference.DigestMethod,
                                                   CryptoHelpers.CreateFromKnownName(reference.DigestMethod).GetType().Name);
@@ -764,7 +764,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                                                   SR.Log_VerifyReference,
                                                   GetObjectId(reference),
                                                   reference.Uri,
-                                                  reference.Id,
+                                                  reference.GetId(),
                                                   reference.Type);
 
                 WriteLine(signedXml,

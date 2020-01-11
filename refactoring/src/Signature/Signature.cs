@@ -16,14 +16,14 @@ namespace Org.BouncyCastle.Crypto.Xml
         private string _signatureValueId;
         private KeyInfo _keyInfo;
         private IList _embeddedObjects;
-        private CanonicalXmlNodeList _referencedItems;
+        private readonly CanonicalXmlNodeList _referencedItems;
         private SignedXml _signedXml = null;
 
-        internal SignedXml SignedXml
-        {
-            get { return _signedXml; }
-            set { _signedXml = value; }
-        }
+        internal SignedXml GetSignedXml()
+        { return _signedXml; }
+
+        internal void SetSignedXml(SignedXml value)
+        { _signedXml = value; }
 
         //
         // public constructors
@@ -39,11 +39,15 @@ namespace Org.BouncyCastle.Crypto.Xml
         // public properties
         //
 
-        public string Id
-        {
-            get { return _id; }
-            set { _id = value; }
-        }
+        public string GetId()
+        { return _id; }
+
+        //
+        // public properties
+        //
+
+        public void SetId(string value)
+        { _id = value; }
 
         public SignedInfo SignedInfo
         {
@@ -51,16 +55,16 @@ namespace Org.BouncyCastle.Crypto.Xml
             set
             {
                 _signedInfo = value;
-                if (SignedXml != null && _signedInfo != null)
-                    _signedInfo.SignedXml = SignedXml;
+                if (GetSignedXml() != null && _signedInfo != null)
+                    _signedInfo.SetSignedXml(GetSignedXml());
             }
         }
 
-        public byte[] SignatureValue
-        {
-            get { return _signatureValue; }
-            set { _signatureValue = value; }
-        }
+        public byte[] GetSignatureValue()
+        { return _signatureValue; }
+
+        public void SetSignatureValue(byte[] value)
+        { _signatureValue = value; }
 
         public KeyInfo KeyInfo
         {
@@ -73,11 +77,11 @@ namespace Org.BouncyCastle.Crypto.Xml
             set { _keyInfo = value; }
         }
 
-        public IList ObjectList
-        {
-            get { return _embeddedObjects; }
-            set { _embeddedObjects = value; }
-        }
+        public IList GetObjectList()
+        { return _embeddedObjects; }
+
+        public void SetObjectList(IList value)
+        { _embeddedObjects = value; }
 
         internal CanonicalXmlNodeList ReferencedItems
         {

@@ -75,7 +75,7 @@
     <Compile Include="References\DataReference.cs" />
     <Compile Include="Constants\DocPosition.cs" />
     <Compile Include="Signature\DsaDigestSigner2.cs" />
-    <Compile Include="KeyInfo\DSAKeyValue.cs" />
+    <Compile Include="KeyInfo\DsaKeyValue1.cs" />
     <Compile Include="Encryption\EncryptedData.cs" />
     <Compile Include="Encryption\EncryptedKey.cs" />
     <Compile Include="Encryption\EncryptedReference.cs" />
@@ -107,7 +107,7 @@
     <Compile Include="References\Reference.cs" />
     <Compile Include="References\ReferenceList.cs" />
     <Compile Include="Constants\ReferenceTargetType.cs" />
-    <Compile Include="KeyInfo\RSAKeyValue.cs" />
+    <Compile Include="KeyInfo\RsaKeyValue1.cs" />
     <Compile Include="RSAFormatters\KeyExchangeFormatter.cs" />
     <Compile Include="Signature\Signature.cs" />
     <Compile Include="Signature\SignedInfo.cs" />

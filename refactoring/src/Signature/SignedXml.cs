@@ -76,7 +76,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             ContainingDocument = (element == null ? null : element.OwnerDocument);
             _context = element;
             MSignature = new Signature();
-            MSignature.SignedXml = this;
+            MSignature.SetSignedXml(this);
             MSignature.SignedInfo = new SignedInfo();
             _signingKey = null;
 
@@ -149,7 +149,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public byte[] SignatureValue
         {
-            get { return MSignature.SignatureValue; }
+            get { return MSignature.GetSignatureValue(); }
         }
 
         public KeyInfo KeyInfo
@@ -350,7 +350,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             CheckSignatureManager.GetC14NDigest(new SignerHashWrapper(signatureDescription), this);
 
             SignedXmlDebugLog.LogSigning(this, key, signatureDescription);
-            MSignature.SignatureValue = signatureDescription.GenerateSignature();
+            MSignature.SetSignatureValue(signatureDescription.GenerateSignature());
         }
 
         public void ComputeSignature(IMac macAlg)
@@ -399,8 +399,8 @@ namespace Org.BouncyCastle.Crypto.Xml
             macAlg.DoFinal(hashValue, 0);
 
             SignedXmlDebugLog.LogSigning(this, macAlg);
-            MSignature.SignatureValue = new byte[signatureLength / 8];
-            Buffer.BlockCopy(hashValue, 0, MSignature.SignatureValue, 0, signatureLength / 8);
+            MSignature.SetSignatureValue(new byte[signatureLength / 8]);
+            Buffer.BlockCopy(hashValue, 0, MSignature.GetSignatureValue(), 0, signatureLength / 8);
         }
 
         //
@@ -425,13 +425,13 @@ namespace Org.BouncyCastle.Crypto.Xml
             // In our implementation, we move to the next KeyInfo clause which is an RSAKeyValue, DSAKeyValue or KeyInfoX509Data
             while (_keyInfoEnum.MoveNext())
             {
-                RSAKeyValue rsaKeyValue = _keyInfoEnum.Current as RSAKeyValue;
+                RsaKeyValue rsaKeyValue = _keyInfoEnum.Current as RsaKeyValue;
                 if (rsaKeyValue != null)
-                    return rsaKeyValue.Key;
+                    return rsaKeyValue.GetKey();
 
-                DSAKeyValue dsaKeyValue = _keyInfoEnum.Current as DSAKeyValue;
+                DsaKeyValue dsaKeyValue = _keyInfoEnum.Current as DsaKeyValue;
                 if (dsaKeyValue != null)
-                    return dsaKeyValue.Key;
+                    return dsaKeyValue.GetKey();
 
                 KeyInfoX509Data x509Data = _keyInfoEnum.Current as KeyInfoX509Data;
                 if (x509Data != null)
@@ -579,7 +579,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 // If this is pointing to another reference
                 for (int j = 0; j < references.Count; ++j)
                 {
-                    if (((Reference)references[j]).Id == idref)
+                    if (((Reference)references[j]).GetId() == idref)
                     {
                         RefLevelCache[index] = GetReferenceLevel(j, references) + 1;
                         return (RefLevelCache[index]);

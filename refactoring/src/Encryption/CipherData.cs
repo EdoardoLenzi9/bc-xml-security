@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections;
 using System.Xml;
 
 namespace Org.BouncyCastle.Crypto.Xml
@@ -76,7 +75,7 @@ namespace Org.BouncyCastle.Crypto.Xml
         internal XmlElement GetXml(XmlDocument document)
         {
             // Create the CipherData element
-            XmlElement cipherDataElement = (XmlElement)document.CreateElement("CipherData", EncryptedXml.XmlEncNamespaceUrl);
+            XmlElement cipherDataElement = document.CreateElement("CipherData", EncryptedXml.XmlEncNamespaceUrl);
             if (CipherValue != null)
             {
                 XmlElement cipherValueElement = document.CreateElement("CipherValue", EncryptedXml.XmlEncNamespaceUrl);

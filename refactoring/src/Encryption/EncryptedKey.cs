@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections;
 using System.Xml;
 
 namespace Org.BouncyCastle.Crypto.Xml
@@ -166,7 +165,7 @@ namespace Org.BouncyCastle.Crypto.Xml
         internal XmlElement GetXml(XmlDocument document)
         {
             // Create the EncryptedKey element
-            XmlElement encryptedKeyElement = (XmlElement)document.CreateElement("EncryptedKey", EncryptedXml.XmlEncNamespaceUrl);
+            XmlElement encryptedKeyElement = document.CreateElement("EncryptedKey", EncryptedXml.XmlEncNamespaceUrl);
 
             // Deal with attributes
             if (!string.IsNullOrEmpty(Id))
@@ -219,7 +218,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             // CarriedKeyName
             if (CarriedKeyName != null)
             {
-                XmlElement carriedKeyNameElement = (XmlElement)document.CreateElement("CarriedKeyName", EncryptedXml.XmlEncNamespaceUrl);
+                XmlElement carriedKeyNameElement = document.CreateElement("CarriedKeyName", EncryptedXml.XmlEncNamespaceUrl);
                 XmlText carriedKeyNameText = document.CreateTextNode(CarriedKeyName);
                 carriedKeyNameElement.AppendChild(carriedKeyNameText);
                 encryptedKeyElement.AppendChild(carriedKeyNameElement);

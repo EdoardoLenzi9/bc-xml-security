@@ -4,14 +4,11 @@
 
 using Org.BouncyCastle.Crypto.Parameters;
 using System;
-using System.Collections;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Xml;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
-    public class DSAKeyValue : KeyInfoClause
+    public class DsaKeyValue : KeyInfoClause
     {
         private DsaPublicKeyParameters _key;
 
@@ -19,13 +16,13 @@ namespace Org.BouncyCastle.Crypto.Xml
         // public constructors
         //
 
-        public DSAKeyValue()
+        public DsaKeyValue()
         {
             var pair = Utils.DSAGenerateKeyPair();
             _key = (DsaPublicKeyParameters)pair.Public;
         }
 
-        public DSAKeyValue(DsaPublicKeyParameters key)
+        public DsaKeyValue(DsaPublicKeyParameters key)
         {
             _key = key;
         }
@@ -34,11 +31,15 @@ namespace Org.BouncyCastle.Crypto.Xml
         // public properties
         //
 
-        public DsaPublicKeyParameters Key
-        {
-            get { return _key; }
-            set { _key = value; }
-        }
+        public DsaPublicKeyParameters GetKey()
+        { return _key; }
+
+        //
+        // public properties
+        //
+
+        public void SetKey(DsaPublicKeyParameters value)
+        { _key = value; }
 
         //
         // public methods
@@ -99,13 +100,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             yElement.AppendChild(xmlDocument.CreateTextNode(Convert.ToBase64String(_key.Y.ToByteArrayUnsigned())));
             dsaKeyValueElement.AppendChild(yElement);
 
-            // Add optional components if present
-            /*if (dsaParams.J != null)
-            {
-                XmlElement jElement = xmlDocument.CreateElement(JElementName, SignedXml.XmlDsigNamespaceUrl);
-                jElement.AppendChild(xmlDocument.CreateTextNode(Convert.ToBase64String(dsaParams.J)));
-                dsaKeyValueElement.AppendChild(jElement);
-            }*/
 
             if (_key.Parameters.ValidationParameters != null)
             {  // note we assume counter is correct if Seed is present
@@ -172,7 +166,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
 
             XmlNode gNode = dsaKeyValueElement.SelectSingleNode($"{xmlDsigNamespacePrefix}:{GElementName}", xmlNamespaceManager);
-            XmlNode jNode = dsaKeyValueElement.SelectSingleNode($"{xmlDsigNamespacePrefix}:{JElementName}", xmlNamespaceManager);
+            _ = dsaKeyValueElement.SelectSingleNode($"{xmlDsigNamespacePrefix}:{JElementName}", xmlNamespaceManager);
 
             XmlNode seedNode = dsaKeyValueElement.SelectSingleNode($"{xmlDsigNamespacePrefix}:{SeedElementName}", xmlNamespaceManager);
             XmlNode pgenCounterNode = dsaKeyValueElement.SelectSingleNode($"{xmlDsigNamespacePrefix}:{PgenCounterElementName}", xmlNamespaceManager);

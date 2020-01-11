@@ -55,7 +55,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                 if (clause is KeyInfoEncryptedKey)
                 {
                     KeyInfoEncryptedKey encryptedKeyInfo = clause as KeyInfoEncryptedKey;
-                    EncryptedKey encryptedKey = encryptedKeyInfo.EncryptedKey;
+                    EncryptedKey encryptedKey = encryptedKeyInfo.GetEncryptedKey();
 
                     Assert.Equal(encryptedKey.EncryptionMethod.KeyAlgorithm, EncryptedXml.XmlEncRSAOAEPUrl);
                     Assert.Equal(encryptedKey.KeyInfo.Count, 1);
@@ -66,9 +66,9 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
                     foreach (KeyInfoClause rsa in encryptedKey.KeyInfo)
                     {
-                        if (rsa is RSAKeyValue)
+                        if (rsa is RsaKeyValue)
                         {
-                            rsaParams = (rsa as RSAKeyValue).Key;
+                            rsaParams = (rsa as RsaKeyValue).GetKey();
                             break;
                         }
                         else
@@ -173,14 +173,14 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                         EncryptionMethod = new EncryptionMethod(EncryptedXml.XmlEncRSAOAEPUrl)
                     }));
 
-            encKey.KeyInfo.AddClause(new RSAKeyValue(key));
+            encKey.KeyInfo.AddClause(new RsaKeyValue(key));
 
             byte[] dataToEncrypt = new byte[toEncrypt.Length];
             toEncrypt.Read(dataToEncrypt, 0, (int)toEncrypt.Length);
 
             var encryptedXml = new EncryptedXml();
-            encryptedXml.Padding = "PKCS7";
-            encryptedXml.Mode = "CBC";
+            encryptedXml.SetPadding("PKCS7");
+            encryptedXml.SetMode("CBC");
             byte[] encryptedData = encryptedXml.EncryptData(dataToEncrypt, sessionKey);
             cipherData = new CipherData(encryptedData);
         }

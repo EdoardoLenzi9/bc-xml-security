@@ -41,7 +41,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             SignedInfo info = new SignedInfo();
             signature.SignedInfo = info;
             info.SignatureMethod = "http://www.w3.org/2000/09/xmldsig#dsa-sha1";
-            signature.SignatureValue = new byte[128];
+            signature.SetSignatureValue(new byte[128]);
             Assert.Throws<System.Security.Cryptography.CryptographicException>(() => signature.GetXml());
         }
 

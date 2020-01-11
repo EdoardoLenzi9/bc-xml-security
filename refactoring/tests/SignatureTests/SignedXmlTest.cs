@@ -12,7 +12,6 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // See the LICENSE file in the project root for more information.
 
-using Org.BouncyCastle.Crypto.Macs;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
@@ -167,7 +166,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             // Add a KeyInfo.
             KeyInfo keyInfo = new KeyInfo();
-            keyInfo.AddClause(new RSAKeyValue((RsaKeyParameters)pair.Public));
+            keyInfo.AddClause(new RsaKeyValue((RsaKeyParameters)pair.Public));
             signedXml.KeyInfo = keyInfo;
 
             Assert.NotNull(signedXml.SignatureMethod);
@@ -187,7 +186,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             // Add a KeyInfo.
             KeyInfo keyInfo = new KeyInfo();
-            keyInfo.AddClause(new RSAKeyValue((RsaKeyParameters)pair.Public));
+            keyInfo.AddClause(new RsaKeyValue((RsaKeyParameters)pair.Public));
             signedXml.KeyInfo = keyInfo;
 
             Assert.Equal(1, signedXml.KeyInfo.Count);
@@ -271,7 +270,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             // Add a KeyInfo.
             KeyInfo keyInfo = new KeyInfo();
-            keyInfo.AddClause(new RSAKeyValue((RsaKeyParameters)pair.Public));
+            keyInfo.AddClause(new RsaKeyValue((RsaKeyParameters)pair.Public));
             signedXml.KeyInfo = keyInfo;
 
             // Compute the signature.
@@ -310,7 +309,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             // Add a KeyInfo.
             KeyInfo keyInfo = new KeyInfo();
-            keyInfo.AddClause(new DSAKeyValue((DsaPublicKeyParameters)pair.Public));
+            keyInfo.AddClause(new DsaKeyValue((DsaPublicKeyParameters)pair.Public));
             signedXml.KeyInfo = keyInfo;
 
             Assert.Equal(1, signedXml.KeyInfo.Count);

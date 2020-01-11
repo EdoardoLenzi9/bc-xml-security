@@ -1,10 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -159,7 +156,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             signedXml.RefLevelCache = new int[references.Count];
 
             ReferenceLevelSortOrder sortOrder = new ReferenceLevelSortOrder();
-            sortOrder.References = references;
+            sortOrder.SetReferences(references);
             // Don't alter the order of the references array list
             ArrayList sortedReferences = new ArrayList();
             foreach (Reference reference in references)
@@ -169,7 +166,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             sortedReferences.Sort(sortOrder);
 
             CanonicalXmlNodeList nodeList = new CanonicalXmlNodeList();
-            foreach (DataObject obj in signedXml.Signature.ObjectList)
+            foreach (DataObject obj in signedXml.Signature.GetObjectList())
             {
                 nodeList.Add(obj.GetXml());
             }
@@ -183,7 +180,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
                 reference.UpdateHashValue(signedXml.ContainingDocument, nodeList);
                 // If this reference has an Id attribute, add it
-                if (reference.Id != null)
+                if (reference.GetId() != null)
                     nodeList.Add(reference.GetXml());
             }
         }

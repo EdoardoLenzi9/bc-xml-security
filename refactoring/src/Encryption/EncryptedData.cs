@@ -3,7 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections;
 using System.Xml;
 
 namespace Org.BouncyCastle.Crypto.Xml
@@ -78,7 +77,7 @@ namespace Org.BouncyCastle.Crypto.Xml
         internal XmlElement GetXml(XmlDocument document)
         {
             // Create the EncryptedData element
-            XmlElement encryptedDataElement = (XmlElement)document.CreateElement("EncryptedData", EncryptedXml.XmlEncNamespaceUrl);
+            XmlElement encryptedDataElement = document.CreateElement("EncryptedData", EncryptedXml.XmlEncNamespaceUrl);
 
             // Deal with attributes
             if (!string.IsNullOrEmpty(Id))

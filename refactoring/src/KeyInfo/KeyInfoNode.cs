@@ -2,10 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
-using System.Collections;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Xml;
 
 namespace Org.BouncyCastle.Crypto.Xml
@@ -30,11 +26,15 @@ namespace Org.BouncyCastle.Crypto.Xml
         // public properties
         //
 
-        public XmlElement Value
-        {
-            get { return _node; }
-            set { _node = value; }
-        }
+        public XmlElement GetValue()
+        { return _node; }
+
+        //
+        // public properties
+        //
+
+        public void SetValue(XmlElement value)
+        { _node = value; }
 
         //
         // public methods
@@ -52,9 +52,9 @@ namespace Org.BouncyCastle.Crypto.Xml
             return xmlDocument.ImportNode(_node, true) as XmlElement;
         }
 
-        public override void LoadXml(XmlElement value)
+        public override void LoadXml(XmlElement element)
         {
-            _node = value;
+            _node = element;
         }
     }
 }

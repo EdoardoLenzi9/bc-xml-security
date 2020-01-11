@@ -38,24 +38,24 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         public void Constructor_Default()
         {
             EncryptedXml encryptedXml = new EncryptedXml();
-            Assert.Equal(DefaultEncoding, encryptedXml.Encoding);
-            Assert.Equal(DefaultCipherMode, encryptedXml.Mode);
-            Assert.Equal(DefaultPaddingMode, encryptedXml.Padding);
+            Assert.Equal(DefaultEncoding, encryptedXml.GetEncoding());
+            Assert.Equal(DefaultCipherMode, encryptedXml.GetMode());
+            Assert.Equal(DefaultPaddingMode, encryptedXml.GetPadding());
             Assert.Equal(DefaultRecipient, encryptedXml.Recipient);
-            Assert.Equal(DefaultXmlResolver, encryptedXml.Resolver);
-            Assert.Equal(DefaultXmlDSigSearchDepth, encryptedXml.XmlDSigSearchDepth);
+            Assert.Equal(DefaultXmlResolver, encryptedXml.GetResolver());
+            Assert.Equal(DefaultXmlDSigSearchDepth, encryptedXml.GetXmlDSigSearchDepth());
         }
 
         [Fact]
         public void Constructor_XmlDocument()
         {
             EncryptedXml encryptedXml = new EncryptedXml(null);
-            Assert.Equal(DefaultEncoding, encryptedXml.Encoding);
-            Assert.Equal(DefaultCipherMode, encryptedXml.Mode);
-            Assert.Equal(DefaultPaddingMode, encryptedXml.Padding);
+            Assert.Equal(DefaultEncoding, encryptedXml.GetEncoding());
+            Assert.Equal(DefaultCipherMode, encryptedXml.GetMode());
+            Assert.Equal(DefaultPaddingMode, encryptedXml.GetPadding());
             Assert.Equal(DefaultRecipient, encryptedXml.Recipient);
-            Assert.Equal(DefaultXmlResolver, encryptedXml.Resolver);
-            Assert.Equal(DefaultXmlDSigSearchDepth, encryptedXml.XmlDSigSearchDepth);
+            Assert.Equal(DefaultXmlResolver, encryptedXml.GetResolver());
+            Assert.Equal(DefaultXmlDSigSearchDepth, encryptedXml.GetXmlDSigSearchDepth());
         }
 
         [Theory]
@@ -161,7 +161,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                     dr.Uri = "_0";
                     ekey.AddReference(dr);
                     edata.KeyInfo.AddClause(new KeyInfoEncryptedKey(ekey));
-                    ekey.KeyInfo.AddClause(new RSAKeyValue());
+                    ekey.KeyInfo.AddClause(new RsaKeyValue());
                     edata.CipherData.CipherValue = encrypted;
                     EncryptedXml.ReplaceElement(doc.DocumentElement, edata, false);
                     doc.Save(new XmlTextWriter(sw));
@@ -1042,18 +1042,18 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         public void Properties()
         {
             EncryptedXml exml = new EncryptedXml();
-            exml.XmlDSigSearchDepth = 10;
-            exml.Resolver = null;
-            exml.Padding = "NOPADDING";
-            exml.Mode = "CBC";
-            exml.Encoding = Encoding.ASCII;
+            exml.SetXmlDSigSearchDepth(10);
+            exml.SetResolver(null);
+            exml.SetPadding("NOPADDING");
+            exml.SetMode("CBC");
+            exml.SetEncoding(Encoding.ASCII);
             exml.Recipient = "Recipient";
 
-            Assert.Equal(10, exml.XmlDSigSearchDepth);
-            Assert.Null(exml.Resolver);
-            Assert.Equal("NOPADDING", exml.Padding);
-            Assert.Equal("CBC", exml.Mode);
-            Assert.Equal(Encoding.ASCII, exml.Encoding);
+            Assert.Equal(10, exml.GetXmlDSigSearchDepth());
+            Assert.Null(exml.GetResolver());
+            Assert.Equal("NOPADDING", exml.GetPadding());
+            Assert.Equal("CBC", exml.GetMode());
+            Assert.Equal(Encoding.ASCII, exml.GetEncoding());
             Assert.Equal("Recipient", exml.Recipient);
         }
 
@@ -1070,7 +1070,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             KeyInfoEncryptedKey kiEncKey = keyInfoEnum.Current as KeyInfoEncryptedKey;
 
             Assert.NotNull(edata);
-            Assert.Equal(uri, kiEncKey.EncryptedKey.EncryptionMethod.KeyAlgorithm);
+            Assert.Equal(uri, kiEncKey.GetEncryptedKey().EncryptionMethod.KeyAlgorithm);
             Assert.NotNull(edata.CipherData.CipherValue);
         }
     }

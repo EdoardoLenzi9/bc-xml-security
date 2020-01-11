@@ -28,10 +28,10 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             doc.LoadXml(test);
 
             KeyInfoNode node1 = new KeyInfoNode();
-            node1.Value = doc.DocumentElement;
+            node1.SetValue(doc.DocumentElement);
             XmlElement xel = node1.GetXml();
 
-            KeyInfoNode node2 = new KeyInfoNode(node1.Value);
+            KeyInfoNode node2 = new KeyInfoNode(node1.GetValue());
             node2.LoadXml(xel);
 
             Assert.Equal((node1.GetXml().OuterXml), (node2.GetXml().OuterXml));
@@ -63,7 +63,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             KeyInfoNode node1 = new KeyInfoNode();
             // No ArgumentNullException is thrown if value == null
             node1.LoadXml(null);
-            Assert.Null(node1.Value);
+            Assert.Null(node1.GetValue());
         }
     }
 }

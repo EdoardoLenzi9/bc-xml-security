@@ -2,16 +2,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using Org.BouncyCastle.Crypto.Engines;
-using Org.BouncyCastle.Crypto.Paddings;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509;
 using System;
 using System.Collections;
 using System.IO;
-using System.Net;
-using System.Security.Cryptography;
 using System.Text;
 using System.Xml;
 using Org.BouncyCastle.Crypto.Xml.RSAKey;
@@ -66,12 +62,12 @@ namespace Org.BouncyCastle.Crypto.Xml
         // private members
         //
 
-        private XmlDocument _document;
+        private readonly XmlDocument _document;
         private XmlResolver _xmlResolver;
         // hash table defining the key name mapping
         private const int _capacity = 4; // 4 is a reasonable capacity for
                                           // the key name mapping hash table
-        private Hashtable _keyNameMapping;
+        private readonly Hashtable _keyNameMapping;
         private string _padding;
         private string _mode;
         private Encoding _encoding;
@@ -105,7 +101,7 @@ namespace Org.BouncyCastle.Crypto.Xml
         /// <returns>returns true if the limit has reached otherwise false</returns>
         private bool IsOverXmlDsigRecursionLimit()
         {
-            if (_xmlDsigSearchDepthCounter > XmlDSigSearchDepth)
+            if (_xmlDsigSearchDepthCounter > GetXmlDSigSearchDepth())
             {
                 return true;
             }
@@ -115,47 +111,54 @@ namespace Org.BouncyCastle.Crypto.Xml
         /// <summary>
         /// Gets / Sets the max limit for recursive search of encryption key in signed XML
         /// </summary>
-        public int XmlDSigSearchDepth
+        public int GetXmlDSigSearchDepth()
         {
-            get
-            {
-                return _xmlDsigSearchDepth;
-            }
-            set
-            {
-                _xmlDsigSearchDepth = value;
-            }
+            return _xmlDsigSearchDepth;
+        }
+
+        /// <summary>
+        /// Gets / Sets the max limit for recursive search of encryption key in signed XML
+        /// </summary>
+        public void SetXmlDSigSearchDepth(int value)
+        {
+            _xmlDsigSearchDepth = value;
         }
 
         // The resolver to use for external entities
-        public XmlResolver Resolver
-        {
-            get { return _xmlResolver; }
-            set { _xmlResolver = value; }
-        }
+        public XmlResolver GetResolver()
+        { return _xmlResolver; }
+
+        // The resolver to use for external entities
+        public void SetResolver(XmlResolver value)
+        { _xmlResolver = value; }
 
         // The padding to be used. XML Encryption uses ISO 10126
         // but it's nice to provide a way to extend this to include other forms of paddings
-        public string Padding
-        {
-            get { return _padding; }
-            set { _padding = value; }
-        }
+        public string GetPadding()
+        { return _padding; }
+
+        // The padding to be used. XML Encryption uses ISO 10126
+        // but it's nice to provide a way to extend this to include other forms of paddings
+        public void SetPadding(string value)
+        { _padding = value; }
 
         // The cipher mode to be used. XML Encryption uses CBC padding
         // but it's nice to provide a way to extend this to include other cipher modes
-        public string Mode
-        {
-            get { return _mode; }
-            set { _mode = value; }
-        }
+        public string GetMode()
+        { return _mode; }
+
+        // The cipher mode to be used. XML Encryption uses CBC padding
+        // but it's nice to provide a way to extend this to include other cipher modes
+        public void SetMode(string value)
+        { _mode = value; }
 
         // The encoding of the XML document
-        public Encoding Encoding
-        {
-            get { return _encoding; }
-            set { _encoding = value; }
-        }
+        public Encoding GetEncoding()
+        { return _encoding; }
+
+        // The encoding of the XML document
+        public void SetEncoding(Encoding value)
+        { _encoding = value; }
 
         // This is used to specify the EncryptedKey elements that should be considered
         // when an EncyptedData references an EncryptedKey using a CarriedKeyName and Recipient
@@ -317,8 +320,10 @@ namespace Org.BouncyCastle.Crypto.Xml
                 {
                     // Get the decryption key from the key mapping
                     string keyName = kiName.Value;
-                    if (_keyNameMapping[keyName] as ICipherParameters != null)
+                    if (_keyNameMapping[keyName] is ICipherParameters)
+                    {
                         return (ICipherParameters)_keyNameMapping[keyName];
+                    }
                     // try to get it from a CarriedKeyName
                     XmlNamespaceManager nsm = new XmlNamespaceManager(_document.NameTable);
                     nsm.AddNamespace("enc", EncryptedXml.XmlEncNamespaceUrl);
@@ -342,7 +347,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 kiRetrievalMethod = keyInfoEnum.Current as KeyInfoRetrievalMethod;
                 if (kiRetrievalMethod != null)
                 {
-                    string idref = Utils.ExtractIdFromLocalUri(kiRetrievalMethod.Uri);
+                    string idref = Utils.ExtractIdFromLocalUri(kiRetrievalMethod.GetUri());
                     ek = new EncryptedKey();
                     ek.LoadXml(GetIdElement(_document, idref));
                     break;
@@ -350,7 +355,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 kiEncKey = keyInfoEnum.Current as KeyInfoEncryptedKey;
                 if (kiEncKey != null)
                 {
-                    ek = kiEncKey.EncryptedKey;
+                    ek = kiEncKey.GetEncryptedKey();
                     break;
                 }
             }
@@ -452,7 +457,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 kiRetrievalMethod = keyInfoEnum.Current as KeyInfoRetrievalMethod;
                 if (kiRetrievalMethod != null)
                 {
-                    string idref = Utils.ExtractIdFromLocalUri(kiRetrievalMethod.Uri);
+                    string idref = Utils.ExtractIdFromLocalUri(kiRetrievalMethod.GetUri());
                     ek = new EncryptedKey();
                     ek.LoadXml(GetIdElement(_document, idref));
                     try
@@ -478,7 +483,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 kiEncKey = keyInfoEnum.Current as KeyInfoEncryptedKey;
                 if (kiEncKey != null)
                 {
-                    ek = kiEncKey.EncryptedKey;
+                    ek = kiEncKey.GetEncryptedKey();
                     // recursively process EncryptedKey elements
                     byte[] encryptionKey = DecryptEncryptedKey(ek, privateKey);
                     if (encryptionKey != null)
@@ -538,7 +543,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 throw new ArgumentNullException(nameof(certificate));
 
             AsymmetricKeyParameter rsaPublicKey = certificate.GetPublicKey();
-            if (rsaPublicKey == null || !(rsaPublicKey is RsaKeyParameters))
+            if (!(rsaPublicKey is RsaKeyParameters))
                 throw new NotSupportedException(SR.NotSupported_KeyAlgorithm);
 
             // Create the EncryptedData object, using an AES-256 session key by default.

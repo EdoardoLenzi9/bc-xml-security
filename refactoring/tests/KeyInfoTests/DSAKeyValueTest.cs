@@ -11,14 +11,10 @@
 // Licensed to the .NET Foundation under one or more agreements.
 // See the LICENSE file in the project root for more information.
 
-using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
-using Org.BouncyCastle.Security;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Xml;
 using Xunit;
 
@@ -30,34 +26,34 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact]
         public void Ctor_Empty()
         {
-            DSAKeyValue dsaKeyValue = new DSAKeyValue();
-            Assert.NotNull(dsaKeyValue.Key);
+            DsaKeyValue dsaKeyValue = new DsaKeyValue();
+            Assert.NotNull(dsaKeyValue.GetKey());
         }
 
         [Fact]
         public void Ctor_Dsa()
         {
             var pair = TestHelpers.DSAGenerateKeyPair();
-            DSAKeyValue dsaKeyValue = new DSAKeyValue((DsaPublicKeyParameters)pair.Public);
-            Assert.Equal(pair.Public, dsaKeyValue.Key);
+            DsaKeyValue dsaKeyValue = new DsaKeyValue((DsaPublicKeyParameters)pair.Public);
+            Assert.Equal(pair.Public, dsaKeyValue.GetKey());
         }
 
         [Fact]
         public void Ctor_Dsa_Null()
         {
-            DSAKeyValue dsaKeyValue = new DSAKeyValue(null);
+            DsaKeyValue dsaKeyValue = new DsaKeyValue(null);
 
             //From https://github.com/peterwurzinger:
             //This assertion is incorrect, since the parameter value is stored unvalidated/unprocessed
             //Assert.NotNull(dsaKeyValue.Key);
 
-            Assert.Null(dsaKeyValue.Key);
+            Assert.Null(dsaKeyValue.GetKey());
         }
 
         [Fact]
         public void GetXml()
         {
-            DSAKeyValue dsa = new DSAKeyValue();
+            DsaKeyValue dsa = new DsaKeyValue();
             XmlElement xmlkey = dsa.GetXml();
 
             XmlNamespaceManager ns = new XmlNamespaceManager(xmlkey.OwnerDocument.NameTable);
@@ -85,8 +81,8 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         public void GetXml_SameDsa()
         {
             var pair = TestHelpers.DSAGenerateKeyPair();
-            DSAKeyValue dsaKeyValue1 = new DSAKeyValue((DsaPublicKeyParameters)pair.Public);
-            DSAKeyValue dsaKeyValue2 = new DSAKeyValue((DsaPublicKeyParameters)pair.Public);
+            DsaKeyValue dsaKeyValue1 = new DsaKeyValue((DsaPublicKeyParameters)pair.Public);
+            DsaKeyValue dsaKeyValue2 = new DsaKeyValue((DsaPublicKeyParameters)pair.Public);
             Assert.Equal(dsaKeyValue1.GetXml(), dsaKeyValue2.GetXml());
         }
 
@@ -104,14 +100,14 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             var xmlDoc = new XmlDocument();
             xmlDoc.LoadXml(dsaKey);
 
-            var dsaKeyValue = new DSAKeyValue();
+            var dsaKeyValue = new DsaKeyValue();
             dsaKeyValue.LoadXml(xmlDoc.DocumentElement);
 
-            var parameters = dsaKeyValue.Key.Parameters;
+            var parameters = dsaKeyValue.GetKey().Parameters;
             Assert.Equal(Convert.ToBase64String(parameters.P.ToByteArray()), pValue);
             Assert.Equal(Convert.ToBase64String(parameters.Q.ToByteArray()), qValue);
             Assert.Equal(Convert.ToBase64String(parameters.G.ToByteArray()), gValue);
-            Assert.Equal(Convert.ToBase64String(dsaKeyValue.Key.Y.ToByteArray()), yValue);
+            Assert.Equal(Convert.ToBase64String(dsaKeyValue.GetKey().Y.ToByteArray()), yValue);
             var seed = parameters.ValidationParameters.GetSeed();
             Assert.NotNull(seed);
             Assert.Equal(Convert.ToBase64String(seed), seedValue);
@@ -121,7 +117,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact]
         public void LoadXml_Null()
         {
-            DSAKeyValue dsa1 = new DSAKeyValue();
+            DsaKeyValue dsa1 = new DsaKeyValue();
             Assert.Throws<ArgumentNullException>(() => dsa1.LoadXml(null));
         }
 

@@ -11,8 +11,8 @@ namespace Org.BouncyCastle.Crypto.Xml
     // of this type. it maintains the node subset state and performs output rendering during canonicalization
     internal class CanonicalXmlDocument : XmlDocument, ICanonicalizableNode
     {
-        private bool _defaultNodeSetInclusionState;
-        private bool _includeComments;
+        private readonly bool _defaultNodeSetInclusionState;
+        private readonly bool _includeComments;
         private bool _isInNodeSet;
 
         public CanonicalXmlDocument(bool defaultNodeSetInclusionState, bool includeComments) : base()
@@ -22,11 +22,11 @@ namespace Org.BouncyCastle.Crypto.Xml
             _isInNodeSet = _defaultNodeSetInclusionState = defaultNodeSetInclusionState;
         }
 
-        public bool IsInNodeSet
-        {
-            get { return _isInNodeSet; }
-            set { _isInNodeSet = value; }
-        }
+        public bool GetIsInNodeSet()
+        { return _isInNodeSet; }
+
+        public void SetIsInNodeSet(bool value)
+        { _isInNodeSet = value; }
 
         public void Write(StringBuilder strBuilder, DocPosition docPos, AncestralNamespaceContextManager anc)
         {
@@ -47,6 +47,11 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public void WriteHash(IHash signer, DocPosition docPos, AncestralNamespaceContextManager anc)
         {
+            if (signer is null)
+            {
+                throw new System.ArgumentNullException(nameof(signer));
+            }
+
             docPos = DocPosition.BeforeRootElement;
             foreach (XmlNode childNode in ChildNodes)
             {
@@ -84,6 +89,11 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public override XmlWhitespace CreateWhitespace(string prefix)
         {
+            if (prefix is null)
+            {
+                throw new System.ArgumentNullException(nameof(prefix));
+            }
+
             return new CanonicalXmlWhitespace(prefix, this, _defaultNodeSetInclusionState);
         }
 

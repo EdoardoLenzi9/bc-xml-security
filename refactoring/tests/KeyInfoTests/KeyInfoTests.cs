@@ -2,13 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using Xunit;
 
@@ -22,7 +16,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             KeyInfo keyInfo = new KeyInfo();
 
             Assert.Equal(0, keyInfo.Count);
-            Assert.Equal(null, keyInfo.Id);
+            Assert.Null(keyInfo.GetId());
 
             XmlElement xmlElement = keyInfo.GetXml();
             Assert.NotNull(xmlElement);

@@ -4,8 +4,6 @@
 
 using System;
 using System.Collections;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Xml;
 
 namespace Org.BouncyCastle.Crypto.Xml
@@ -13,7 +11,7 @@ namespace Org.BouncyCastle.Crypto.Xml
     public class KeyInfo : IEnumerable
     {
         private string _id = null;
-        private ArrayList _keyInfoClauses;
+        private readonly ArrayList _keyInfoClauses;
 
         //
         // public constructors
@@ -28,11 +26,15 @@ namespace Org.BouncyCastle.Crypto.Xml
         // public properties
         //
 
-        public string Id
-        {
-            get { return _id; }
-            set { _id = value; }
-        }
+        public string GetId()
+        { return _id; }
+
+        //
+        // public properties
+        //
+
+        public void SetId(string value)
+        { _id = value; }
 
         public XmlElement GetXml()
         {

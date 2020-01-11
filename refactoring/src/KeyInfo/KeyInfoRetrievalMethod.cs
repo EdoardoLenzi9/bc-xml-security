@@ -3,9 +3,6 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Xml;
 
 namespace Org.BouncyCastle.Crypto.Xml
@@ -36,11 +33,15 @@ namespace Org.BouncyCastle.Crypto.Xml
         // public properties
         //
 
-        public string Uri
-        {
-            get { return _uri; }
-            set { _uri = value; }
-        }
+        public string GetUri()
+        { return _uri; }
+
+        //
+        // public properties
+        //
+
+        public void SetUri(string value)
+        { _uri = value; }
 
         public string Type
         {
@@ -68,14 +69,12 @@ namespace Org.BouncyCastle.Crypto.Xml
             return retrievalMethodElement;
         }
 
-        public override void LoadXml(XmlElement value)
+        public override void LoadXml(XmlElement element)
         {
-            if (value == null)
-                throw new ArgumentNullException(nameof(value));
-
-            XmlElement retrievalMethodElement = value;
-            _uri = Utils.GetAttribute(value, "URI", SignedConstants.XmlDsigNamespaceUrl);
-            _type = Utils.GetAttribute(value, "Type", SignedConstants.XmlDsigNamespaceUrl);
+            if (element == null)
+                throw new ArgumentNullException(nameof(element));
+            _uri = Utils.GetAttribute(element, "URI", SignedConstants.XmlDsigNamespaceUrl);
+            _type = Utils.GetAttribute(element, "Type", SignedConstants.XmlDsigNamespaceUrl);
         }
     }
 }

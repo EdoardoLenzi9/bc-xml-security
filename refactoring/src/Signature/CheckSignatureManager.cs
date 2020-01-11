@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Security.Cryptography.Xml;
-using System.Text;
 using System.Xml;
 
 namespace Org.BouncyCastle.Crypto.Xml
@@ -28,19 +23,19 @@ namespace Org.BouncyCastle.Crypto.Xml
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidSignatureLength);
             if (signatureLength % 8 != 0)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidSignatureLength2);
-            if (m_signature.SignatureValue == null)
+            if (m_signature.GetSignatureValue() == null)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_SignatureValueRequired);
-            if (m_signature.SignatureValue.Length != signatureLength / 8)
+            if (m_signature.GetSignatureValue().Length != signatureLength / 8)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidSignatureLength);
 
             // Calculate the hash
             GetC14NDigest(new MacHashWrapper(macAlg), signedXml);
             byte[] hashValue = new byte[macAlg.GetMacSize()];
             macAlg.DoFinal(hashValue, 0);
-            SignedXmlDebugLog.LogVerifySignedInfo(signedXml, macAlg, hashValue, m_signature.SignatureValue);
-            for (int i = 0; i < m_signature.SignatureValue.Length; i++)
+            SignedXmlDebugLog.LogVerifySignedInfo(signedXml, macAlg, hashValue, m_signature.GetSignatureValue());
+            for (int i = 0; i < m_signature.GetSignatureValue().Length; i++)
             {
-                if (m_signature.SignatureValue[i] != hashValue[i]) return false;
+                if (m_signature.GetSignatureValue()[i] != hashValue[i]) return false;
             }
             return true;
         }
@@ -94,7 +89,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             CheckSignatureManager.GetC14NDigest(new SignerHashWrapper(signatureDescription), signedXml);
 
-            return signatureDescription.VerifySignature(m_signature.SignatureValue);
+            return signatureDescription.VerifySignature(m_signature.GetSignatureValue());
         }
 
         public static XmlElement GetSingleReferenceTarget(XmlDocument document, string idAttributeName, string idValue)

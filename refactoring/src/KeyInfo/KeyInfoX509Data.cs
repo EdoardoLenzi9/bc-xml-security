@@ -7,9 +7,6 @@ using Org.BouncyCastle.X509;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Xml;
 
 namespace Org.BouncyCastle.Crypto.Xml
@@ -59,13 +56,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                     // Build the certificate chain
                     chain = Utils.BuildCertificateChain(cert, additional);
 
-                    // Can't honor the option if we only have a partial chain.
-                    /*if ((chain.ChainStatus.Length > 0) &&
-                        ((chain.ChainStatus[0].Status & X509ChainStatusFlags.PartialChain) == X509ChainStatusFlags.PartialChain))
-                    {
-                        throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Partial_Chain);
-                    }*/
-
                     for (int index = 0; index < (Utils.IsSelfSigned(chain) ? 1 : chain.Count - 1); index++)
                     {
                         AddCertificate(chain[index]);
@@ -77,13 +67,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 case X509IncludeOption.WholeChain:
                     // Build the certificate chain
                     chain = Utils.BuildCertificateChain(cert, additional);
-
-                    // Can't honor the option if we only have a partial chain.
-                    /*if ((chain.ChainStatus.Length > 0) &&
-                        ((chain.ChainStatus[0].Status & X509ChainStatusFlags.PartialChain) == X509ChainStatusFlags.PartialChain))
-                    {
-                        throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Partial_Chain);
-                    }*/
 
                     foreach (var element in chain)
                     {
@@ -181,11 +164,11 @@ namespace Org.BouncyCastle.Crypto.Xml
             _issuerSerials.Add(Utils.CreateX509IssuerSerial(issuerName, serialNumber));
         }
 
-        public byte[] CRL
-        {
-            get { return _CRL; }
-            set { _CRL = value; }
-        }
+        public byte[] GetCRL()
+        { return _CRL; }
+
+        public void SetCRL(byte[] value)
+        { _CRL = value; }
 
         //
         // private methods

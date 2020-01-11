@@ -62,7 +62,7 @@ namespace _SignedXml.Samples
             // This test bypasses certificate verification because:
             // - certificates expire - test should not be based on time
             // - we cannot guarantee that the certificate is trusted on the machine
-            return signedXml.CheckSignature(/*certificate, verifySignatureOnly: true*/);
+            return signedXml.CheckSignature();
         }
 
         public void SignedXmlHasCertificateVerifiableSignature()

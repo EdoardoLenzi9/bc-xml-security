@@ -63,7 +63,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                     return _exml;
 
                 Reference reference = Reference;
-                SignedXml signedXml = (reference == null ? SignedXml : reference.SignedXml);
+                SignedXml signedXml = (reference == null ? SignedXml : reference.GetSignedXml());
                 if (signedXml == null || signedXml.EncryptedXml == null)
                     _exml = new EncryptedXml(_containingDocument); // default processing rules
                 else
@@ -187,7 +187,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 // However, EncryptedXml.ReplaceData will preserve other top-level elements such as the XML
                 // entity declaration and top level comments.  So, in this case we must do the replacement
                 // ourselves.
-                parent.InnerXml = EncryptedXml.Encoding.GetString(decrypted);
+                parent.InnerXml = EncryptedXml.GetEncoding().GetString(decrypted);
             }
             else
             {

@@ -22,8 +22,8 @@ namespace Org.BouncyCastle.Crypto.Xml
         private string _digestMethod;
         private byte[] _digestValue;
         private IHash _hashAlgorithm;
-        private object _refTarget;
-        private ReferenceTargetType _refTargetType;
+        private readonly object _refTarget;
+        private readonly ReferenceTargetType _refTargetType;
         private XmlElement _cachedXml;
         private SignedXml _signedXml = null;
         internal CanonicalXmlNodeList _namespaces = null;
@@ -74,11 +74,15 @@ namespace Org.BouncyCastle.Crypto.Xml
         // public properties
         //
 
-        public string Id
-        {
-            get { return _id; }
-            set { _id = value; }
-        }
+        public string GetId()
+        { return _id; }
+
+        //
+        // public properties
+        //
+
+        public void SetId(string value)
+        { _id = value; }
 
         public string Uri
         {
@@ -143,11 +147,11 @@ namespace Org.BouncyCastle.Crypto.Xml
             }
         }
 
-        internal SignedXml SignedXml
-        {
-            get { return _signedXml; }
-            set { _signedXml = value; }
-        }
+        internal SignedXml GetSignedXml()
+        { return _signedXml; }
+
+        internal void SetSignedXml(SignedXml value)
+        { _signedXml = value; }
 
         internal ReferenceTargetType ReferenceTargetType
         {
@@ -359,7 +363,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             }
 
             // Let's go get the target.
-            string baseUri = (document == null ? System.Environment.CurrentDirectory + "\\" : document.BaseURI);
+            string baseUri = document == null ? Environment.CurrentDirectory + "\\" : document.BaseURI;
             Stream hashInputStream = null;
             WebResponse response = null;
             Stream inputStream = null;
@@ -372,7 +376,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 {
                     case ReferenceTargetType.Stream:
                         // This is the easiest case. We already have a stream, so just pump it through the TransformChain
-                        resolver = (SignedXml.ResolverSet ? SignedXml._xmlResolver : new XmlSecureResolver(new XmlUrlResolver(), baseUri));
+                        resolver = (GetSignedXml().ResolverSet ? GetSignedXml()._xmlResolver : new XmlSecureResolver(new XmlUrlResolver(), baseUri));
                         hashInputStream = TransformChain.TransformToOctetStream((Stream)_refTarget, resolver, baseUri);
                         break;
                     case ReferenceTargetType.UriReference:
@@ -382,7 +386,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                         if (_uri == null)
                         {
                             // We need to create a DocumentNavigator out of the XmlElement
-                            resolver = (SignedXml.ResolverSet ? SignedXml._xmlResolver : new XmlSecureResolver(new XmlUrlResolver(), baseUri));
+                            resolver = (GetSignedXml().ResolverSet ? GetSignedXml()._xmlResolver : new XmlSecureResolver(new XmlUrlResolver(), baseUri));
                             // In the case of a Uri-less reference, we will simply pass null to the transform chain.
                             // The first transform in the chain is expected to know how to retrieve the data to hash.
                             hashInputStream = TransformChain.TransformToOctetStream((Stream)null, resolver, baseUri);
@@ -395,7 +399,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                                 throw new System.Security.Cryptography.CryptographicException(string.Format(CultureInfo.CurrentCulture, SR.Cryptography_Xml_SelfReferenceRequiresContext, _uri));
 
                             // Normalize the containing document
-                            resolver = (SignedXml.ResolverSet ? SignedXml._xmlResolver : new XmlSecureResolver(new XmlUrlResolver(), baseUri));
+                            resolver = (GetSignedXml().ResolverSet ? GetSignedXml()._xmlResolver : new XmlSecureResolver(new XmlUrlResolver(), baseUri));
                             XmlDocument docWithNoComments = Utils.DiscardComments(Utils.PreProcessDocumentInput(document, resolver, baseUri));
                             hashInputStream = TransformChain.TransformToOctetStream(docWithNoComments, resolver, baseUri);
                         }
@@ -412,31 +416,27 @@ namespace Org.BouncyCastle.Crypto.Xml
                                     throw new System.Security.Cryptography.CryptographicException(string.Format(CultureInfo.CurrentCulture, SR.Cryptography_Xml_SelfReferenceRequiresContext, _uri));
 
                                 // We should not discard comments here!!!
-                                resolver = (SignedXml.ResolverSet ? SignedXml._xmlResolver : new XmlSecureResolver(new XmlUrlResolver(), baseUri));
+                                resolver = (GetSignedXml().ResolverSet ? GetSignedXml()._xmlResolver : new XmlSecureResolver(new XmlUrlResolver(), baseUri));
                                 hashInputStream = TransformChain.TransformToOctetStream(Utils.PreProcessDocumentInput(document, resolver, baseUri), resolver, baseUri);
                                 break;
                             }
 
-                            XmlElement elem = SignedXml.GetIdElement(document, idref);
+                            XmlElement elem = GetSignedXml().GetIdElement(document, idref);
                             if (elem != null)
                                 _namespaces = Utils.GetPropagatedAttributes(elem.ParentNode as XmlElement);
 
-                            if (elem == null)
+                            if (elem == null && refList != null)
                             {
-                                // Go throw the referenced items passed in
-                                if (refList != null)
+                                foreach (XmlNode node in refList)
                                 {
-                                    foreach (XmlNode node in refList)
+                                    XmlElement tempElem = node as XmlElement;
+                                    if ((tempElem != null) && (Utils.HasAttribute(tempElem, "Id", SignedConstants.XmlDsigNamespaceUrl))
+                                        && (Utils.GetAttribute(tempElem, "Id", SignedConstants.XmlDsigNamespaceUrl).Equals(idref)))
                                     {
-                                        XmlElement tempElem = node as XmlElement;
-                                        if ((tempElem != null) && (Utils.HasAttribute(tempElem, "Id", SignedConstants.XmlDsigNamespaceUrl))
-                                            && (Utils.GetAttribute(tempElem, "Id", SignedConstants.XmlDsigNamespaceUrl).Equals(idref)))
-                                        {
-                                            elem = tempElem;
-                                            if (_signedXml._context != null)
-                                                _namespaces = Utils.GetPropagatedAttributes(_signedXml._context);
-                                            break;
-                                        }
+                                        elem = tempElem;
+                                        if (_signedXml._context != null)
+                                            _namespaces = Utils.GetPropagatedAttributes(_signedXml._context);
+                                        break;
                                     }
                                 }
                             }
@@ -448,7 +448,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                             // Add the propagated attributes
                             Utils.AddNamespaces(normDocument.DocumentElement, _namespaces);
 
-                            resolver = (SignedXml.ResolverSet ? SignedXml._xmlResolver : new XmlSecureResolver(new XmlUrlResolver(), baseUri));
+                            resolver = (GetSignedXml().ResolverSet ? GetSignedXml()._xmlResolver : new XmlSecureResolver(new XmlUrlResolver(), baseUri));
                             if (discardComments)
                             {
                                 // We should discard comments before going into the transform chain
@@ -468,7 +468,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                         break;
                     case ReferenceTargetType.XmlElement:
                         // We need to create a DocumentNavigator out of the XmlElement
-                        resolver = (SignedXml.ResolverSet ? SignedXml._xmlResolver : new XmlSecureResolver(new XmlUrlResolver(), baseUri));
+                        resolver = (GetSignedXml().ResolverSet ? GetSignedXml()._xmlResolver : new XmlSecureResolver(new XmlUrlResolver(), baseUri));
                         hashInputStream = TransformChain.TransformToOctetStream(Utils.PreProcessElementInput((XmlElement)_refTarget, resolver, baseUri), resolver, baseUri);
                         break;
                     default:

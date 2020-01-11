@@ -2,10 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
-using System.Collections;
-using System.Runtime.InteropServices;
-using System.Text;
 using System.Xml;
 
 namespace Org.BouncyCastle.Crypto.Xml
@@ -21,11 +17,11 @@ namespace Org.BouncyCastle.Crypto.Xml
             _encryptedKey = encryptedKey;
         }
 
-        public EncryptedKey EncryptedKey
-        {
-            get { return _encryptedKey; }
-            set { _encryptedKey = value; }
-        }
+        public EncryptedKey GetEncryptedKey()
+        { return _encryptedKey; }
+
+        public void SetEncryptedKey(EncryptedKey value)
+        { _encryptedKey = value; }
 
         public override XmlElement GetXml()
         {
@@ -41,10 +37,10 @@ namespace Org.BouncyCastle.Crypto.Xml
             return _encryptedKey.GetXml(xmlDocument);
         }
 
-        public override void LoadXml(XmlElement value)
+        public override void LoadXml(XmlElement element)
         {
             _encryptedKey = new EncryptedKey();
-            _encryptedKey.LoadXml(value);
+            _encryptedKey.LoadXml(element);
         }
     }
 }

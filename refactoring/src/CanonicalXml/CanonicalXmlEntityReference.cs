@@ -2,11 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using System;
 using System.Xml;
-using System.IO;
 using System.Text;
-using System.Collections;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -21,21 +18,21 @@ namespace Org.BouncyCastle.Crypto.Xml
             _isInNodeSet = defaultNodeSetInclusionState;
         }
 
-        public bool IsInNodeSet
-        {
-            get { return _isInNodeSet; }
-            set { _isInNodeSet = value; }
-        }
+        public bool GetIsInNodeSet()
+        { return _isInNodeSet; }
+
+        public void SetIsInNodeSet(bool value)
+        { _isInNodeSet = value; }
 
         public void Write(StringBuilder strBuilder, DocPosition docPos, AncestralNamespaceContextManager anc)
         {
-            if (IsInNodeSet)
+            if (GetIsInNodeSet())
                 CanonicalizationDispatcher.WriteGenericNode(this, strBuilder, docPos, anc);
         }
 
         public void WriteHash(IHash hash, DocPosition docPos, AncestralNamespaceContextManager anc)
         {
-            if (IsInNodeSet)
+            if (GetIsInNodeSet())
                 CanonicalizationDispatcher.WriteHashGenericNode(this, hash, docPos, anc);
         }
     }

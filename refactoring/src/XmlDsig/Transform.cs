@@ -177,7 +177,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                     return _context;
 
                 Reference reference = Reference;
-                SignedXml signedXml = (reference == null ? SignedXml : reference.SignedXml);
+                SignedXml signedXml = (reference == null ? SignedXml : reference.GetSignedXml());
                 if (signedXml == null)
                     return null;
 
@@ -197,7 +197,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                     return _propagatedNamespaces;
 
                 Reference reference = Reference;
-                SignedXml signedXml = (reference == null ? SignedXml : reference.SignedXml);
+                SignedXml signedXml = (reference == null ? SignedXml : reference.GetSignedXml());
 
                 // If the reference is not a Uri reference with a DataObject target, return an empty hashtable.
                 if (reference != null &&

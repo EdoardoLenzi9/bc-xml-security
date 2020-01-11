@@ -22,15 +22,15 @@ namespace Org.BouncyCastle.Crypto.Xml
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Security", "CA5351",
             Justification = "HMACMD5 needed for compat.")]
 
-        public static Dictionary<string, object> dict = new Dictionary<string, object>()
+        public static readonly Dictionary<string, object> dict = new Dictionary<string, object>()
         {
             {"MD5", DigestUtilities.GetDigest("MD5")},
             {"SHA384", DigestUtilities.GetDigest("SHA-384")},
             {"System.Security.Cryptography.DSASignatureDescription", new DsaDigestSigner2(new DsaSigner(), new Sha1Digest())},
             {"System.Security.Cryptography.RSASignatureDescription", SignerUtilities.GetSigner("SHA1WITHRSA")},
             {"http://www.w3.org/2000/09/xmldsig# KeyName", new KeyInfoName()},
-            {"http://www.w3.org/2000/09/xmldsig# KeyValue/DSAKeyValue", new DSAKeyValue()},
-            {"http://www.w3.org/2000/09/xmldsig# KeyValue/RSAKeyValue", new RSAKeyValue()},
+            {"http://www.w3.org/2000/09/xmldsig# KeyValue/DSAKeyValue", new DsaKeyValue()},
+            {"http://www.w3.org/2000/09/xmldsig# KeyValue/RSAKeyValue", new RsaKeyValue()},
             {"http://www.w3.org/2000/09/xmldsig# RetrievalMethod", new KeyInfoRetrievalMethod()},
             {"http://www.w3.org/2000/09/xmldsig# X509Data", new KeyInfoX509Data()},
             {"http://www.w3.org/2000/09/xmldsig#base64", new XmlDsigBase64Transform()},
@@ -112,16 +112,15 @@ namespace Org.BouncyCastle.Crypto.Xml
                 case "http://www.w3.org/2000/09/xmldsig# KeyName":
                     return new KeyInfoName();
                 case "http://www.w3.org/2000/09/xmldsig# KeyValue/DSAKeyValue":
-                    return new DSAKeyValue();
+                    return new DsaKeyValue();
                 case "http://www.w3.org/2000/09/xmldsig# KeyValue/RSAKeyValue":
-                    return new RSAKeyValue();
+                    return new RsaKeyValue();
                 case "http://www.w3.org/2000/09/xmldsig# RetrievalMethod":
                     return new KeyInfoRetrievalMethod();
                 case "http://www.w3.org/2001/04/xmlenc# EncryptedKey":
                     return new KeyInfoEncryptedKey();
                 case "http://www.w3.org/2000/09/xmldsig#dsa-sha1":
                 case "System.Security.Cryptography.DSASignatureDescription":
-                    //return SignerUtilities.GetSigner("DSAWITHSHA1");
                     return new DsaDigestSigner2(new DsaSigner(), new Sha1Digest());
                 case "http://www.w3.org/2000/09/xmldsig#rsa-sha1":
                 case "System.Security.Cryptography.RSASignatureDescription":

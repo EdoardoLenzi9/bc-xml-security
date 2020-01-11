@@ -2,7 +2,6 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 // See the LICENSE file in the project root for more information.
 
-using Microsoft.Win32;
 using Org.BouncyCastle.Crypto.Generators;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Pkix;
@@ -13,14 +12,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Security;
-using System.Security.Permissions;
 using System.Text;
-using System.Threading;
 using System.Xml;
 
 namespace Org.BouncyCastle.Crypto.Xml
@@ -68,7 +63,11 @@ namespace Org.BouncyCastle.Crypto.Xml
             {
                 XmlElement ancestorElement = ancestorNode as XmlElement;
                 if (ancestorElement != null)
-                    if (HasNamespace(ancestorElement, prefix, value)) return true;
+                    if (HasNamespace(ancestorElement, prefix, value))
+                    {
+                        return true;
+                    }
+
                 ancestorNode = ancestorNode.ParentNode;
             }
 
@@ -156,7 +155,6 @@ namespace Org.BouncyCastle.Crypto.Xml
         internal static bool IsXmlPrefixDefinitionNode(XmlAttribute a)
         {
             return false;
-            //            return a.Prefix.Equals("xmlns") && a.LocalName.Equals("xml") && a.Value.Equals(NamespaceUrlForXmlPrefix);
         }
 
         internal static string DiscardWhiteSpaces(string inputBuffer)
@@ -281,7 +279,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             do
             {
-                XmlNode rootNode = (XmlNode)elementList[index];
+                XmlNode rootNode = elementList[index];
                 // Add the children nodes
                 XmlNodeList childNodes = rootNode.ChildNodes;
                 if (childNodes != null)
@@ -671,67 +669,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (keyInfoX509Data.SubjectNames == null && keyInfoX509Data.IssuerSerials == null &&
                 keyInfoX509Data.SubjectKeyIds == null && decryptionIssuerSerials == null)
                 return collection;
-
-            // Open LocalMachine and CurrentUser "Other People"/"My" stores.
-            /*
-            X509Store[] stores = new X509Store[2];
-            string storeName = (certUsageType == CertUsageType.Verification ? "AddressBook" : "My");
-            stores[0] = new X509Store(storeName, StoreLocation.CurrentUser);
-            stores[1] = new X509Store(storeName, StoreLocation.LocalMachine);
-
-            for (int index = 0; index < stores.Length; index++)
-            {
-                if (stores[index] != null)
-                {
-                    X509Certificate2Collection filters = null;
-                    // We don't care if we can't open the store.
-                    try
-                    {
-                        stores[index].Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);
-                        filters = stores[index].Certificates;
-                        stores[index].Close();
-                        if (keyInfoX509Data.SubjectNames != null)
-                        {
-                            foreach (string subjectName in keyInfoX509Data.SubjectNames)
-                            {
-                                filters = filters.Find(X509FindType.FindBySubjectDistinguishedName, subjectName, false);
-                            }
-                        }
-                        if (keyInfoX509Data.IssuerSerials != null)
-                        {
-                            foreach (X509IssuerSerial issuerSerial in keyInfoX509Data.IssuerSerials)
-                            {
-                                filters = filters.Find(X509FindType.FindByIssuerDistinguishedName, issuerSerial.IssuerName, false);
-                                filters = filters.Find(X509FindType.FindBySerialNumber, issuerSerial.SerialNumber, false);
-                            }
-                        }
-                        if (keyInfoX509Data.SubjectKeyIds != null)
-                        {
-                            foreach (byte[] ski in keyInfoX509Data.SubjectKeyIds)
-                            {
-                                string hex = EncodeHexString(ski);
-                                filters = filters.Find(X509FindType.FindBySubjectKeyIdentifier, hex, false);
-                            }
-                        }
-                        if (decryptionIssuerSerials != null)
-                        {
-                            foreach (X509IssuerSerial issuerSerial in decryptionIssuerSerials)
-                            {
-                                filters = filters.Find(X509FindType.FindByIssuerDistinguishedName, issuerSerial.IssuerName, false);
-                                filters = filters.Find(X509FindType.FindBySerialNumber, issuerSerial.SerialNumber, false);
-                            }
-                        }
-                    }
-                    // Store doesn't exist, no read permissions, other system error
-                    catch (System.Security.Cryptography.CryptographicException) { }
-                    // Opening LocalMachine stores (other than Root or CertificateAuthority) on Linux
-                    catch (PlatformNotSupportedException) { }
-
-                    if (filters != null)
-                        collection.AddRange(filters);
-                }
-            }
-            */
             return collection;
         }
 
@@ -798,7 +735,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         internal static IList<X509Certificate> BuildCertificateChain(X509Certificate primaryCertificate, IEnumerable<X509Certificate> additionalCertificates)
         {
-            var parser = new X509CertificateParser();
+            _ = new X509CertificateParser();
             var builder = new PkixCertPathBuilder();
 
             // Separate root from itermediate

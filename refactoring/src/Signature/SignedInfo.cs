@@ -15,16 +15,16 @@ namespace Org.BouncyCastle.Crypto.Xml
         private string _canonicalizationMethod;
         private string _signatureMethod;
         private string _signatureLength;
-        private ArrayList _references;
+        private readonly ArrayList _references;
         private XmlElement _cachedXml = null;
         private SignedXml _signedXml = null;
         private Transform _canonicalizationMethodTransform = null;
 
-        internal SignedXml SignedXml
-        {
-            get { return _signedXml; }
-            set { _signedXml = value; }
-        }
+        internal SignedXml GetSignedXml()
+        { return _signedXml; }
+
+        internal void SetSignedXml(SignedXml value)
+        { _signedXml = value; }
 
         public SignedInfo()
         {
@@ -100,7 +100,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                     _canonicalizationMethodTransform = CryptoHelpers.CreateFromName<Transform>(CanonicalizationMethod);
                     if (_canonicalizationMethodTransform == null)
                         throw new System.Security.Cryptography.CryptographicException(string.Format(CultureInfo.CurrentCulture, SR.Cryptography_Xml_CreateTransformFailed, CanonicalizationMethod));
-                    _canonicalizationMethodTransform.SignedXml = SignedXml;
+                    _canonicalizationMethodTransform.SignedXml = GetSignedXml();
                     _canonicalizationMethodTransform.Reference = null;
                 }
                 return _canonicalizationMethodTransform;
@@ -282,7 +282,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (reference == null)
                 throw new ArgumentNullException(nameof(reference));
 
-            reference.SignedXml = SignedXml;
+            reference.SetSignedXml(GetSignedXml());
             _references.Add(reference);
         }
     }
