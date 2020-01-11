@@ -48,6 +48,7 @@
     <Compile Include="CanonicalXml\CanonicalXmlProcessingInstruction.cs" />
     <Compile Include="CanonicalXml\CanonicalXmlText.cs" />
     <Compile Include="CanonicalXml\NamespaceSortOrder.cs" />
+    <Compile Include="Constants\XmlUri.cs" />
     <Compile Include="Constants\XmlNameSpace.cs" />
     <Compile Include="Constants\Padding.cs" />
     <Compile Include="Managers\AncestralNamespaceContextManager.cs" />
