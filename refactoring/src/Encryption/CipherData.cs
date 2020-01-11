@@ -8,7 +8,7 @@ using Org.BouncyCastle.Crypto.Xml.Constants;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
-    public sealed class CipherData : ICipherData
+    public sealed class CipherData 
     {
         private XmlElement _cachedXml = null;
         private CipherReference _cipherReference = null;
