@@ -5,6 +5,7 @@
 using System;
 using System.Xml;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -71,11 +72,11 @@ namespace Org.BouncyCastle.Crypto.Xml
             nsm.AddNamespace("enc", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
             nsm.AddNamespace("ds", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
 
-            Id = Utils.GetAttribute(value, "Id", NS.XmlEncNamespaceUrl);
-            Type = Utils.GetAttribute(value, "Type", NS.XmlEncNamespaceUrl);
-            MimeType = Utils.GetAttribute(value, "MimeType", NS.XmlEncNamespaceUrl);
-            Encoding = Utils.GetAttribute(value, "Encoding", NS.XmlEncNamespaceUrl);
-            Recipient = Utils.GetAttribute(value, "Recipient", NS.XmlEncNamespaceUrl);
+            Id = ElementUtils.GetAttribute(value, "Id", NS.XmlEncNamespaceUrl);
+            Type = ElementUtils.GetAttribute(value, "Type", NS.XmlEncNamespaceUrl);
+            MimeType = ElementUtils.GetAttribute(value, "MimeType", NS.XmlEncNamespaceUrl);
+            Encoding = ElementUtils.GetAttribute(value, "Encoding", NS.XmlEncNamespaceUrl);
+            Recipient = ElementUtils.GetAttribute(value, "Recipient", NS.XmlEncNamespaceUrl);
 
             XmlNode encryptionMethodNode = value.SelectSingleNode("enc:EncryptionMethod", nsm);
 

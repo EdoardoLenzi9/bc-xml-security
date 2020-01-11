@@ -10,7 +10,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 {
     // the central dispatcher for canonicalization writes. not all node classes
     // implement ICanonicalizableNode; so a manual dispatch is sometimes necessary.
-    internal static class CanonicalizationDispatcher
+    internal static class CanonicalizationDispatcher 
     {
         
         public static void Write(XmlNode node, StringBuilder strBuilder, DocPosition docPos, AncestralNamespaceContextManager anc)

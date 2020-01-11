@@ -12,6 +12,7 @@ using System.Text;
 using System.Xml;
 using Org.BouncyCastle.Crypto.Xml.RSAKey;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -50,7 +51,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             // By default the encoding is going to be UTF8
             _encoding = Encoding.UTF8;
             _keyNameMapping = new Hashtable(_capacity);
-            _xmlDsigSearchDepth = Utils.XmlDsigSearchDepth;
+            _xmlDsigSearchDepth = StreamUtils.XmlDsigSearchDepth;
         }
 
         /// <summary>
@@ -171,7 +172,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 }
                 else if (cipherData.CipherReference.Uri[0] == '#')
                 {
-                    string idref = Utils.ExtractIdFromLocalUri(cipherData.CipherReference.Uri);
+                    string idref = ParserUtils.ExtractIdFromLocalUri(cipherData.CipherReference.Uri);
                     // Serialize 
                     XmlElement idElem = GetIdElement(_document, idref);
                     if (idElem == null || idElem.OuterXml == null)
@@ -195,7 +196,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 byte[] cipherValue = null;
                 using (MemoryStream ms = new MemoryStream())
                 {
-                    Utils.Pump(decInputStream, ms);
+                    StreamUtils.Pump(decInputStream, ms);
                     cipherValue = ms.ToArray();
                     // Close the stream and return
                     if (inputStream != null)
@@ -308,7 +309,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 kiRetrievalMethod = keyInfoEnum.Current as KeyInfoRetrievalMethod;
                 if (kiRetrievalMethod != null)
                 {
-                    string idref = Utils.ExtractIdFromLocalUri(kiRetrievalMethod.GetUri());
+                    string idref = ParserUtils.ExtractIdFromLocalUri(kiRetrievalMethod.GetUri());
                     ek = new EncryptedKey();
                     ek.LoadXml(GetIdElement(_document, idref));
                     break;
@@ -400,7 +401,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 kiX509Data = keyInfoEnum.Current as KeyInfoX509Data;
                 if (kiX509Data != null)
                 {
-                    var collection = Utils.BuildBagOfCerts(kiX509Data, CertUsageType.Decryption);
+                    var collection = CryptoUtils.BuildBagOfCerts(kiX509Data, CertUsageType.Decryption);
                     foreach (X509Certificate certificate in collection)
                     {
                         if (privateKey != null)
@@ -418,7 +419,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 kiRetrievalMethod = keyInfoEnum.Current as KeyInfoRetrievalMethod;
                 if (kiRetrievalMethod != null)
                 {
-                    string idref = Utils.ExtractIdFromLocalUri(kiRetrievalMethod.GetUri());
+                    string idref = ParserUtils.ExtractIdFromLocalUri(kiRetrievalMethod.GetUri());
                     ek = new EncryptedKey();
                     ek.LoadXml(GetIdElement(_document, idref));
                     try
@@ -519,8 +520,8 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             // Create a random AES session key and encrypt it with the public key associated with the certificate.
             IBufferedCipher rijn = CipherUtilities.GetCipher("RIJNDAEL/CBC/PKCS7");
-            KeyParameter keyParam = new KeyParameter(Utils.GenerateRandomBlock(rijn.GetBlockSize()));
-            ParametersWithIV rijnKey = new ParametersWithIV(keyParam, Utils.GenerateRandomBlock(rijn.GetBlockSize()));
+            KeyParameter keyParam = new KeyParameter(CryptoUtils.GenerateRandomBlock(rijn.GetBlockSize()));
+            ParametersWithIV rijnKey = new ParametersWithIV(keyParam, CryptoUtils.GenerateRandomBlock(rijn.GetBlockSize()));
             ek.CipherData.CipherValue = EncryptedXml.EncryptKey(keyParam.GetKey(), (RsaKeyParameters)rsaPublicKey, false);
 
             // Encrypt the input element with the random session key that we've created above.
@@ -599,8 +600,8 @@ namespace Org.BouncyCastle.Crypto.Xml
             ek.KeyInfo.AddClause(new KeyInfoName(keyName));
 
             // Create a random AES session key and encrypt it with the public key associated with the certificate.
-            var keydata = Utils.GenerateRandomBlock(256 / 8);
-            var ivdata = Utils.GenerateRandomBlock(128 / 8);
+            var keydata = CryptoUtils.GenerateRandomBlock(256 / 8);
+            var ivdata = CryptoUtils.GenerateRandomBlock(128 / 8);
             var rijn = new ParametersWithIV(new KeyParameter(keydata), ivdata);
             ek.CipherData.CipherValue = (symKey == null ? EncryptedXml.EncryptKey(keydata, rsa, false) : EncryptedXml.EncryptKey(keydata, symKey));
 
@@ -747,7 +748,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 string decryptedString = _encoding.GetString(decryptedData);
                 using (StringReader sr = new StringReader(decryptedString))
                 {
-                    using (XmlReader xr = XmlReader.Create(sr, Utils.GetSecureXmlReaderSettings(_xmlResolver)))
+                    using (XmlReader xr = XmlReader.Create(sr, StreamUtils.GetSecureXmlReaderSettings(_xmlResolver)))
                     {
                         importDocument.Load(xr);
                     }
@@ -811,7 +812,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             {
                 case true:
                     // remove all children of the input element
-                    Utils.RemoveAllChildren(inputElement);
+                    ElementUtils.RemoveAllChildren(inputElement);
                     // then append the encrypted data as a child of the input element
                     inputElement.AppendChild(elemED);
                     break;

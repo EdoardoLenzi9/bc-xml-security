@@ -12,6 +12,7 @@ using System.Xml;
 using System.Xml.XPath;
 using System.Xml.Xsl;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -59,7 +60,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                         XmlNodeReader nr = new XmlNodeReader(elem);
                         XmlNameTable nt = nr.NameTable;
                         _nsm = new XmlNamespaceManager(nt);
-                        if (!Utils.VerifyAttributes(elem, (string)null))
+                        if (!ElementUtils.VerifyAttributes(elem, (string)null))
                         {
                             throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_UnknownTransform);
                         }
@@ -142,7 +143,7 @@ namespace Org.BouncyCastle.Crypto.Xml
         private void LoadStreamInput(Stream stream)
         {
             XmlResolver resolver = (ResolverSet ? _xmlResolver : new XmlSecureResolver(new XmlUrlResolver(), BaseURI));
-            XmlReader valReader = Utils.PreProcessStreamInput(stream, resolver, BaseURI);
+            XmlReader valReader = StreamUtils.PreProcessStreamInput(stream, resolver, BaseURI);
             _document = new XmlDocument();
             _document.PreserveWhitespace = true;
             _document.Load(valReader);

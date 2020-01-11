@@ -4,6 +4,7 @@
 
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 using System;
 using System.Xml;
 
@@ -19,7 +20,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public DsaKeyValue()
         {
-            var pair = Utils.DSAGenerateKeyPair();
+            var pair = CryptoUtils.DSAGenerateKeyPair();
             _key = (DsaPublicKeyParameters)pair.Public;
         }
 
@@ -109,7 +110,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 dsaKeyValueElement.AppendChild(seedElement);
 
                 XmlElement counterElement = xmlDocument.CreateElement(PgenCounterElementName, XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
-                counterElement.AppendChild(xmlDocument.CreateTextNode(Convert.ToBase64String(Utils.ConvertIntToByteArray(_key.Parameters.ValidationParameters.Counter))));
+                counterElement.AppendChild(xmlDocument.CreateTextNode(Convert.ToBase64String(EncodingUtils.ConvertIntToByteArray(_key.Parameters.ValidationParameters.Counter))));
                 dsaKeyValueElement.AppendChild(counterElement);
             }
 
@@ -183,7 +184,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                         new Math.BigInteger(1, (gNode != null) ? Convert.FromBase64String(gNode.InnerText) : null),
                         new DsaValidationParameters(
                             (seedNode != null) ? Convert.FromBase64String(seedNode.InnerText) : null,
-                            (pgenCounterNode != null) ? Utils.ConvertByteArrayToInt(Convert.FromBase64String(pgenCounterNode.InnerText)) : 0)));
+                            (pgenCounterNode != null) ? EncodingUtils.ConvertByteArrayToInt(Convert.FromBase64String(pgenCounterNode.InnerText)) : 0)));
             }
             catch (Exception ex)
             {

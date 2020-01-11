@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Xml;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -48,12 +49,12 @@ namespace Org.BouncyCastle.Crypto.Xml
             {
                 string baseUri = (signedXml.ContainingDocument == null ? null : signedXml.ContainingDocument.BaseURI);
                 XmlResolver resolver = (signedXml._bResolverSet ? signedXml._xmlResolver : new XmlSecureResolver(new XmlUrlResolver(), baseUri));
-                XmlDocument doc = Utils.PreProcessElementInput(signedXml.SignedInfo.GetXml(), resolver, baseUri);
+                XmlDocument doc = StreamUtils.PreProcessElementInput(signedXml.SignedInfo.GetXml(), resolver, baseUri);
 
                 // Add non default namespaces in scope
-                CanonicalXmlNodeList namespaces = (signedXml._context == null ? null : Utils.GetPropagatedAttributes(signedXml._context));
+                CanonicalXmlNodeList namespaces = (signedXml._context == null ? null : ElementUtils.GetPropagatedAttributes(signedXml._context));
                 SignedXmlDebugLog.LogNamespacePropagation(signedXml, namespaces);
-                Utils.AddNamespaces(doc.DocumentElement, namespaces);
+                ElementUtils.AddNamespaces(doc.DocumentElement, namespaces);
 
                 Transform c14nMethodTransform = signedXml.SignedInfo.CanonicalizationMethodObject;
                 c14nMethodTransform.Resolver = resolver;

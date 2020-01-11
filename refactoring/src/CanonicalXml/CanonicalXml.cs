@@ -6,10 +6,11 @@ using System.Xml;
 using System.IO;
 using System.Text;
 using System;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
-    internal class CanonicalXml
+    internal class CanonicalXml 
     {
         private readonly CanonicalXmlDocument _c14nDoc;
         private readonly C14NAncestralNamespaceContextManager _ancMgr;
@@ -21,7 +22,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             _c14nDoc = new CanonicalXmlDocument(true, includeComments);
             _c14nDoc.XmlResolver = resolver;
-            _c14nDoc.Load(Utils.PreProcessStreamInput(inputStream, resolver, strBaseUri));
+            _c14nDoc.Load(StreamUtils.PreProcessStreamInput(inputStream, resolver, strBaseUri));
             _ancMgr = new C14NAncestralNamespaceContextManager();
         }
 
@@ -42,7 +43,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (nodeList == null)
                 throw new ArgumentNullException(nameof(nodeList));
 
-            XmlDocument doc = Utils.GetOwnerDocument(nodeList);
+            XmlDocument doc = NodeUtils.GetOwnerDocument(nodeList);
             if (doc == null)
                 throw new ArgumentException(nameof(nodeList));
 
@@ -94,7 +95,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                     elementList.Add(childNodes[i]);
                     elementListCanonical.Add(childNodesCanonical[i]);
 
-                    if (Utils.NodeInList(childNodes[i], nodeList))
+                    if (NodeUtils.NodeInList(childNodes[i], nodeList))
                     {
                         MarkNodeAsIncluded(childNodesCanonical[i]);
                     }
@@ -104,7 +105,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                     {
                         for (int j = 0; j < attribNodes.Count; j++)
                         {
-                            if (Utils.NodeInList(attribNodes[j], nodeList))
+                            if (NodeUtils.NodeInList(attribNodes[j], nodeList))
                             {
                                 MarkNodeAsIncluded(childNodesCanonical[i].Attributes.Item(j));
                             }

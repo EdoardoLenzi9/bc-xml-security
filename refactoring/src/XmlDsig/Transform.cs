@@ -24,6 +24,7 @@ using System.Xml;
 using System.Xml.XPath;
 using System.Xml.Xsl;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -213,7 +214,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 if (reference != null)
                     namespaces = reference._namespaces;
                 else if (signedXml?._context != null)
-                    namespaces = Utils.GetPropagatedAttributes(signedXml._context);
+                    namespaces = ElementUtils.GetPropagatedAttributes(signedXml._context);
 
                 // if no namespaces have been propagated, return an empty hashtable.
                 if (namespaces == null)

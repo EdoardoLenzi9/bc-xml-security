@@ -24,6 +24,7 @@ using System.Xml;
 using System.Xml.XPath;
 using System.Xml.Xsl;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -90,7 +91,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                             Stream currentInputStream = currentInput as Stream;
                             XmlDocument doc = new XmlDocument();
                             doc.PreserveWhitespace = true;
-                            XmlReader valReader = Utils.PreProcessStreamInput(currentInputStream, resolver, baseUri);
+                            XmlReader valReader = StreamUtils.PreProcessStreamInput(currentInputStream, resolver, baseUri);
                             doc.Load(valReader);
                             transform.LoadInput(doc);
                             currentInputStream.Close();
@@ -200,7 +201,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             for (int i = 0; i < transformNodes.Count; ++i)
             {
                 XmlElement transformElement = (XmlElement)transformNodes.Item(i);
-                string algorithm = Utils.GetAttribute(transformElement, "Algorithm", NS.XmlDsigNamespaceUrl);
+                string algorithm = ElementUtils.GetAttribute(transformElement, "Algorithm", NS.XmlDsigNamespaceUrl);
                 Transform transform = CryptoHelpers.CreateFromName<Transform>(algorithm);
                 if (transform == null)
                     throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_UnknownTransform);

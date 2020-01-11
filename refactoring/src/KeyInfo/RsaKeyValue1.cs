@@ -4,6 +4,7 @@
 
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 using System;
 using System.Xml;
 
@@ -19,7 +20,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public RsaKeyValue()
         {
-            var pair = Utils.RSAGenerateKeyPair();
+            var pair = CryptoUtils.RSAGenerateKeyPair();
             _key = (RsaKeyParameters)pair.Public;
         }
 

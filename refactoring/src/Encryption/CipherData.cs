@@ -5,6 +5,7 @@
 using System;
 using System.Xml;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -107,7 +108,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             {
                 if (cipherReferenceNode != null)
                     throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_CipherValueElementRequired);
-                _cipherValue = Convert.FromBase64String(Utils.DiscardWhiteSpaces(cipherValueNode.InnerText));
+                _cipherValue = Convert.FromBase64String(ParserUtils.DiscardWhiteSpaces(cipherValueNode.InnerText));
             }
             else if (cipherReferenceNode != null)
             {

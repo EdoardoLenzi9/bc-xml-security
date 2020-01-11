@@ -5,6 +5,7 @@
 using System;
 using System.Xml;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -113,7 +114,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             ReferenceType = value.LocalName;
             
-            string uri = Utils.GetAttribute(value, "URI", NS.XmlEncNamespaceUrl);
+            string uri = ElementUtils.GetAttribute(value, "URI", NS.XmlEncNamespaceUrl);
             if (uri == null)
                 throw new ArgumentNullException(SR.Cryptography_Xml_UriRequired);
             Uri = uri;

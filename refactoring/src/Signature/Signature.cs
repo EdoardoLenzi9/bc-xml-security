@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Xml;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -152,8 +153,8 @@ namespace Org.BouncyCastle.Crypto.Xml
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "Signature");
 
             // Id attribute -- optional
-            _id = Utils.GetAttribute(signatureElement, "Id", NS.XmlDsigNamespaceUrl);
-            if (!Utils.VerifyAttributes(signatureElement, "Id"))
+            _id = ElementUtils.GetAttribute(signatureElement, "Id", NS.XmlDsigNamespaceUrl);
+            if (!ElementUtils.VerifyAttributes(signatureElement, "Id"))
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "Signature");
 
             XmlNamespaceManager nsm = new XmlNamespaceManager(value.OwnerDocument.NameTable);
@@ -176,9 +177,9 @@ namespace Org.BouncyCastle.Crypto.Xml
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "SignatureValue");
             XmlElement signatureValueElement = signatureValueNodes[0] as XmlElement;
             expectedChildNodes += signatureValueNodes.Count;
-            _signatureValue = Convert.FromBase64String(Utils.DiscardWhiteSpaces(signatureValueElement.InnerText));
-            _signatureValueId = Utils.GetAttribute(signatureValueElement, "Id", NS.XmlDsigNamespaceUrl);
-            if (!Utils.VerifyAttributes(signatureValueElement, "Id"))
+            _signatureValue = Convert.FromBase64String(ParserUtils.DiscardWhiteSpaces(signatureValueElement.InnerText));
+            _signatureValueId = ElementUtils.GetAttribute(signatureValueElement, "Id", NS.XmlDsigNamespaceUrl);
+            if (!ElementUtils.VerifyAttributes(signatureValueElement, "Id"))
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "SignatureValue");
 
             // KeyInfo - optional single element

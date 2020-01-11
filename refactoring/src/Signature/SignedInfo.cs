@@ -7,6 +7,7 @@ using System.Collections;
 using System.Globalization;
 using System.Xml;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -216,8 +217,8 @@ namespace Org.BouncyCastle.Crypto.Xml
             int expectedChildNodes = 0;
 
             // Id attribute -- optional
-            _id = Utils.GetAttribute(signedInfoElement, "Id", NS.XmlDsigNamespaceUrl);
-            if (!Utils.VerifyAttributes(signedInfoElement, "Id"))
+            _id = ElementUtils.GetAttribute(signedInfoElement, "Id", NS.XmlDsigNamespaceUrl);
+            if (!ElementUtils.VerifyAttributes(signedInfoElement, "Id"))
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "SignedInfo");
 
             // CanonicalizationMethod -- must be present
@@ -226,8 +227,8 @@ namespace Org.BouncyCastle.Crypto.Xml
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "SignedInfo/CanonicalizationMethod");
             XmlElement canonicalizationMethodElement = canonicalizationMethodNodes.Item(0) as XmlElement;
             expectedChildNodes += canonicalizationMethodNodes.Count;
-            _canonicalizationMethod = Utils.GetAttribute(canonicalizationMethodElement, "Algorithm", NS.XmlDsigNamespaceUrl);
-            if (_canonicalizationMethod == null || !Utils.VerifyAttributes(canonicalizationMethodElement, "Algorithm"))
+            _canonicalizationMethod = ElementUtils.GetAttribute(canonicalizationMethodElement, "Algorithm", NS.XmlDsigNamespaceUrl);
+            if (_canonicalizationMethod == null || !ElementUtils.VerifyAttributes(canonicalizationMethodElement, "Algorithm"))
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "SignedInfo/CanonicalizationMethod");
             _canonicalizationMethodTransform = null;
             if (canonicalizationMethodElement.ChildNodes.Count > 0)
@@ -239,8 +240,8 @@ namespace Org.BouncyCastle.Crypto.Xml
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "SignedInfo/SignatureMethod");
             XmlElement signatureMethodElement = signatureMethodNodes.Item(0) as XmlElement;
             expectedChildNodes += signatureMethodNodes.Count;
-            _signatureMethod = Utils.GetAttribute(signatureMethodElement, "Algorithm", NS.XmlDsigNamespaceUrl);
-            if (_signatureMethod == null || !Utils.VerifyAttributes(signatureMethodElement, "Algorithm"))
+            _signatureMethod = ElementUtils.GetAttribute(signatureMethodElement, "Algorithm", NS.XmlDsigNamespaceUrl);
+            if (_signatureMethod == null || !ElementUtils.VerifyAttributes(signatureMethodElement, "Algorithm"))
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "SignedInfo/SignatureMethod");
 
             // Now get the output length if we are using a MAC algorithm
@@ -255,7 +256,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             XmlNodeList referenceNodes = signedInfoElement.SelectNodes("ds:Reference", nsm);
             if (referenceNodes != null)
             {
-                if (referenceNodes.Count > Utils.MaxReferencesPerSignedInfo)
+                if (referenceNodes.Count > CryptoUtils.MaxReferencesPerSignedInfo)
                 {
                     throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "SignedInfo/Reference");
                 }

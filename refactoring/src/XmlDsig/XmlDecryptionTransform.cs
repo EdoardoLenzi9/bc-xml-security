@@ -4,6 +4,7 @@
 
 using Org.BouncyCastle.Crypto.Paddings;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 using System;
 using System.Collections;
 using System.IO;
@@ -104,14 +105,14 @@ namespace Org.BouncyCastle.Crypto.Xml
                     if (elem.LocalName == "Except" && elem.NamespaceURI == XmlNameSpace.Url[NS.XmlDecryptionTransformNamespaceUrl])
                     {
                         // the Uri is required
-                        string uri = Utils.GetAttribute(elem, "URI", NS.XmlDecryptionTransformNamespaceUrl);
+                        string uri = ElementUtils.GetAttribute(elem, "URI", NS.XmlDecryptionTransformNamespaceUrl);
                         if (uri == null || uri.Length == 0 || uri[0] != '#')
                             throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_UriRequired);
-                        if (!Utils.VerifyAttributes(elem, "URI"))
+                        if (!ElementUtils.VerifyAttributes(elem, "URI"))
                         {
                             throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_UnknownTransform);
                         }
-                        string idref = Utils.ExtractIdFromLocalUri(uri);
+                        string idref = ParserUtils.ExtractIdFromLocalUri(uri);
                         ExceptUris.Add(idref);
                     }
                     else
@@ -156,7 +157,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             XmlDocument document = new XmlDocument();
             document.PreserveWhitespace = true;
             XmlResolver resolver = (ResolverSet ? _xmlResolver : new XmlSecureResolver(new XmlUrlResolver(), BaseURI));
-            XmlReader xmlReader = Utils.PreProcessStreamInput(stream, resolver, BaseURI);
+            XmlReader xmlReader = StreamUtils.PreProcessStreamInput(stream, resolver, BaseURI);
             document.Load(xmlReader);
             _containingDocument = document;
             _nsm = new XmlNamespaceManager(_containingDocument.NameTable);
@@ -268,7 +269,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (_encryptedDataList != null)
                 ProcessElementRecursively(_encryptedDataList);
             // propagate namespaces
-            Utils.AddNamespaces(_containingDocument.DocumentElement, PropagatedNamespaces);
+            ElementUtils.AddNamespaces(_containingDocument.DocumentElement, PropagatedNamespaces);
             return _containingDocument;
         }
 

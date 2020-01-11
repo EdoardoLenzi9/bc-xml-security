@@ -12,6 +12,7 @@ using System.Xml;
 using System.Xml.XPath;
 using System.Xml.Xsl;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -89,7 +90,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             XmlDocument doc = new XmlDocument();
             doc.PreserveWhitespace = true;
             XmlResolver resolver = (ResolverSet ? _xmlResolver : new XmlSecureResolver(new XmlUrlResolver(), BaseURI));
-            XmlReader xmlReader = Utils.PreProcessStreamInput(stream, resolver, BaseURI);
+            XmlReader xmlReader = StreamUtils.PreProcessStreamInput(stream, resolver, BaseURI);
             doc.Load(xmlReader);
             _containingDocument = doc;
             if (_containingDocument == null)
@@ -103,7 +104,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             // Empty node list is not acceptable
             if (nodeList == null)
                 throw new ArgumentNullException(nameof(nodeList));
-            _containingDocument = Utils.GetOwnerDocument(nodeList);
+            _containingDocument = NodeUtils.GetOwnerDocument(nodeList);
             if (_containingDocument == null)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_EnvelopedSignatureRequiresContext);
 
@@ -139,7 +140,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 {
                     if (node == null) continue;
                     // keep namespaces
-                    if (Utils.IsXmlNamespaceNode(node) || Utils.IsNamespaceNode(node))
+                    if (NodeUtils.IsXmlNamespaceNode(node) || NodeUtils.IsNamespaceNode(node))
                     {
                         resultNodeList.Add(node);
                     }
@@ -185,7 +186,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             {
                 if (_inputNodeList == null)
                 {
-                    _inputNodeList = Utils.AllDescendantNodes(_containingDocument, true);
+                    _inputNodeList = NodeUtils.AllDescendantNodes(_containingDocument, true);
                 }
                 return (XmlNodeList)GetOutput();
             }

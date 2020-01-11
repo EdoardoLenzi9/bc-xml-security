@@ -12,6 +12,7 @@ using System.Xml;
 using System.Xml.XPath;
 using System.Xml.Xsl;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -124,8 +125,8 @@ namespace Org.BouncyCastle.Crypto.Xml
             XslCompiledTransform xslt = new XslCompiledTransform();
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.XmlResolver = null;
-            settings.MaxCharactersFromEntities = Utils.MaxCharactersFromEntities;
-            settings.MaxCharactersInDocument = Utils.MaxCharactersInDocument;
+            settings.MaxCharactersFromEntities = StreamUtils.MaxCharactersFromEntities;
+            settings.MaxCharactersInDocument = StreamUtils.MaxCharactersInDocument;
             using (StringReader sr = new StringReader(_xslFragment))
             {
                 XmlReader readerXsl = XmlReader.Create(sr, settings, (string)null);

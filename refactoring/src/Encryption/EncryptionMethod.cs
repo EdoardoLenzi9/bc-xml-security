@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using System.Xml;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -91,13 +92,13 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             XmlElement encryptionMethodElement = value;
 
-            var algorithmUrl = Utils.GetAttribute(encryptionMethodElement, "Algorithm", NS.XmlEncNamespaceUrl);
+            var algorithmUrl = ElementUtils.GetAttribute(encryptionMethodElement, "Algorithm", NS.XmlEncNamespaceUrl);
             _algorithm = XmlNameSpace.Url.FirstOrDefault(x => x.Value == algorithmUrl).Key;
 
             XmlNode keySizeNode = value.SelectSingleNode("enc:KeySize", nsm);
             if (keySizeNode != null)
             {
-                KeySize = Convert.ToInt32(Utils.DiscardWhiteSpaces(keySizeNode.InnerText), null);
+                KeySize = Convert.ToInt32(ParserUtils.DiscardWhiteSpaces(keySizeNode.InnerText), null);
             }
 
             // Save away the cached value

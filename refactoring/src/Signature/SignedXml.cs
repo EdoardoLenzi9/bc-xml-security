@@ -7,6 +7,7 @@ using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Crypto.Macs;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 using Org.BouncyCastle.X509;
 using System;
 using System.Collections;
@@ -437,7 +438,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 KeyInfoX509Data x509Data = _keyInfoEnum.Current as KeyInfoX509Data;
                 if (x509Data != null)
                 {
-                    _x509Collection = Utils.BuildBagOfCerts(x509Data, CertUsageType.Verification);
+                    _x509Collection = CryptoUtils.BuildBagOfCerts(x509Data, CertUsageType.Verification);
                     if (_x509Collection.Count > 0)
                     {
                         _x509Enum = _x509Collection.GetEnumerator();
@@ -571,7 +572,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             }
             if (reference.Uri.Length > 0 && reference.Uri[0] == '#')
             {
-                string idref = Utils.ExtractIdFromLocalUri(reference.Uri);
+                string idref = ParserUtils.ExtractIdFromLocalUri(reference.Uri);
                 if (idref == "xpointer(/)")
                 {
                     RefLevelCache[index] = 0;

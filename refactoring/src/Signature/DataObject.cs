@@ -5,6 +5,7 @@
 using System;
 using System.Xml;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -139,9 +140,9 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (value == null)
                 throw new ArgumentNullException(nameof(value));
 
-            _id = Utils.GetAttribute(value, "Id", NS.XmlDsigNamespaceUrl);
-            _mimeType = Utils.GetAttribute(value, "MimeType", NS.XmlDsigNamespaceUrl);
-            _encoding = Utils.GetAttribute(value, "Encoding", NS.XmlDsigNamespaceUrl);
+            _id = ElementUtils.GetAttribute(value, "Id", NS.XmlDsigNamespaceUrl);
+            _mimeType = ElementUtils.GetAttribute(value, "MimeType", NS.XmlDsigNamespaceUrl);
+            _encoding = ElementUtils.GetAttribute(value, "Encoding", NS.XmlDsigNamespaceUrl);
 
             foreach (XmlNode node in value.ChildNodes)
             {

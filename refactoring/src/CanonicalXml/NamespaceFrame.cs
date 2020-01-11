@@ -4,6 +4,7 @@
 
 using System.Xml;
 using System.Collections;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -19,7 +20,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         internal void AddRendered(XmlAttribute attr)
         {
-            _rendered.Add(Utils.GetNamespacePrefix(attr), attr);
+            _rendered.Add(AttributeUtils.GetNamespacePrefix(attr), attr);
         }
 
         internal XmlAttribute GetRendered(string nsPrefix)
@@ -29,7 +30,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         internal void AddUnrendered(XmlAttribute attr)
         {
-            _unrendered.Add(Utils.GetNamespacePrefix(attr), attr);
+            _unrendered.Add(AttributeUtils.GetNamespacePrefix(attr), attr);
         }
 
         internal XmlAttribute GetUnrendered(string nsPrefix)

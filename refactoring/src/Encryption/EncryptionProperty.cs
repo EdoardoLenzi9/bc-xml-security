@@ -5,6 +5,7 @@
 using System;
 using System.Xml;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -85,8 +86,8 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             // cache the Xml
             _cachedXml = value;
-            _id = Utils.GetAttribute(value, "Id", NS.XmlEncNamespaceUrl);
-            _target = Utils.GetAttribute(value, "Target", NS.XmlEncNamespaceUrl);
+            _id = ElementUtils.GetAttribute(value, "Id", NS.XmlEncNamespaceUrl);
+            _target = ElementUtils.GetAttribute(value, "Target", NS.XmlEncNamespaceUrl);
             _elemProp = value;
         }
     }

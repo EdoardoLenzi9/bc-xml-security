@@ -5,6 +5,7 @@
 using System;
 using System.Xml;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -74,8 +75,8 @@ namespace Org.BouncyCastle.Crypto.Xml
         {
             if (element == null)
                 throw new ArgumentNullException(nameof(element));
-            _uri = Utils.GetAttribute(element, "URI", NS.XmlDsigNamespaceUrl);
-            _type = Utils.GetAttribute(element, "Type", NS.XmlDsigNamespaceUrl);
+            _uri = ElementUtils.GetAttribute(element, "URI", NS.XmlDsigNamespaceUrl);
+            _type = ElementUtils.GetAttribute(element, "Type", NS.XmlDsigNamespaceUrl);
         }
     }
 }

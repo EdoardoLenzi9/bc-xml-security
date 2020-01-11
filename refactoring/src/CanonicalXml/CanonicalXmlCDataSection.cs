@@ -4,6 +4,7 @@
 
 using System.Xml;
 using System.Text;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -30,7 +31,7 @@ namespace Org.BouncyCastle.Crypto.Xml
         public void Write(StringBuilder strBuilder, DocPosition docPos, AncestralNamespaceContextManager anc)
         {
             if (GetIsInNodeSet())
-                strBuilder.Append(Utils.EscapeCData(Data));
+                strBuilder.Append(ParserUtils.EscapeCData(Data));
         }
 
         public void WriteHash(IHash hash, DocPosition docPos, AncestralNamespaceContextManager anc)
@@ -38,7 +39,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (GetIsInNodeSet())
             {
                 UTF8Encoding utf8 = new UTF8Encoding(false);
-                byte[] rgbData = utf8.GetBytes(Utils.EscapeCData(Data));
+                byte[] rgbData = utf8.GetBytes(ParserUtils.EscapeCData(Data));
                 hash.BlockUpdate(rgbData, 0, rgbData.Length);
             }
         }

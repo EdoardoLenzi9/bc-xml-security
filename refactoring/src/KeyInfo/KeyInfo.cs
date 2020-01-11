@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Xml;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -71,8 +72,8 @@ namespace Org.BouncyCastle.Crypto.Xml
                 throw new ArgumentNullException(nameof(value));
 
             XmlElement keyInfoElement = value;
-            _id = Utils.GetAttribute(keyInfoElement, "Id", NS.XmlDsigNamespaceUrl);
-            if (!Utils.VerifyAttributes(keyInfoElement, "Id"))
+            _id = ElementUtils.GetAttribute(keyInfoElement, "Id", NS.XmlDsigNamespaceUrl);
+            if (!ElementUtils.VerifyAttributes(keyInfoElement, "Id"))
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "KeyInfo");
 
             XmlNode child = keyInfoElement.FirstChild;
@@ -86,7 +87,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                     // Special-case handling for KeyValue -- we have to go one level deeper
                     if (kicString == "http://www.w3.org/2000/09/xmldsig# KeyValue")
                     {
-                        if (!Utils.VerifyAttributes(elem, (string[])null))
+                        if (!ElementUtils.VerifyAttributes(elem, (string[])null))
                         {
                             throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "KeyInfo/KeyValue");
                         }
