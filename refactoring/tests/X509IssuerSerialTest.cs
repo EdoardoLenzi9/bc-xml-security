@@ -1,12 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Org.BouncyCastle.X509;
+using Xunit;
 
-namespace Org.BouncyCastle.Crypto.Xml.Tests
+namespace Org.BouncyCastle.X509
 {
-    class X509IssuerSerialTest
+    public class X509IssuerSerialTest
     {
+        [Fact]
+        public void StructTest()
+        {
+            X509IssuerSerial x;
+            x.IssuerName = "IssuerName";
+            x.SerialNumber = "SerialNumber";
+            Assert.Equal("IssuerName", x.IssuerName);
+            Assert.Equal("SerialNumber", x.SerialNumber);
+        }
     }
 }
