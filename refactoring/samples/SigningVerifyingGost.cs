@@ -1,13 +1,10 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
-using System;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Xml;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Xml;
+using Org.BouncyCastle.Crypto.Xml.Constants;
 using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.X509;
 
@@ -27,19 +24,16 @@ namespace _SignedXml.Samples
                 SigningKey = key,
             };
 
-            // Note: Adding KeyInfo (KeyInfoX509Data) does not provide more security
-            //       Signing with private key is enough
-
             var reference = new Reference();
             reference.Uri = "";
             reference.AddTransform(new XmlDsigEnvelopedSignatureTransform());
-            reference.DigestMethod = SignedXml.XmlDsigGost3411_2012_512_Url;
+            reference.DigestMethod = XmlNameSpace.Url[NS.XmlDsigGost3411_2012_512_Url];
             signedXml.AddReference(reference);
 
             signedXml.KeyInfo = new KeyInfo();
             signedXml.KeyInfo.AddClause(new KeyInfoX509Data(cert));
 
-            signedXml.SignedInfo.SignatureMethod = SignedXml.XmlDsigGost3410_2012_512_Url;
+            signedXml.SignedInfo.SignatureMethod = XmlNameSpace.Url[NS.XmlDsigGost3410_2012_512_Url];
 
             signedXml.ComputeSignature();
 
@@ -53,16 +47,11 @@ namespace _SignedXml.Samples
             xmlDoc.PreserveWhitespace = true;
             xmlDoc.LoadXml(signedXmlText);
 
-            SignedXml signedXml = new SignedXml(xmlDoc);
+            SignatureChecker signedXml = new SignatureChecker(xmlDoc);
             var signatureNode = (XmlElement)xmlDoc.GetElementsByTagName("Signature")[0];
             signedXml.LoadXml(signatureNode);
 
-            // Note: `verifySignatureOnly: true` should not be used in the production
-            //       without providing application logic to verify the certificate.
-            // This test bypasses certificate verification because:
-            // - certificates expire - test should not be based on time
-            // - we cannot guarantee that the certificate is trusted on the machine
-            return signedXml.CheckSignature(/*certificate, verifySignatureOnly: true*/);
+            return signedXml.CheckSignature();
         }
 
         public void SignedXmlHasCertificateVerifiableSignature()
@@ -90,7 +79,6 @@ namespace _SignedXml.Samples
 
         public static Tuple<X509Certificate, AsymmetricKeyParameter> GetSampleX509Certificate()
         {
-            // To generate self-signed certificate, see GostUtilities.cs
 
             Pkcs12Store store = new Pkcs12Store();
 
