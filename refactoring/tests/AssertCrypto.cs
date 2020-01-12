@@ -1,16 +1,16 @@
-
-
-
-
-
-
-
-
-
-
-
-
-
+// Licensed to the .NET Foundation under one or more agreements.
+// See the LICENSE file in the project root for more information
+//
+// MonoTests.System.Security.Cryptography.Xml.AssertCrypto.cs
+//
+// Author:
+//	Sebastien Pouliot  <sebastien@ximian.com>
+//
+// (C) 2002, 2003 Motus Technologies Inc. (http://www.motus.com)
+// Copyright (C) 2005 Novell, Inc (http://www.novell.com)
+// 
+// Licensed to the .NET Foundation under one or more agreements.
+// See the LICENSE file in the project root for more information.
 
 using System;
 using Xunit;
@@ -21,7 +21,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
     public class AssertCrypto
     {
 
-
+        // because most crypto stuff works with byte[] buffers
         public static void AssertEquals(string msg, byte[] array1, byte[] array2)
         {
             if ((array1 == null) && (array2 == null))
@@ -48,7 +48,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
         private const string xmldsig = " xmlns=\"http://www.w3.org/2000/09/xmldsig#\"";
 
-
+        // not to be used to test C14N output
         public static void AssertXmlEquals(string msg, string expected, string actual)
         {
             expected = expected.Replace(xmldsig, string.Empty);

@@ -1,6 +1,13 @@
-﻿using System;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Xml;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Xml;
@@ -23,6 +30,9 @@ namespace _SignedXml.Samples
                 SigningKey = key
             };
 
+            // Note: Adding KeyInfo (KeyInfoX509Data) does not provide more security
+            //       Signing with private key is enough
+
             var reference = new Reference();
             reference.Uri = "";
             reference.AddTransform(new XmlDsigEnvelopedSignatureTransform());
@@ -40,10 +50,15 @@ namespace _SignedXml.Samples
             xmlDoc.PreserveWhitespace = true;
             xmlDoc.LoadXml(signedXmlText);
 
-            SignatureChecker signedXml = new SignatureChecker(xmlDoc);
+            SignedXml signedXml = new SignedXml(xmlDoc);
             var signatureNode = (XmlElement)xmlDoc.GetElementsByTagName("Signature")[0];
             signedXml.LoadXml(signatureNode);
 
+            // Note: `verifySignatureOnly: true` should not be used in the production
+            //       without providing application logic to verify the certificate.
+            // This test bypasses certificate verification because:
+            // - certificates expire - test should not be based on time
+            // - we cannot guarantee that the certificate is trusted on the machine
             return signedXml.CheckSignature(certificate, verifySignatureOnly: true);
         }
 

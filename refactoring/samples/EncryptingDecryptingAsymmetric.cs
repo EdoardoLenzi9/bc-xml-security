@@ -1,14 +1,22 @@
-﻿using System;
+﻿// Licensed to the .NET Foundation under one or more agreements.
+// The .NET Foundation licenses this file to you under the MIT license.
+// See the LICENSE file in the project root for more information.
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Xml;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Xml;
-using Org.BouncyCastle.Crypto.Xml.Constants;
-using Org.BouncyCastle.Crypto.Xml.Encryption;
 using Org.BouncyCastle.Security;
 
 namespace _SignedXml.Samples
 {
+    // Simplified implementation of MSDN sample:
+    // https://msdn.microsoft.com/en-us/library/ms229746(v=vs.110).aspx
     public class EncryptingAndDecryptingAsymmetric
     {
         private static XmlDocument LoadXmlFromString(string xml)
@@ -27,12 +35,17 @@ namespace _SignedXml.Samples
             var sessionKeyIV = EncryptingAndDecryptingSymmetric.GenerateBlock(128);
             var sessionKey = new ParametersWithIV(new KeyParameter(sessionKeyData), sessionKeyIV);
 
+            // Encrypt the session key and add it to an EncryptedKey element.
             var encryptedKey = new EncryptedKey()
             {
-                CipherData = new CipherData(XmlEncryption.EncryptKey(sessionKeyData, rsaKey, useOAEP)),
-                EncryptionMethod = new EncryptionMethod(useOAEP ? NS.XmlEncRSAOAEPUrl : NS.XmlEncRSA15Url)
+                CipherData = new CipherData(EncryptedXml.EncryptKey(sessionKeyData, rsaKey, useOAEP)),
+                EncryptionMethod = new EncryptionMethod(useOAEP ? EncryptedXml.XmlEncRSAOAEPUrl : EncryptedXml.XmlEncRSA15Url)
             };
 
+            // Specify which EncryptedData
+            // uses this key. An XML document can have
+            // multiple EncryptedData elements that use
+            // different keys.
             encryptedKey.AddReference(new DataReference()
             {
                 Uri = "#" + encryptionElementID
@@ -40,10 +53,12 @@ namespace _SignedXml.Samples
 
             var encryptedData = new EncryptedData()
             {
-                Type = XmlNameSpace.Url[NS.XmlEncElementUrl],
+                Type = EncryptedXml.XmlEncElementUrl,
                 Id = encryptionElementID,
 
-                EncryptionMethod = new EncryptionMethod(NS.XmlEncAES256Url)
+                // Create an EncryptionMethod element so that the
+                // receiver knows which algorithm to use for decryption.
+                EncryptionMethod = new EncryptionMethod(EncryptedXml.XmlEncAES256Url)
             };
 
             encryptedData.KeyInfo.AddClause(new KeyInfoEncryptedKey(encryptedKey));
@@ -52,15 +67,15 @@ namespace _SignedXml.Samples
                 Value = keyName
             });
 
-            var encryptedXml = new XmlEncryption();
+            var encryptedXml = new EncryptedXml();
             encryptedData.CipherData.CipherValue = encryptedXml.EncryptData(elementToEncrypt, sessionKey, false);
 
-            XmlDecryption.ReplaceElement(elementToEncrypt, encryptedData, false);
+            EncryptedXml.ReplaceElement(elementToEncrypt, encryptedData, false);
         }
 
         public static void Decrypt(XmlDocument doc, RsaKeyParameters rsaKey, string keyName)
         {
-            var encrypted = new XmlDecryption(doc);
+            var encrypted = new EncryptedXml(doc);
             encrypted.AddKeyNameMapping(keyName, rsaKey);
             encrypted.DecryptDocument();
         }
