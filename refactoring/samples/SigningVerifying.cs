@@ -7,7 +7,6 @@ using Org.BouncyCastle.Security;
 
 namespace _SignedXml.Samples
 {
-
     public class SigningAndVerifying
     {
         const string ExampleXml = @"<?xml version=""1.0""?>

@@ -1,11 +1,5 @@
 
 
-
-
-
-
-
-
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Xml.Constants;
 using Org.BouncyCastle.Pkcs;
@@ -130,7 +124,6 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             signedXml.AddObject(dataObject);
 
-
             Reference reference = new Reference();
             reference.Uri = "#MyObjectId";
 
@@ -189,7 +182,6 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             XmlElement xmlSignature = signedXml.GetXml();
 
-
             SignatureChecker vrfy = new SignatureChecker();
             vrfy.LoadXml(xmlSignature);
 
@@ -222,7 +214,6 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             dataObject.Id = "MyObjectId";
 
             signedXml.AddObject(dataObject);
-
 
             Reference reference = new Reference();
             reference.Uri = "#MyObjectId";
@@ -294,7 +285,6 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             XmlElement xmlSignature = signedXml.GetXml();
 
-
             SignatureChecker vrfy = new SignatureChecker();
             vrfy.LoadXml(xmlSignature);
 
@@ -324,13 +314,11 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             XmlElement xmlSignature = signedXml.GetXml();
 
-
             SignatureChecker vrfy = new SignatureChecker();
             vrfy.LoadXml(xmlSignature);
 
             Assert.True(vrfy.CheckSignature(hmac), "HMACSHA1-Compute/Verify");
         }
-
 
         [Fact]
         public void AsymmetricRSAVerify()
@@ -353,7 +341,6 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             v3.LoadXml(doc.DocumentElement);
             Assert.True(v3.CheckSignature(key), "RSA-CheckSignature(key)");
         }
-
 
         [Fact]
         public void AsymmetricDSAVerify()
@@ -955,7 +942,6 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             Assert.True(VerifySignedXml(doc), "#4");
         }
 
-
         static XmlDocument CreateSignedXml(X509Certificate cert, AsymmetricKeyParameter key, string canonicalizationMethod, string lineFeed)
         {
             XmlDocument doc = CreateSomeXml(lineFeed);
@@ -1297,7 +1283,6 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         {
             var hmac = CreateMac("HMAC-SHA384", hmackey);
 
-
             SignedXml sign = SignHMAC(XmlNameSpace.Url[NS.XmlDsigSHA384Url], hmac, true);
             Assert.Equal(more384, sign.SignatureMethod);
         }
@@ -1328,7 +1313,6 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         {
             var hmac = CreateMac("HMAC-MD5", hmackey);
 
-
             SignedXml sign = SignHMAC("MD5", hmac, true);
             Assert.Equal(moreHmacMD5, sign.SignatureMethod);
         }
@@ -1353,8 +1337,6 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             Assert.False(sign.CheckSignature(CreateMac("HMAC-MD5", badKey)));
             Assert.True(sign.CheckSignature(CreateMac("HMAC-MD5", emptyHmacKey)));
         }
-
-
 
 
         static bool erratum = true; // xmldsig erratum for CVE-2009-0217

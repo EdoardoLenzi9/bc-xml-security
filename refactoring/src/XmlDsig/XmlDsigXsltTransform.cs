@@ -1,6 +1,5 @@
 ﻿
 
-
 using System;
 using System.Collections;
 using System.IO;
@@ -112,8 +111,6 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public override object GetOutput()
         {
-
-
 
             XslCompiledTransform xslt = new XslCompiledTransform();
             XmlReaderSettings settings = new XmlReaderSettings();

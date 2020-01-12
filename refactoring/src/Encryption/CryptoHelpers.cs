@@ -1,10 +1,4 @@
-﻿using Org.BouncyCastle.Crypto.Digests;
-using Org.BouncyCastle.Crypto.Engines;
-using Org.BouncyCastle.Crypto.Modes;
-using Org.BouncyCastle.Crypto.Paddings;
-using Org.BouncyCastle.Crypto.Signers;
-using Org.BouncyCastle.Crypto.Xml.Constants;
-using Org.BouncyCastle.Security;
+﻿using Org.BouncyCastle.Crypto.Xml.Constants;
 using System;
 
 namespace Org.BouncyCastle.Crypto.Xml

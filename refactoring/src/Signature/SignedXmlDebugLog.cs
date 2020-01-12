@@ -396,9 +396,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             }
         }
 
-
-
-
         internal static void LogSigning(SignedXml signedXml,
                                         object key,
                                         ISigner signatureDescription)

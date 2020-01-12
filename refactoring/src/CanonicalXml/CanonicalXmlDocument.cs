@@ -3,7 +3,6 @@ using System.Text;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
-
     internal class CanonicalXmlDocument : XmlDocument, ICanonicalizableNode
     {
         private readonly bool _defaultNodeSetInclusionState;

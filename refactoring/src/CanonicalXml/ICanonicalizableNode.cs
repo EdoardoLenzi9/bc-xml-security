@@ -2,7 +2,6 @@
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
-
     internal interface ICanonicalizableNode
     {
         bool GetIsInNodeSet();

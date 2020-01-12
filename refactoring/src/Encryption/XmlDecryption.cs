@@ -19,7 +19,6 @@ namespace Org.BouncyCastle.Crypto.Xml
         public XmlDecryption(XmlDocument document) : base(document) { }
 
 
-
         private byte[] GetCipherValue(CipherData cipherData)
         {
             Validator.checkNull(cipherData);

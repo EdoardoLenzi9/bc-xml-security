@@ -283,7 +283,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                         transform.LoadInnerXml(transformElement.ChildNodes);
                         if (transform is XmlDsigEnvelopedSignatureTransform)
                         {
-
                             XmlNode signatureTag = transformElement.SelectSingleNode("ancestor::ds:Signature[1]", nsm);
                             XmlNodeList signatureList = transformElement.SelectNodes("//ds:Signature", nsm);
                             if (signatureList != null)

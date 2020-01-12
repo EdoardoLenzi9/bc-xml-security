@@ -10,7 +10,6 @@ using Org.BouncyCastle.Security;
 
 namespace _SignedXml.Samples
 {
-
     public class EncryptingAndDecryptingSymmetric
     {
         private static XmlDocument LoadXmlFromString(string xml)

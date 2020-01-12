@@ -4,7 +4,6 @@ using System.Text;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
-
     internal static class CanonicalizationDispatcher 
     {
         
