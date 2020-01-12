@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -28,6 +29,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle.Crypto, Version=1.8.5.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
@@ -36,6 +38,10 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\portable-net40+sl4+win8+wp8\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -43,93 +49,110 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AncestralNamespaceContextManager.cs" />
-    <Compile Include="AttributeSortOrder.cs" />
-    <Compile Include="C14NAncestralNamespaceContextManager.cs" />
-    <Compile Include="CanonicalizationDispatcher.cs" />
-    <Compile Include="CanonicalXml.cs" />
-    <Compile Include="CanonicalXmlAttribute.cs" />
-    <Compile Include="CanonicalXmlCDataSection.cs" />
-    <Compile Include="CanonicalXmlComment.cs" />
-    <Compile Include="CanonicalXmlDocument.cs" />
-    <Compile Include="CanonicalXmlElement.cs" />
-    <Compile Include="CanonicalXmlEntityReference.cs" />
-    <Compile Include="CanonicalXmlNodeList.cs" />
-    <Compile Include="CanonicalXmlProcessingInstruction.cs" />
-    <Compile Include="CanonicalXmlSignificantWhitespace.cs" />
-    <Compile Include="CanonicalXmlText.cs" />
-    <Compile Include="CanonicalXmlWhitespace.cs" />
-    <Compile Include="CertUsageType.cs" />
-    <Compile Include="CipherData.cs" />
-    <Compile Include="CipherReference.cs" />
-    <Compile Include="CryptoHelpers.cs" />
-    <Compile Include="CryptoSignedXmlRecursionException.cs" />
-    <Compile Include="DataObject.cs" />
-    <Compile Include="DataReference.cs" />
-    <Compile Include="DocPosition.cs" />
-    <Compile Include="DsaDigestSigner2.cs" />
-    <Compile Include="DSAKeyValue.cs" />
-    <Compile Include="EncryptedData.cs" />
-    <Compile Include="EncryptedKey.cs" />
-    <Compile Include="EncryptedReference.cs" />
-    <Compile Include="EncryptedType.cs" />
-    <Compile Include="EncryptedXml.cs" />
-    <Compile Include="EncryptionMethod.cs" />
-    <Compile Include="EncryptionProperty.cs" />
-    <Compile Include="EncryptionPropertyCollection.cs" />
-    <Compile Include="ExcAncestralNamespaceContextManager.cs" />
-    <Compile Include="ExcCanonicalXml.cs" />
-    <Compile Include="HashWrappers.cs" />
-    <Compile Include="ICanonicalizableNode.cs" />
-    <Compile Include="IRelDecryptor.cs" />
-    <Compile Include="KeyInfo.cs" />
-    <Compile Include="KeyInfoClause.cs" />
-    <Compile Include="KeyInfoEncryptedKey.cs" />
-    <Compile Include="KeyInfoName.cs" />
-    <Compile Include="KeyInfoNode.cs" />
-    <Compile Include="KeyInfoRetrievalMethod.cs" />
-    <Compile Include="KeyInfoX509Data.cs" />
-    <Compile Include="KeyReference.cs" />
-    <Compile Include="MyXmlDocument.cs" />
-    <Compile Include="NamespaceFrame.cs" />
-    <Compile Include="NamespaceSortOrder.cs" />
+    <Compile Include="CanonicalXml\CanonicalXmlElement.cs" />
+    <Compile Include="CanonicalXml\CanonicalXmlProcessingInstruction.cs" />
+    <Compile Include="CanonicalXml\CanonicalXmlText.cs" />
+    <Compile Include="CanonicalXml\NamespaceSortOrder.cs" />
+    <Compile Include="Constants\XmlUri.cs" />
+    <Compile Include="Constants\XmlNameSpace.cs" />
+    <Compile Include="Constants\Padding.cs" />
+    <Compile Include="Encryption\EncryptedXml.cs" />
+    <Compile Include="Encryption\XmlEncryption.cs" />
+    <Compile Include="Encryption\CryptoHelpers.cs" />
+    <Compile Include="Managers\AncestralNamespaceContextManager.cs" />
+    <Compile Include="CanonicalXml\AttributeSortOrder.cs" />
+    <Compile Include="Managers\C14NAncestralNamespaceContextManager.cs" />
+    <Compile Include="CanonicalXml\CanonicalizationDispatcher.cs" />
+    <Compile Include="CanonicalXml\CanonicalXml.cs" />
+    <Compile Include="CanonicalXml\CanonicalXmlAttribute.cs" />
+    <Compile Include="CanonicalXml\CanonicalXmlCDataSection.cs" />
+    <Compile Include="CanonicalXml\CanonicalXmlComment.cs" />
+    <Compile Include="CanonicalXml\CanonicalXmlDocument.cs" />
+    <Compile Include="CanonicalXml\CanonicalXmlEntityReference.cs" />
+    <Compile Include="CanonicalXml\CanonicalXmlNodeList.cs" />
+    <Compile Include="CanonicalXml\CanonicalXmlSignificantWhitespace.cs" />
+    <Compile Include="CanonicalXml\CanonicalXmlWhitespace.cs" />
+    <Compile Include="Constants\CertUsageType.cs" />
+    <Compile Include="Encryption\CipherData.cs" />
+    <Compile Include="References\CipherReference.cs" />
+    <Compile Include="Encryption\CryptoSignedXmlRecursionException.cs" />
+    <Compile Include="RSAFormatters\IKeyFormatter.cs" />
+    <Compile Include="RSAFormatters\IKeyDeformatter.cs" />
+    <Compile Include="RSAFormatters\KeyExchangeDeformatter.cs" />
+    <Compile Include="Signature\CheckSignatureManager.cs" />
+    <Compile Include="Signature\SignatureChecker.cs" />
+    <Compile Include="Signature\DataObject.cs" />
+    <Compile Include="References\DataReference.cs" />
+    <Compile Include="Constants\DocPosition.cs" />
+    <Compile Include="Signature\DsaDigestSigner2.cs" />
+    <Compile Include="KeyInfo\DsaKeyValue1.cs" />
+    <Compile Include="Encryption\EncryptedData.cs" />
+    <Compile Include="Encryption\EncryptedKey.cs" />
+    <Compile Include="Encryption\EncryptedReference.cs" />
+    <Compile Include="Encryption\EncryptedType.cs" />
+    <Compile Include="Encryption\XmlDecryption.cs" />
+    <Compile Include="Encryption\EncryptionMethod.cs" />
+    <Compile Include="Encryption\EncryptionProperty.cs" />
+    <Compile Include="Encryption\EncryptionPropertyCollection.cs" />
+    <Compile Include="Managers\ExcAncestralNamespaceContextManager.cs" />
+    <Compile Include="CanonicalXml\ExcCanonicalXml.cs" />
+    <Compile Include="Signature\HashWrappers.cs" />
+    <Compile Include="CanonicalXml\ICanonicalizableNode.cs" />
+    <Compile Include="Signature\IReferenceLevelSortOrder.cs" />
+    <Compile Include="Signature\ReferenceLevelSortOrder.cs" />
+    <Compile Include="Signature\ReferenceManager.cs" />
+    <Compile Include="Utils\AttributeUtils.cs" />
+    <Compile Include="Utils\Validator.cs" />
+    <Compile Include="Utils\CryptoUtils.cs" />
+    <Compile Include="Utils\EncodingUtils.cs" />
+    <Compile Include="Utils\ParserUtils.cs" />
+    <Compile Include="Utils\ElementUtils.cs" />
+    <Compile Include="Utils\NodeUtils.cs" />
+    <Compile Include="XmlDsig\IRelDecryptor.cs" />
+    <Compile Include="KeyInfo\KeyInfo.cs" />
+    <Compile Include="KeyInfo\KeyInfoClause.cs" />
+    <Compile Include="KeyInfo\KeyInfoEncryptedKey.cs" />
+    <Compile Include="KeyInfo\KeyInfoName.cs" />
+    <Compile Include="KeyInfo\KeyInfoNode.cs" />
+    <Compile Include="KeyInfo\KeyInfoRetrievalMethod.cs" />
+    <Compile Include="KeyInfo\KeyInfoX509Data.cs" />
+    <Compile Include="KeyInfo\KeyReference.cs" />
+    <Compile Include="XmlDsig\MyXmlDocument.cs" />
+    <Compile Include="CanonicalXml\NamespaceFrame.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reference.cs" />
-    <Compile Include="ReferenceList.cs" />
-    <Compile Include="ReferenceTargetType.cs" />
-    <Compile Include="RSAKeyValue.cs" />
-    <Compile Include="RSAOAEPKeyExchangeDeformatter.cs" />
-    <Compile Include="RSAOAEPKeyExchangeFormatter.cs" />
-    <Compile Include="RSAPKCS1KeyExchangeDeformatter.cs" />
-    <Compile Include="RSAPKCS1KeyExchangeFormatter.cs" />
-    <Compile Include="Signature.cs" />
-    <Compile Include="SignedInfo.cs" />
-    <Compile Include="SignedXml.cs" />
-    <Compile Include="SignedXmlDebugLog.cs" />
+    <Compile Include="References\Reference.cs" />
+    <Compile Include="References\ReferenceList.cs" />
+    <Compile Include="Constants\ReferenceTargetType.cs" />
+    <Compile Include="KeyInfo\RsaKeyValue1.cs" />
+    <Compile Include="RSAFormatters\KeyExchangeFormatter.cs" />
+    <Compile Include="Signature\Signature.cs" />
+    <Compile Include="Signature\SignedInfo.cs" />
+    <Compile Include="Signature\SignedXml.cs" />
+    <Compile Include="Signature\SignedXmlDebugLog.cs" />
     <Compile Include="SR.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>SR.resx</DependentUpon>
     </Compile>
-    <Compile Include="SymmetricKeyWrap.cs" />
-    <Compile Include="Transform.cs" />
-    <Compile Include="TransformChain.cs" />
-    <Compile Include="TransformInputType.cs" />
-    <Compile Include="Utils.cs">
+    <Compile Include="KeyInfo\SymmetricKeyWrap.cs" />
+    <Compile Include="XmlDsig\Transform.cs" />
+    <Compile Include="XmlDsig\TransformChain.cs" />
+    <Compile Include="XmlDsig\TransformInputType.cs" />
+    <Compile Include="Utils\StreamUtils.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="X509IncludeOption.cs" />
-    <Compile Include="X509IssuerSerial.cs" />
-    <Compile Include="XmlDecryptionTransform.cs" />
-    <Compile Include="XmlDsigBase64Transform.cs" />
-    <Compile Include="XmlDsigC14NTransform.cs" />
-    <Compile Include="XmlDsigC14NWithCommentsTransform.cs" />
-    <Compile Include="XmlDsigEnvelopedSignatureTransform.cs" />
-    <Compile Include="XmlDsigExcC14NTransform.cs" />
-    <Compile Include="XmlDsigExcC14NWithCommentsTransform.cs" />
-    <Compile Include="XmlDsigXPathTransform.cs" />
-    <Compile Include="XmlDsigXsltTransform.cs" />
-    <Compile Include="XmlLicenseTransform.cs" />
+    <Compile Include="Constants\X509IncludeOption.cs" />
+    <Compile Include="KeyInfo\X509IssuerSerial.cs" />
+    <Compile Include="XmlDsig\XmlDecryptionTransform.cs" />
+    <Compile Include="XmlDsig\XmlDsigBase64Transform.cs" />
+    <Compile Include="XmlDsig\XmlDsigC14NTransform.cs" />
+    <Compile Include="XmlDsig\XmlDsigC14NWithCommentsTransform.cs" />
+    <Compile Include="XmlDsig\XmlDsigEnvelopedSignatureTransform.cs" />
+    <Compile Include="XmlDsig\XmlDsigExcC14NTransform.cs" />
+    <Compile Include="XmlDsig\XmlDsigExcC14NWithCommentsTransform.cs" />
+    <Compile Include="XmlDsig\XmlDsigXPathTransform.cs" />
+    <Compile Include="XmlDsig\XmlDsigXsltTransform.cs" />
+    <Compile Include="XmlDsig\XmlLicenseTransform.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="SR.resx">
