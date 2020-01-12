@@ -12,6 +12,7 @@ using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Xml;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Encryption;
 using Org.BouncyCastle.Security;
 
 namespace _SignedXml.Samples
@@ -32,7 +33,7 @@ namespace _SignedXml.Samples
         {
             var elementToEncrypt = (XmlElement)doc.GetElementsByTagName(elementName)[0];
 
-            var encryptedXml = new EncryptedXml();
+            var encryptedXml = new XmlEncryption();
             var encryptedData = new EncryptedData()
             {
                 Type = XmlNameSpace.Url[NS.XmlEncElementUrl],
@@ -41,7 +42,7 @@ namespace _SignedXml.Samples
 
             encryptedData.CipherData.CipherValue = encryptedXml.EncryptData(elementToEncrypt, key, false);
 
-            EncryptedXml.ReplaceElement(elementToEncrypt, encryptedData, false);
+            XmlDecryption.ReplaceElement(elementToEncrypt, encryptedData, false);
         }
 
         private static void Decrypt(XmlDocument doc, ICipherParameters key)
@@ -51,7 +52,7 @@ namespace _SignedXml.Samples
             var encryptedData = new EncryptedData();
             encryptedData.LoadXml(encryptedElement);
 
-            var encryptedXml = new EncryptedXml();
+            var encryptedXml = new XmlDecryption();
 
             byte[] rgbOutput = encryptedXml.DecryptData(encryptedData, key);
 

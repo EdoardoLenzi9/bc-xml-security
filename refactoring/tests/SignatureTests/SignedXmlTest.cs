@@ -65,7 +65,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             XmlNodeList xnl = doc.GetElementsByTagName("Signature", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
             XmlElement xel = (XmlElement)xnl[0];
 
-            SignedXml sx = new SignedXml(doc);
+            SignatureChecker sx = new SignatureChecker(doc);
             sx.LoadXml(xel);
             Assert.True(sx.CheckSignature(), "CheckSignature");
         }
@@ -78,7 +78,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             XmlNodeList xnl = doc.GetElementsByTagName("Signature", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
             XmlElement xel = (XmlElement)xnl[0];
 
-            SignedXml sx = new SignedXml(doc);
+            SignatureChecker sx = new SignatureChecker(doc);
             sx.LoadXml(doc.DocumentElement);
             Assert.True(sx.CheckSignature());
         }
@@ -98,7 +98,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             XmlNodeList xnl = doc.GetElementsByTagName("Signature", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
             XmlElement xel = (XmlElement)xnl[0];
 
-            SignedXml sx = new SignedXml(doc.DocumentElement);
+            SignatureChecker sx = new SignatureChecker(doc.DocumentElement);
             sx.LoadXml(xel);
             Assert.True(sx.CheckSignature(), "CheckSignature");
         }
@@ -111,7 +111,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             XmlNodeList xnl = doc.GetElementsByTagName("Signature", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
             XmlElement xel = (XmlElement)xnl[0];
 
-            SignedXml sx = new SignedXml(doc.DocumentElement);
+            SignatureChecker sx = new SignatureChecker(doc.DocumentElement);
             Assert.True(!sx.CheckSignature(), "!CheckSignature");
             // SignedXml (XmlElement) != SignedXml () + LoadXml (XmlElement)
         }
@@ -211,7 +211,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             // we must reload the signature or it won't work
             // MS framework throw a "malformed element"
-            SignedXml vrfy = new SignedXml();
+            SignatureChecker vrfy = new SignatureChecker();
             vrfy.LoadXml(xmlSignature);
 
             // assert that we can verify our own signature
@@ -295,7 +295,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(AsymmetricRSAMixedCaseAttributesResult);
 
-            SignedXml v1 = new SignedXml();
+            SignatureChecker v1 = new SignatureChecker();
             v1.LoadXml(doc.DocumentElement);
             Assert.True(v1.CheckSignature());
         }
@@ -332,7 +332,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             // we must reload the signature or it won't work
             // MS framework throw a "malformed element"
-            SignedXml vrfy = new SignedXml();
+            SignatureChecker vrfy = new SignatureChecker();
             vrfy.LoadXml(xmlSignature);
 
             // assert that we can verify our own signature
@@ -366,7 +366,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             // we must reload the signature or it won't work
             // MS framework throw a "malformed element"
-            SignedXml vrfy = new SignedXml();
+            SignatureChecker vrfy = new SignatureChecker();
             vrfy.LoadXml(xmlSignature);
 
             // assert that we can verify our own signature
@@ -382,17 +382,17 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(value);
 
-            SignedXml v1 = new SignedXml();
+            SignatureChecker v1 = new SignatureChecker();
             v1.LoadXml(doc.DocumentElement);
             Assert.True(v1.CheckSignature(), "RSA-CheckSignature()");
 
-            SignedXml v2 = new SignedXml();
+            SignatureChecker v2 = new SignatureChecker();
             v2.LoadXml(doc.DocumentElement);
             AsymmetricKeyParameter key = null;
             bool vrfy = v2.CheckSignatureReturningKey(out key);
             Assert.True(vrfy, "RSA-CheckSignatureReturningKey()");
 
-            SignedXml v3 = new SignedXml();
+            SignatureChecker v3 = new SignatureChecker();
             v3.LoadXml(doc.DocumentElement);
             Assert.True(v3.CheckSignature(key), "RSA-CheckSignature(key)");
         }
@@ -406,17 +406,17 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(value);
 
-            SignedXml v1 = new SignedXml();
+            SignatureChecker v1 = new SignatureChecker();
             v1.LoadXml(doc.DocumentElement);
             Assert.True(v1.CheckSignature(), "DSA-CheckSignature()");
 
-            SignedXml v2 = new SignedXml();
+            SignatureChecker v2 = new SignatureChecker();
             v2.LoadXml(doc.DocumentElement);
             AsymmetricKeyParameter key = null;
             bool vrfy = v2.CheckSignatureReturningKey(out key);
             Assert.True(vrfy, "DSA-CheckSignatureReturningKey()");
 
-            SignedXml v3 = new SignedXml();
+            SignatureChecker v3 = new SignatureChecker();
             v3.LoadXml(doc.DocumentElement);
             Assert.True(v3.CheckSignature(key), "DSA-CheckSignature(key)");
         }
@@ -428,7 +428,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(value);
 
-            SignedXml v1 = new SignedXml();
+            SignatureChecker v1 = new SignatureChecker();
             v1.LoadXml(doc.DocumentElement);
 
             byte[] secretkey = Encoding.Default.GetBytes("password");
@@ -444,7 +444,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(signature);
 
-            SignedXml v1 = new SignedXml();
+            SignatureChecker v1 = new SignatureChecker();
             v1.LoadXml(doc.DocumentElement);
             Assert.True(v1.CheckSignature(), "CheckSignature");
 
@@ -508,12 +508,12 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact]
         public void CheckSignatureEmptySafe()
         {
-            SignedXml sx;
+            SignatureChecker sx;
             KeyInfoClause kic;
             KeyInfo ki;
 
             // empty keyinfo passes...
-            sx = new SignedXml();
+            sx = new SignatureChecker();
             sx.KeyInfo = new KeyInfo();
             Assert.True(!sx.CheckSignature());
 
@@ -528,7 +528,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact]
         public void CheckSignatureEmpty()
         {
-            SignedXml sx = new SignedXml();
+            SignatureChecker sx = new SignatureChecker();
             Assert.True(!sx.CheckSignature());
         }
 
@@ -850,7 +850,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                 "</Signature>" +
                 "</person>", "\r\n"));
 
-            SignedXml signedXml = new SignedXml(doc);
+            SignatureChecker signedXml = new SignatureChecker(doc);
             XmlNodeList nodeList = doc.GetElementsByTagName("Signature");
             signedXml.LoadXml((XmlElement)nodeList[0]);
             Assert.True(!signedXml.CheckSignature(), "#2");
@@ -1040,7 +1040,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
         static bool VerifySignedXml(XmlDocument signedDoc)
         {
-            SignedXml signedXml = new SignedXml(signedDoc);
+            SignatureChecker signedXml = new SignatureChecker(signedDoc);
             XmlNodeList nodeList = signedDoc.GetElementsByTagName("Signature");
             signedXml.LoadXml((XmlElement)nodeList[0]);
             return signedXml.CheckSignature();
@@ -1255,7 +1255,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(input);
 
-            SignedXml sig = new SignedXml(doc);
+            SignatureChecker sig = new SignatureChecker(doc);
             Reference r = new Reference("");
             r.AddTransform(new XmlDsigEnvelopedSignatureTransform());
             r.DigestMethod = uri;
@@ -1307,7 +1307,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(xml);
 
-            SignedXml sign = new SignedXml(doc);
+            SignatureChecker sign = new SignatureChecker(doc);
             sign.LoadXml(doc.DocumentElement["Signature"]);
 
             // https://github.com/dotnet/corefx/issues/18690
@@ -1338,7 +1338,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(xml);
 
-            SignedXml sign = new SignedXml(doc);
+            SignatureChecker sign = new SignatureChecker(doc);
             sign.LoadXml(doc.DocumentElement["Signature"]);
 
             Assert.False(sign.CheckSignature(CreateMac("HMAC-SHA512", badKey)));
@@ -1371,7 +1371,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(xml);
 
-            SignedXml sign = new SignedXml(doc);
+            SignatureChecker sign = new SignatureChecker(doc);
             sign.LoadXml(doc.DocumentElement["Signature"]);
 
             Assert.False(sign.CheckSignature(CreateMac("HMAC-SHA384", badKey)));
@@ -1404,7 +1404,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(xml);
 
-            SignedXml sign = new SignedXml(doc);
+            SignatureChecker sign = new SignatureChecker(doc);
             sign.LoadXml(doc.DocumentElement["Signature"]);
 
             Assert.False(sign.CheckSignature(CreateMac("HMAC-MD5", badKey)));
@@ -1419,17 +1419,17 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
         static bool erratum = true; // xmldsig erratum for CVE-2009-0217
 
-        static SignedXml GetSignedXml(string xml)
+        static SignatureChecker GetSignedXml(string xml)
         {
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(xml);
 
-            SignedXml sign = new SignedXml(doc);
+            SignatureChecker sign = new SignatureChecker(doc);
             sign.LoadXml(doc.DocumentElement);
             return sign;
         }
 
-        static void CheckErratum(SignedXml signed, IMac hmac, string message)
+        static void CheckErratum(SignatureChecker signed, IMac hmac, string message)
         {
             if (erratum)
             {
@@ -1473,7 +1473,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
   <Object Id=""object"">some other text</Object>
 </Signature>
 ";
-            SignedXml sign = GetSignedXml(string.Format(xml, bits));
+            SignatureChecker sign = GetSignedXml(string.Format(xml, bits));
             // only multiple of 8 bits are supported
             sign.CheckSignature(CreateHMACSHA1(Encoding.ASCII.GetBytes("secret")));
         }
@@ -1511,7 +1511,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
   <Object Id=""object"">some other text</Object>
 </Signature>
 ";
-            SignedXml sign = GetSignedXml(xml);
+            SignatureChecker sign = GetSignedXml(xml);
 
             CheckErratum(sign, CreateHMACSHA1(Encoding.ASCII.GetBytes("no clue")), "1");
             CheckErratum(sign, CreateHMACSHA1(Encoding.ASCII.GetBytes("")), "2");
@@ -1524,7 +1524,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         {
             // 72 is a multiple of 8 but smaller than the minimum of 80 bits
             string xml = @"<Signature xmlns=""http://www.w3.org/2000/09/xmldsig#""><SignedInfo><CanonicalizationMethod Algorithm=""http://www.w3.org/TR/2001/REC-xml-c14n-20010315"" /><SignatureMethod Algorithm=""http://www.w3.org/2000/09/xmldsig#hmac-sha1""><HMACOutputLength>72</HMACOutputLength></SignatureMethod><Reference URI=""#object""><DigestMethod Algorithm=""http://www.w3.org/2000/09/xmldsig#sha1"" /><DigestValue>nz4GS0NbH2SrWlD/4fX313CoTzc=</DigestValue></Reference></SignedInfo><SignatureValue>2dimB+P5Aw5K</SignatureValue><Object Id=""object"">some other text</Object></Signature>";
-            SignedXml sign = GetSignedXml(xml);
+            SignatureChecker sign = GetSignedXml(xml);
             CheckErratum(sign, CreateHMACSHA1(Encoding.ASCII.GetBytes("secret")), "72");
         }
 
@@ -1533,7 +1533,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         {
             // 80 bits is the minimum (and the half-size of HMACSHA1)
             string xml = @"<Signature xmlns=""http://www.w3.org/2000/09/xmldsig#""><SignedInfo><CanonicalizationMethod Algorithm=""http://www.w3.org/TR/2001/REC-xml-c14n-20010315"" /><SignatureMethod Algorithm=""http://www.w3.org/2000/09/xmldsig#hmac-sha1""><HMACOutputLength>80</HMACOutputLength></SignatureMethod><Reference URI=""#object""><DigestMethod Algorithm=""http://www.w3.org/2000/09/xmldsig#sha1"" /><DigestValue>nz4GS0NbH2SrWlD/4fX313CoTzc=</DigestValue></Reference></SignedInfo><SignatureValue>jVQPtLj61zNYjw==</SignatureValue><Object Id=""object"">some other text</Object></Signature>";
-            SignedXml sign = GetSignedXml(xml);
+            SignatureChecker sign = GetSignedXml(xml);
             Assert.True(sign.CheckSignature(CreateHMACSHA1(Encoding.ASCII.GetBytes("secret"))));
         }
 
@@ -1542,7 +1542,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         {
             // 80bits is smaller than the half-size of HMACSHA256
             string xml = @"<Signature xmlns=""http://www.w3.org/2000/09/xmldsig#""><SignedInfo><CanonicalizationMethod Algorithm=""http://www.w3.org/TR/2001/REC-xml-c14n-20010315"" /><SignatureMethod Algorithm=""http://www.w3.org/2001/04/xmldsig-more#hmac-sha256""><HMACOutputLength>80</HMACOutputLength></SignatureMethod><Reference URI=""#object""><DigestMethod Algorithm=""http://www.w3.org/2000/09/xmldsig#sha1"" /><DigestValue>nz4GS0NbH2SrWlD/4fX313CoTzc=</DigestValue></Reference></SignedInfo><SignatureValue>vPtw7zKVV/JwQg==</SignatureValue><Object Id=""object"">some other text</Object></Signature>";
-            SignedXml sign = GetSignedXml(xml);
+            SignatureChecker sign = GetSignedXml(xml);
             CheckErratum(sign, CreateMac("HMAC-SHA256", Encoding.ASCII.GetBytes("secret")), "80");
         }
 
@@ -1551,7 +1551,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         {
             // 128 is the half-size of HMACSHA256
             string xml = @"<Signature xmlns=""http://www.w3.org/2000/09/xmldsig#""><SignedInfo><CanonicalizationMethod Algorithm=""http://www.w3.org/TR/2001/REC-xml-c14n-20010315"" /><SignatureMethod Algorithm=""http://www.w3.org/2001/04/xmldsig-more#hmac-sha256""><HMACOutputLength>128</HMACOutputLength></SignatureMethod><Reference URI=""#object""><DigestMethod Algorithm=""http://www.w3.org/2000/09/xmldsig#sha1"" /><DigestValue>nz4GS0NbH2SrWlD/4fX313CoTzc=</DigestValue></Reference></SignedInfo><SignatureValue>aegpvkAwOL8gN/CjSnW6qw==</SignatureValue><Object Id=""object"">some other text</Object></Signature>";
-            SignedXml sign = GetSignedXml(xml);
+            SignatureChecker sign = GetSignedXml(xml);
             Assert.True(sign.CheckSignature(CreateMac("HMAC-SHA256", Encoding.ASCII.GetBytes("secret"))));
         }
 
@@ -1559,7 +1559,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         public void VerifyHMAC_FullLength()
         {
             string xml = @"<Signature xmlns=""http://www.w3.org/2000/09/xmldsig#""><SignedInfo><CanonicalizationMethod Algorithm=""http://www.w3.org/TR/2001/REC-xml-c14n-20010315"" /><SignatureMethod Algorithm=""http://www.w3.org/2000/09/xmldsig#hmac-sha1"" /><Reference URI=""#object""><DigestMethod Algorithm=""http://www.w3.org/2000/09/xmldsig#sha1"" /><DigestValue>7/XTsHaBSOnJ/jXD5v0zL6VKYsk=</DigestValue></Reference></SignedInfo><SignatureValue>a0goL9esBUKPqtFYgpp2KST4huk=</SignatureValue><Object Id=""object"">some text</Object></Signature>";
-            SignedXml sign = GetSignedXml(xml);
+            SignatureChecker sign = GetSignedXml(xml);
             Assert.True(sign.CheckSignature(CreateHMACSHA1(Encoding.ASCII.GetBytes("secret"))));
         }
 
@@ -1583,7 +1583,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
   <Object Id=""object"">some other text</Object>
 </Signature>
 ";
-            SignedXml sign = GetSignedXml(xml);
+            SignatureChecker sign = GetSignedXml(xml);
             Assert.Throws<System.Security.Cryptography.CryptographicException>(() => sign.CheckSignature(CreateHMACSHA1(Encoding.ASCII.GetBytes("no clue"))));
         }
 
@@ -1607,7 +1607,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
   <Object Id=""object"">some other text</Object>
 </Signature>
 ";
-            SignedXml sign = GetSignedXml(xml);
+            SignatureChecker sign = GetSignedXml(xml);
             Assert.Throws<FormatException>(() => sign.CheckSignature(CreateHMACSHA1(Encoding.ASCII.GetBytes("no clue"))));
         }
 

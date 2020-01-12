@@ -8,6 +8,7 @@ using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Xml;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Encryption;
 using Org.BouncyCastle.Security;
 
 namespace _SignedXml.Samples
@@ -35,7 +36,7 @@ namespace _SignedXml.Samples
             // Encrypt the session key and add it to an EncryptedKey element.
             var encryptedKey = new EncryptedKey()
             {
-                CipherData = new CipherData(EncryptedXml.EncryptKey(sessionKeyData, rsaKey, useOAEP)),
+                CipherData = new CipherData(XmlEncryption.EncryptKey(sessionKeyData, rsaKey, useOAEP)),
                 EncryptionMethod = new EncryptionMethod(useOAEP ? NS.XmlEncRSAOAEPUrl : NS.XmlEncRSA15Url)
             };
 
@@ -64,15 +65,15 @@ namespace _SignedXml.Samples
                 Value = keyName
             });
 
-            var encryptedXml = new EncryptedXml();
+            var encryptedXml = new XmlEncryption();
             encryptedData.CipherData.CipherValue = encryptedXml.EncryptData(elementToEncrypt, sessionKey, false);
 
-            EncryptedXml.ReplaceElement(elementToEncrypt, encryptedData, false);
+            XmlDecryption.ReplaceElement(elementToEncrypt, encryptedData, false);
         }
 
         public static void Decrypt(XmlDocument doc, RsaKeyParameters rsaKey, string keyName)
         {
-            var encrypted = new EncryptedXml(doc);
+            var encrypted = new XmlDecryption(doc);
             encrypted.AddKeyNameMapping(keyName, rsaKey);
             encrypted.DecryptDocument();
         }

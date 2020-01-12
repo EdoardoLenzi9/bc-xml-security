@@ -10,21 +10,21 @@ using System.Threading.Tasks;
 
 namespace Org.BouncyCastle.Crypto.Xml.Tests
 {
-    public class EncryptedXmlEqualityComparer: IEqualityComparer<EncryptedXml>
+    public class EncryptedXmlEqualityComparer: IEqualityComparer<XmlDecryption>
     {
         /// <summary>
-        /// Are the two <see cref="EncryptedXml"/> objects equal?
+        /// Are the two <see cref="XmlDecryption"/> objects equal?
         /// </summary>
         /// <param name="x">
-        /// The first <see cref="EncryptedXml"/> object to compare.
+        /// The first <see cref="XmlDecryption"/> object to compare.
         /// </param>
         /// <param name="y">
-        /// The second <see cref="EncryptedXml"/> object to compare.
+        /// The second <see cref="XmlDecryption"/> object to compare.
         /// </param>
         /// <returns>
         /// True if they are equal, false otherwise.
         /// </returns>
-        public bool Equals(EncryptedXml x, EncryptedXml y)
+        public bool Equals(XmlDecryption x, XmlDecryption y)
         {
             if (x == null && y == null)
             {
@@ -51,7 +51,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         /// <returns>
         /// The hash code.
         /// </returns>
-        public int GetHashCode(EncryptedXml obj)
+        public int GetHashCode(XmlDecryption obj)
         {
             // Use the actual implementation since this is unused.
             return obj.GetHashCode();

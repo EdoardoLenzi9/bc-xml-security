@@ -53,6 +53,8 @@
     <Compile Include="Constants\XmlUri.cs" />
     <Compile Include="Constants\XmlNameSpace.cs" />
     <Compile Include="Constants\Padding.cs" />
+    <Compile Include="Encryption\EncryptedXml.cs" />
+    <Compile Include="Encryption\XmlEncryption.cs" />
     <Compile Include="Encryption\CryptoHelpers.cs" />
     <Compile Include="Managers\AncestralNamespaceContextManager.cs" />
     <Compile Include="CanonicalXml\AttributeSortOrder.cs" />
@@ -75,6 +77,7 @@
     <Compile Include="RSAFormatters\IKeyDeformatter.cs" />
     <Compile Include="RSAFormatters\KeyExchangeDeformatter.cs" />
     <Compile Include="Signature\CheckSignatureManager.cs" />
+    <Compile Include="Signature\SignatureChecker.cs" />
     <Compile Include="Signature\DataObject.cs" />
     <Compile Include="References\DataReference.cs" />
     <Compile Include="Constants\DocPosition.cs" />
@@ -84,7 +87,7 @@
     <Compile Include="Encryption\EncryptedKey.cs" />
     <Compile Include="Encryption\EncryptedReference.cs" />
     <Compile Include="Encryption\EncryptedType.cs" />
-    <Compile Include="Encryption\EncryptedXml.cs" />
+    <Compile Include="Encryption\XmlDecryption.cs" />
     <Compile Include="Encryption\EncryptionMethod.cs" />
     <Compile Include="Encryption\EncryptionProperty.cs" />
     <Compile Include="Encryption\EncryptionPropertyCollection.cs" />
@@ -96,6 +99,7 @@
     <Compile Include="Signature\ReferenceLevelSortOrder.cs" />
     <Compile Include="Signature\ReferenceManager.cs" />
     <Compile Include="Utils\AttributeUtils.cs" />
+    <Compile Include="Utils\Validator.cs" />
     <Compile Include="Utils\CryptoUtils.cs" />
     <Compile Include="Utils\EncodingUtils.cs" />
     <Compile Include="Utils\ParserUtils.cs" />

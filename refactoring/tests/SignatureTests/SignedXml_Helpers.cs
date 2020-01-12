@@ -17,7 +17,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             var signatureNode = (XmlElement)xmlDoc.GetElementsByTagName("Signature", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl])[0];
 
-            SignedXml signedXml = new SignedXml(xmlDoc);
+            SignatureChecker signedXml = new SignatureChecker(xmlDoc);
             if (loadXmlThrows)
                 Assert.Throws<System.Security.Cryptography.CryptographicException>(() => signedXml.LoadXml(signatureNode));
             else

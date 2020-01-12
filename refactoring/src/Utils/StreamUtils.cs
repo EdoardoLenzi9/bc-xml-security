@@ -6,7 +6,7 @@ using System;
 using System.IO;
 using System.Xml;
 
-namespace Org.BouncyCastle.Crypto.Xml
+namespace Org.BouncyCastle.Crypto.Xml.Utils
 {
     internal class StreamUtils
     {

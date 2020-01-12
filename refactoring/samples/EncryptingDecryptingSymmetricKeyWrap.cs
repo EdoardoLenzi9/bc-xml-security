@@ -8,6 +8,7 @@ using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Xml;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Encryption;
 
 namespace _SignedXml.Samples
 {
@@ -29,7 +30,7 @@ namespace _SignedXml.Samples
             // Encrypt the key with another key
             var encryptedKey = new EncryptedKey()
             {
-                CipherData = new CipherData(EncryptedXml.EncryptKey(((KeyParameter)((ParametersWithIV)innerKey).Parameters).GetKey(), (KeyParameter)((ParametersWithIV)key).Parameters)),
+                CipherData = new CipherData(XmlEncryption.EncryptKey(((KeyParameter)((ParametersWithIV)innerKey).Parameters).GetKey(), (KeyParameter)((ParametersWithIV)key).Parameters)),
                 EncryptionMethod = new EncryptionMethod(EncryptingAndDecryptingSymmetric.GetEncryptionMethodName(key, keyWrap: true))
             };
 
@@ -58,15 +59,15 @@ namespace _SignedXml.Samples
                 Value = keyName
             });
 
-            var encryptedXml = new EncryptedXml();
+            var encryptedXml = new XmlEncryption();
             encryptedData.CipherData.CipherValue = encryptedXml.EncryptData(elementToEncrypt, innerKey, false);
 
-            EncryptedXml.ReplaceElement(elementToEncrypt, encryptedData, false);
+            XmlDecryption.ReplaceElement(elementToEncrypt, encryptedData, false);
         }
 
         public static void Decrypt(XmlDocument doc, ICipherParameters key, string keyName)
         {
-            var encrypted = new EncryptedXml(doc);
+            var encrypted = new XmlDecryption(doc);
             encrypted.AddKeyNameMapping(keyName, key);
             encrypted.DecryptDocument();
         }

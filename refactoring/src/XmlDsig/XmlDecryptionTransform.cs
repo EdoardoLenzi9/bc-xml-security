@@ -26,7 +26,7 @@ namespace Org.BouncyCastle.Crypto.Xml
         private Type[] _outputTypes = { typeof(XmlDocument) };
         private XmlNodeList _encryptedDataList = null;
         private ArrayList _arrayListUri = null; // this ArrayList object represents the Uri's to be excluded
-        private EncryptedXml _exml = null; // defines the XML encryption processing rules
+        private XmlDecryption _exml = null; // defines the XML encryption processing rules
         private XmlDocument _containingDocument = null;
         private XmlNamespaceManager _nsm = null;
 
@@ -56,7 +56,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             return false;
         }
 
-        public EncryptedXml EncryptedXml
+        public XmlDecryption XmlDecryption
         {
             get
             {
@@ -66,7 +66,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 Reference reference = Reference;
                 SignedXml signedXml = (reference == null ? SignedXml : reference.GetSignedXml());
                 if (signedXml == null || signedXml.EncryptedXml == null)
-                    _exml = new EncryptedXml(_containingDocument); // default processing rules
+                    _exml = new XmlDecryption(_containingDocument); // default processing rules
                 else
                     _exml = signedXml.EncryptedXml;
 
@@ -188,13 +188,13 @@ namespace Org.BouncyCastle.Crypto.Xml
                 // However, EncryptedXml.ReplaceData will preserve other top-level elements such as the XML
                 // entity declaration and top level comments.  So, in this case we must do the replacement
                 // ourselves.
-                parent.InnerXml = EncryptedXml.GetEncoding().GetString(decrypted);
+                parent.InnerXml = XmlDecryption.GetEncoding().GetString(decrypted);
             }
             else
             {
                 // We're replacing a node in the middle of the document - EncryptedXml knows how to handle
                 // this case in conformance with the transform's requirements, so we'll just defer to it.
-                EncryptedXml.ReplaceData(encryptedDataElement, decrypted);
+                XmlDecryption.ReplaceData(encryptedDataElement, decrypted);
             }
         }
 
@@ -211,10 +211,10 @@ namespace Org.BouncyCastle.Crypto.Xml
             }
             EncryptedData ed = new EncryptedData();
             ed.LoadXml(encryptedDataElement);
-            ICipherParameters symAlg = EncryptedXml.GetDecryptionKey(ed, NS.None);
+            ICipherParameters symAlg = XmlDecryption.GetDecryptionKey(ed, NS.None);
             if (symAlg == null)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_MissingDecryptionKey);
-            byte[] decrypted = EncryptedXml.DecryptData(ed, symAlg);
+            byte[] decrypted = XmlDecryption.DecryptData(ed, symAlg);
 
             ReplaceEncryptedData(encryptedDataElement, decrypted);
             return true;

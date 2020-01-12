@@ -49,7 +49,7 @@ namespace _SignedXml.Samples
             xmlDoc.PreserveWhitespace = true;
             xmlDoc.LoadXml(signedXmlText);
 
-            SignedXml signedXml = new SignedXml(xmlDoc);
+            SignatureChecker signedXml = new SignatureChecker(xmlDoc);
             var signatureNode = (XmlElement)xmlDoc.GetElementsByTagName("Signature")[0];
             signedXml.LoadXml(signatureNode);
             return signedXml.CheckSignature(key);
