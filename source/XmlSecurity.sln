@@ -34,4 +34,7 @@ Global
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {52C97C12-0464-4B7C-B164-770CF19D95BA}
 	EndGlobalSection
+	GlobalSection(NDepend) = preSolution
+		Project = ".\XmlSecurity1.ndproj"
+	EndGlobalSection
 EndGlobal
