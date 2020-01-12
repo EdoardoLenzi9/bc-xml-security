@@ -1,8 +1,5 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
-using Org.BouncyCastle.Crypto.Xml.Constants;
+﻿using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.X509;
 using System;
@@ -14,21 +11,11 @@ namespace Org.BouncyCastle.Crypto.Xml
 {
     public class KeyInfoX509Data : KeyInfoClause
     {
-        // An array of certificates representing the certificate chain
         private ArrayList _certificates = null;
-        // An array of issuer serial structs
         private ArrayList _issuerSerials = null;
-        // An array of SKIs
         private ArrayList _subjectKeyIds = null;
-        // An array of subject names
         private ArrayList _subjectNames = null;
-        // A raw byte data representing a certificate revocation list
         private byte[] _CRL = null;
-
-        //
-        // public constructors
-        //
-
         public KeyInfoX509Data() { }
 
         public KeyInfoX509Data(byte[] rgbCert)
@@ -41,7 +28,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public KeyInfoX509Data(X509Certificate cert)
         {
-            AddCertificate(Utils.CloneCertificate(cert));
+            AddCertificate(CryptoUtils.CloneCertificate(cert));
         }
 
         public KeyInfoX509Data(X509Certificate cert, IEnumerable<X509Certificate> additional, X509IncludeOption includeOption)
@@ -49,15 +36,14 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (cert == null)
                 throw new ArgumentNullException(nameof(cert));
 
-            X509Certificate certificate = Utils.CloneCertificate(cert);
+            X509Certificate certificate = CryptoUtils.CloneCertificate(cert);
             IList<X509Certificate> chain = null;
             switch (includeOption)
             {
                 case X509IncludeOption.ExcludeRoot:
-                    // Build the certificate chain
-                    chain = Utils.BuildCertificateChain(cert, additional);
+                    chain = CryptoUtils.BuildCertificateChain(cert, additional);
 
-                    for (int index = 0; index < (Utils.IsSelfSigned(chain) ? 1 : chain.Count - 1); index++)
+                    for (int index = 0; index < (CryptoUtils.IsSelfSigned(chain) ? 1 : chain.Count - 1); index++)
                     {
                         AddCertificate(chain[index]);
                     }
@@ -66,8 +52,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                     AddCertificate(certificate);
                     break;
                 case X509IncludeOption.WholeChain:
-                    // Build the certificate chain
-                    chain = Utils.BuildCertificateChain(cert, additional);
+                    chain = CryptoUtils.BuildCertificateChain(cert, additional);
 
                     foreach (var element in chain)
                     {
@@ -76,10 +61,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                     break;
             }
         }
-
-        //
-        // public properties
-        //
 
         public ArrayList Certificates
         {
@@ -114,7 +95,7 @@ namespace Org.BouncyCastle.Crypto.Xml
         {
             if (_subjectKeyIds == null)
                 _subjectKeyIds = new ArrayList();
-            _subjectKeyIds.Add(Utils.DecodeHexString(subjectKeyId));
+            _subjectKeyIds.Add(EncodingUtils.DecodeHexString(subjectKeyId));
         }
 
         public ArrayList SubjectNames
@@ -154,15 +135,14 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             if (_issuerSerials == null)
                 _issuerSerials = new ArrayList();
-            _issuerSerials.Add(Utils.CreateX509IssuerSerial(issuerName, h.ToString()));
+            _issuerSerials.Add(CryptoUtils.CreateX509IssuerSerial(issuerName, h.ToString()));
         }
 
-        // When we load an X509Data from Xml, we know the serial number is in decimal representation.
         internal void InternalAddIssuerSerial(string issuerName, string serialNumber)
         {
             if (_issuerSerials == null)
                 _issuerSerials = new ArrayList();
-            _issuerSerials.Add(Utils.CreateX509IssuerSerial(issuerName, serialNumber));
+            _issuerSerials.Add(CryptoUtils.CreateX509IssuerSerial(issuerName, serialNumber));
         }
 
         public byte[] GetCRL()
@@ -170,10 +150,6 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public void SetCRL(byte[] value)
         { _CRL = value; }
-
-        //
-        // private methods
-        //
 
         private void Clear()
         {
@@ -183,10 +159,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (_issuerSerials != null) _issuerSerials.Clear();
             if (_certificates != null) _certificates.Clear();
         }
-
-        //
-        // public methods
-        //
 
         public override XmlElement GetXml()
         {
@@ -272,11 +244,10 @@ namespace Org.BouncyCastle.Crypto.Xml
                     && x509SubjectNameNodes.Count == 0 && x509CertificateNodes.Count == 0)) // Bad X509Data tag, or Empty tag
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "X509Data");
 
-            // Flush anything in the lists
             Clear();
 
             if (x509CRLNodes.Count != 0)
-                _CRL = Convert.FromBase64String(Utils.DiscardWhiteSpaces(x509CRLNodes.Item(0).InnerText));
+                _CRL = Convert.FromBase64String(ParserUtils.DiscardWhiteSpaces(x509CRLNodes.Item(0).InnerText));
 
             foreach (XmlNode issuerSerialNode in x509IssuerSerialNodes)
             {
@@ -289,7 +260,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             foreach (XmlNode node in x509SKINodes)
             {
-                AddSubjectKeyId(Convert.FromBase64String(Utils.DiscardWhiteSpaces(node.InnerText)));
+                AddSubjectKeyId(Convert.FromBase64String(ParserUtils.DiscardWhiteSpaces(node.InnerText)));
             }
 
             foreach (XmlNode node in x509SubjectNameNodes)
@@ -300,7 +271,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             var parser = new X509CertificateParser();
             foreach (XmlNode node in x509CertificateNodes)
             {
-                var cert = Convert.FromBase64String(Utils.DiscardWhiteSpaces(node.InnerText));
+                var cert = Convert.FromBase64String(ParserUtils.DiscardWhiteSpaces(node.InnerText));
                 AddCertificate(parser.ReadCertificate(cert));
             }
         }

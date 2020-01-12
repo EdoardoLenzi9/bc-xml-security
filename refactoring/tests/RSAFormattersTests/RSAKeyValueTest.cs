@@ -1,15 +1,15 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information
-//
-// RSAKeyValueTest.cs - Test Cases for RSAKeyValue
-//
-// Author:
-//	Sebastien Pouliot (spouliot@motus.com)
-//
-// (C) 2002, 2003 Motus Technologies Inc. (http://www.motus.com)
-//
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information.
+
+
+
+
+
+
+
+
+
+
+
+
 
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Security;
@@ -54,7 +54,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             RsaKeyValue rsa = new RsaKeyValue();
             XmlElement xmlkey = rsa.GetXml();
 
-            // Schema check. Should not throw.
+
             const string schema = "http://www.w3.org/2000/09/xmldsig#";
             new[] { "Exponent", "Modulus" }
                 .Select(elementName => Convert.FromBase64String(xmlkey.SelectSingleNode($"*[local-name()='RSAKeyValue' and namespace-uri()='{schema}']/*[local-name()='{elementName}' and namespace-uri()='{schema}']").InnerText))
@@ -98,7 +98,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             rsa1.LoadXml(doc.DocumentElement);
 
             string s = rsa1.GetXml().OuterXml;
-            //Comparing with rsaKeyWithoutPrefix because RSAKeyValue.GetXml().OuterXml returns the markup without the namespace prefixes
+
             Assert.Equal(rsaKeyWithoutPrefix, s);
         }
 
@@ -118,9 +118,9 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             RsaKeyValue rsa = new RsaKeyValue();
 
-            // FormatException exception because desktop does not
-            // check if Convert.FromBase64String throws
-            // Related to: https://github.com/dotnet/corefx/issues/18690
+
+
+
             try
             {
                 rsa.LoadXml(xmlDocument.DocumentElement);
@@ -133,7 +133,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         {
             return new object[][]
             {
-                // Missing elements
+
                 new [] { "<KeyValue/>" },
                 new [] { "<KeyValue><RSAKeyValue/></KeyValue>" },
                 new [] { "<RSAKeyValue/>" },
@@ -141,11 +141,11 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                 new [] { "<KeyValue><RSAKeyValue><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue>" },
                 new [] { "<KeyValue><RSAKeyValue><Modulus>ogZ1/O7iks9ncETqNxLDKoPvgrT4nFx1a3lOmpywEmgbc5+8vI5dSzReH4v0YrflY75rIJx13CYWMsaHfQ78GtXvaeshHlQ3lLTuSdYEJceKll/URlBoKQtOj5qYIVSFOIVGHv4Y/0lnLftOzIydem29KKH6lJQlJawBBssR12s=</Modulus></RSAKeyValue></KeyValue>" },
 
-                // Invalid length
+
                 new [] { "<KeyValue><RSAKeyValue><Modulus>gZ1/O7iks9ncETqNxLDKoPvgrT4nFx1a3lOmpywEmgbc5+8vI5dSzReH4v0YrflY75rIJx13CYWMsaHfQ78GtXvaeshHlQ3lLTuSdYEJceKll/URlBoKQtOj5qYIVSFOIVGHv4Y/0lnLftOzIydem29KKH6lJQlJawBBssR12s=</Modulus></RSAKeyValue></KeyValue>" },
                 new [] { "<KeyValue><RSAKeyValue><Exponent>1AQAB</Exponent></RSAKeyValue></KeyValue>" },
 
-                // Invalid namespace
+
                 new [] { "<KeyValue><RSAKeyValue><Modulus>ogZ1/O7iks9ncETqNxLDKoPvgrT4nFx1a3lOmpywEmgbc5+8vI5dSzReH4v0YrflY75rIJx13CYWMsaHfQ78GtXvaeshHlQ3lLTuSdYEJceKll/URlBoKQtOj5qYIVSFOIVGHv4Y/0lnLftOzIydem29KKH6lJQlJawBBssR12s=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue>" },
                 new [] { "<KeyValue xlmns=\"http://randomnamespace.org\"><RSAKeyValue><Modulus>ogZ1/O7iks9ncETqNxLDKoPvgrT4nFx1a3lOmpywEmgbc5+8vI5dSzReH4v0YrflY75rIJx13CYWMsaHfQ78GtXvaeshHlQ3lLTuSdYEJceKll/URlBoKQtOj5qYIVSFOIVGHv4Y/0lnLftOzIydem29KKH6lJQlJawBBssR12s=</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue>" },
             };

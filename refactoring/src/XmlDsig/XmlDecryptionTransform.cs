@@ -1,23 +1,12 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
-using Org.BouncyCastle.Crypto.Paddings;
-using Org.BouncyCastle.Crypto.Xml.Constants;
+﻿using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 using System;
 using System.Collections;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Security;
-using System.Text;
 using System.Xml;
-using System.Xml.XPath;
-using System.Xml.Xsl;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
-    // XML Decryption Transform is used to specify the order of XML Digital Signature 
-    // and XML Encryption when performed on the same document.
 
     public class XmlDecryptionTransform : Transform
     {
@@ -25,7 +14,7 @@ namespace Org.BouncyCastle.Crypto.Xml
         private Type[] _outputTypes = { typeof(XmlDocument) };
         private XmlNodeList _encryptedDataList = null;
         private ArrayList _arrayListUri = null; // this ArrayList object represents the Uri's to be excluded
-        private EncryptedXml _exml = null; // defines the XML encryption processing rules
+        private XmlDecryption _exml = null; // defines the XML encryption processing rules
         private XmlDocument _containingDocument = null;
         private XmlNamespaceManager _nsm = null;
 
@@ -55,7 +44,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             return false;
         }
 
-        public EncryptedXml EncryptedXml
+        public XmlDecryption XmlDecryption
         {
             get
             {
@@ -65,7 +54,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 Reference reference = Reference;
                 SignedXml signedXml = (reference == null ? SignedXml : reference.GetSignedXml());
                 if (signedXml == null || signedXml.EncryptedXml == null)
-                    _exml = new EncryptedXml(_containingDocument); // default processing rules
+                    _exml = new XmlDecryption(_containingDocument); // default processing rules
                 else
                     _exml = signedXml.EncryptedXml;
 
@@ -103,15 +92,14 @@ namespace Org.BouncyCastle.Crypto.Xml
                 {
                     if (elem.LocalName == "Except" && elem.NamespaceURI == XmlNameSpace.Url[NS.XmlDecryptionTransformNamespaceUrl])
                     {
-                        // the Uri is required
-                        string uri = Utils.GetAttribute(elem, "URI", NS.XmlDecryptionTransformNamespaceUrl);
+                        string uri = ElementUtils.GetAttribute(elem, "URI", NS.XmlDecryptionTransformNamespaceUrl);
                         if (uri == null || uri.Length == 0 || uri[0] != '#')
                             throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_UriRequired);
-                        if (!Utils.VerifyAttributes(elem, "URI"))
+                        if (!ElementUtils.VerifyAttributes(elem, "URI"))
                         {
                             throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_UnknownTransform);
                         }
-                        string idref = Utils.ExtractIdFromLocalUri(uri);
+                        string idref = ParserUtils.ExtractIdFromLocalUri(uri);
                         ExceptUris.Add(idref);
                     }
                     else
@@ -156,12 +144,11 @@ namespace Org.BouncyCastle.Crypto.Xml
             XmlDocument document = new XmlDocument();
             document.PreserveWhitespace = true;
             XmlResolver resolver = (ResolverSet ? _xmlResolver : new XmlSecureResolver(new XmlUrlResolver(), BaseURI));
-            XmlReader xmlReader = Utils.PreProcessStreamInput(stream, resolver, BaseURI);
+            XmlReader xmlReader = StreamUtils.PreProcessStreamInput(stream, resolver, BaseURI);
             document.Load(xmlReader);
             _containingDocument = document;
             _nsm = new XmlNamespaceManager(_containingDocument.NameTable);
             _nsm.AddNamespace("enc", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
-            // select all EncryptedData elements
             _encryptedDataList = document.SelectNodes("//enc:EncryptedData", _nsm);
         }
 
@@ -172,34 +159,24 @@ namespace Org.BouncyCastle.Crypto.Xml
             _containingDocument = document;
             _nsm = new XmlNamespaceManager(document.NameTable);
             _nsm.AddNamespace("enc", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
-            // select all EncryptedData elements
             _encryptedDataList = document.SelectNodes("//enc:EncryptedData", _nsm);
         }
 
-        // Replace the encrytped XML element with the decrypted data for signature verification
         private void ReplaceEncryptedData(XmlElement encryptedDataElement, byte[] decrypted)
         {
             XmlNode parent = encryptedDataElement.ParentNode;
             if (parent.NodeType == XmlNodeType.Document)
             {
-                // We're replacing the root element.  In order to correctly reflect the semantics of the
-                // decryption transform, we need to replace the entire document with the decrypted data. 
-                // However, EncryptedXml.ReplaceData will preserve other top-level elements such as the XML
-                // entity declaration and top level comments.  So, in this case we must do the replacement
-                // ourselves.
-                parent.InnerXml = EncryptedXml.GetEncoding().GetString(decrypted);
+                parent.InnerXml = XmlDecryption.GetEncoding().GetString(decrypted);
             }
             else
             {
-                // We're replacing a node in the middle of the document - EncryptedXml knows how to handle
-                // this case in conformance with the transform's requirements, so we'll just defer to it.
-                EncryptedXml.ReplaceData(encryptedDataElement, decrypted);
+                XmlDecryption.ReplaceData(encryptedDataElement, decrypted);
             }
         }
 
         private bool ProcessEncryptedDataItem(XmlElement encryptedDataElement)
         {
-            // first see whether we want to ignore this one
             if (ExceptUris.Count > 0)
             {
                 for (int index = 0; index < ExceptUris.Count; index++)
@@ -210,10 +187,10 @@ namespace Org.BouncyCastle.Crypto.Xml
             }
             EncryptedData ed = new EncryptedData();
             ed.LoadXml(encryptedDataElement);
-            ICipherParameters symAlg = EncryptedXml.GetDecryptionKey(ed, NS.None);
+            ICipherParameters symAlg = XmlDecryption.GetDecryptionKey(ed, NS.None);
             if (symAlg == null)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_MissingDecryptionKey);
-            byte[] decrypted = EncryptedXml.DecryptData(ed, symAlg);
+            byte[] decrypted = XmlDecryption.DecryptData(ed, symAlg);
 
             ReplaceEncryptedData(encryptedDataElement, decrypted);
             return true;
@@ -239,7 +216,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                     XmlNode parent = encryptedDataElement.ParentNode;
                     if (ProcessEncryptedDataItem(encryptedDataElement))
                     {
-                        // find the new decrypted element.
                         XmlNode child = parent.FirstChild;
                         while (child != null && child.NextSibling != sibling)
                             child = child.NextSibling;
@@ -264,11 +240,9 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public override object GetOutput()
         {
-            // decrypt the encrypted sections
             if (_encryptedDataList != null)
                 ProcessElementRecursively(_encryptedDataList);
-            // propagate namespaces
-            Utils.AddNamespaces(_containingDocument.DocumentElement, PropagatedNamespaces);
+            ElementUtils.AddNamespaces(_containingDocument.DocumentElement, PropagatedNamespaces);
             return _containingDocument;
         }
 

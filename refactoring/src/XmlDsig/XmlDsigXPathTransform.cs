@@ -1,21 +1,14 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
+﻿
 
 using System;
-using System.Collections;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Security;
-using System.Text;
 using System.Xml;
 using System.Xml.XPath;
-using System.Xml.Xsl;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
-    // A class representing DSIG XPath Transforms
 
     public class XmlDsigXPathTransform : Transform
     {
@@ -42,7 +35,6 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public override void LoadInnerXml(XmlNodeList nodeList)
         {
-            // XPath transform is specified by text child of first XPath child
             if (nodeList == null)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_UnknownTransform);
 
@@ -59,11 +51,10 @@ namespace Org.BouncyCastle.Crypto.Xml
                         XmlNodeReader nr = new XmlNodeReader(elem);
                         XmlNameTable nt = nr.NameTable;
                         _nsm = new XmlNamespaceManager(nt);
-                        if (!Utils.VerifyAttributes(elem, (string)null))
+                        if (!ElementUtils.VerifyAttributes(elem, (string)null))
                         {
                             throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_UnknownTransform);
                         }
-                        // Look for a namespace in the attributes
                         foreach (XmlAttribute attrib in elem.Attributes)
                         {
                             if (attrib.Prefix == "xmlns")
@@ -98,26 +89,21 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             if (_nsm != null)
             {
-                // Add each of the namespaces as attributes of the element
                 foreach (string prefix in _nsm)
                 {
                     switch (prefix)
                     {
-                        // Ignore the xml namespaces
                         case "xml":
                         case "xmlns":
                             break;
 
-                        // Other namespaces
                         default:
-                            // Ignore the default namespace
                             if (prefix != null && prefix.Length > 0)
                                 element.SetAttribute("xmlns:" + prefix, _nsm.LookupNamespace(prefix));
                             break;
                     }
                 }
             }
-            // Add the XPath as the inner xml of the element
             element.InnerXml = _xpathexpr;
             document.AppendChild(element);
             return document.ChildNodes;
@@ -142,7 +128,7 @@ namespace Org.BouncyCastle.Crypto.Xml
         private void LoadStreamInput(Stream stream)
         {
             XmlResolver resolver = (ResolverSet ? _xmlResolver : new XmlSecureResolver(new XmlUrlResolver(), BaseURI));
-            XmlReader valReader = Utils.PreProcessStreamInput(stream, resolver, BaseURI);
+            XmlReader valReader = StreamUtils.PreProcessStreamInput(stream, resolver, BaseURI);
             _document = new XmlDocument();
             _document.PreserveWhitespace = true;
             _document.Load(valReader);
@@ -150,7 +136,6 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         private void LoadXmlNodeListInput(XmlNodeList nodeList)
         {
-            // Use C14N to get a document
             XmlResolver resolver = (ResolverSet ? _xmlResolver : new XmlSecureResolver(new XmlUrlResolver(), BaseURI));
             CanonicalXml c14n = new CanonicalXml((XmlNodeList)nodeList, resolver, true);
             using (MemoryStream ms = new MemoryStream(c14n.GetBytes()))
@@ -184,7 +169,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                         resultNodeList.Add(node);
                 }
 
-                // keep namespaces
                 it = navigator.Select("//namespace::*");
                 while (it.MoveNext())
                 {

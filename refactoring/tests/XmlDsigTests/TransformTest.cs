@@ -1,19 +1,6 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information
-//
-// Unit tests for Transform
-//
-// Author:
-//	Sebastien Pouliot  <sebastien@ximian.com>
-//
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
-//
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information.
-
-using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Encryption;
 using Org.BouncyCastle.Security;
 using System;
 using System.IO;
@@ -102,14 +89,17 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             random.NextBytes(keyData);
             var key = new ParametersWithIV(new KeyParameter(keyData), ivData);
 
-            EncryptedXml encryptedXml = new EncryptedXml(baseDocument);
+            XmlEncryption encryptedXml = new XmlEncryption(baseDocument);
+            XmlDecryption decryptedXml = new XmlDecryption(baseDocument);
+
             encryptedXml.AddKeyNameMapping("key", key);
+            decryptedXml.AddKeyNameMapping("key", key);
             XmlElement bElement = (XmlElement) baseDocument.DocumentElement.SelectSingleNode("b");
             EncryptedData encryptedData = encryptedXml.Encrypt(bElement, "key");
-            EncryptedXml.ReplaceElement(bElement, encryptedData, false);
+            XmlDecryption.ReplaceElement(bElement, encryptedData, false);
 
             XmlDecryptionTransform decryptionTransform = new XmlDecryptionTransform();
-            decryptionTransform.EncryptedXml = encryptedXml;
+            decryptionTransform.XmlDecryption = decryptedXml;
             decryptionTransform.LoadInput(baseDocument);
             if (addPropagatedNamespace)
             {

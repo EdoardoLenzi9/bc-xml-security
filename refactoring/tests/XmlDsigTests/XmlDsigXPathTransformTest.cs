@@ -1,16 +1,16 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information
-//
-// XmlDsigXPathTransformTest.cs - Test Cases for XmlDsigXPathTransform
-//
-// Author:
-//	Sebastien Pouliot <sebastien@ximian.com>
-//
-// (C) 2002, 2003 Motus Technologies Inc. (http://www.motus.com)
-// Copyright (C) 2004-2005 Novell, Inc (http://www.novell.com)
-//
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information.
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 using System;
 using System.IO;
@@ -21,8 +21,8 @@ using Xunit;
 namespace Org.BouncyCastle.Crypto.Xml.Tests
 {
 
-    // Note: GetInnerXml is protected in XmlDsigXPathTransform making it
-    // difficult to test properly. This class "open it up" :-)
+
+
     public class UnprotectedXmlDsigXPathTransform : XmlDsigXPathTransform
     {
 
@@ -49,7 +49,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             Type[] input = transform.InputTypes;
             Assert.True((input.Length == 3), "Input #");
-            // check presence of every supported input types
+
             bool istream = false;
             bool ixmldoc = false;
             bool ixmlnl = false;
@@ -68,7 +68,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             Type[] output = transform.OutputTypes;
             Assert.True((output.Length == 1), "Output #");
-            // check presence of every supported output types
+
             bool oxmlnl = false;
             foreach (Type t in output)
             {
@@ -141,7 +141,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         {
             XmlDocument doc = GetDoc();
             transform.LoadInput(doc);
-            // empty means no LoadInnerXml
+
             XmlNodeList xnl = (XmlNodeList)transform.GetOutput();
             Assert.Equal(0, xnl.Count);
         }
@@ -162,7 +162,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         {
             XmlDocument doc = GetDoc();
             transform.LoadInput(doc.ChildNodes);
-            // empty means no LoadInnerXml
+
             XmlNodeList xnl = (XmlNodeList)transform.GetOutput();
             Assert.Equal(0, xnl.Count);
         }
@@ -190,7 +190,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             doc.Save(ms);
             ms.Position = 0;
             transform.LoadInput(ms);
-            // empty means no LoadInnerXml
+
             XmlNodeList xnl = (XmlNodeList)transform.GetOutput();
             Assert.Equal(0, xnl.Count);
         }
@@ -208,7 +208,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         public void UnsupportedInput()
         {
             byte[] bad = { 0xBA, 0xD };
-            // input MUST be one of InputType - but no exception is thrown (not documented)
+
             transform.LoadInput(bad);
         }
 
@@ -239,21 +239,21 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             Assert.Equal("foo", nl[2].LocalName);
             Assert.Equal(XmlNodeType.Element, nl[3].NodeType);
             Assert.Equal("bar", nl[3].LocalName);
-            // MS.NET bug - ms.net returns ns node even when the
-            // current node is ns node (it is like returning
-            // attribute from attribute nodes).
-            //			Assert.Equal (XmlNodeType.Attribute, nl [4].NodeType);
-            //			Assert.Equal ("xmlns", nl [4].LocalName);
+
+
+
+
+
         }
 
         [Fact]
-        // MS.NET looks incorrect, or something incorrect in this test code; It turned out nothing to do with function here()
+
         public void FunctionHereObsolete()
         {
             XmlDsigXPathTransform t = new XmlDsigXPathTransform();
             XmlDocument xpdoc = new XmlDocument();
             string ns = "http://www.w3.org/2000/09/xmldsig#";
-            //			string xpath = "<XPath xmlns='" + ns + "' xmlns:x='urn:foo'>here()</XPath>";
+
             string xpath = "<XPath xmlns='" + ns + "' xmlns:x='urn:foo'></XPath>";
             xpdoc.LoadXml(xpath);
             t.LoadInnerXml(xpdoc.ChildNodes);

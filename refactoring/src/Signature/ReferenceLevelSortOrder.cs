@@ -19,7 +19,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             Reference referenceA = x as Reference;
             Reference referenceB = y as Reference;
 
-            // Get the indexes
+
             int iIndexA = 0;
             int iIndexB = 0;
             int i = 0;

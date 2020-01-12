@@ -1,23 +1,15 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Xml;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Encryption;
 using Org.BouncyCastle.Security;
 
 namespace _SignedXml.Samples
 {
-    // Simplified implementation of MSDN sample:
-    // https://msdn.microsoft.com/en-us/library/sb7w85t6(v=vs.110).aspx
     public class EncryptingAndDecryptingSymmetric
     {
         private static XmlDocument LoadXmlFromString(string xml)
@@ -32,7 +24,7 @@ namespace _SignedXml.Samples
         {
             var elementToEncrypt = (XmlElement)doc.GetElementsByTagName(elementName)[0];
 
-            var encryptedXml = new EncryptedXml();
+            var encryptedXml = new XmlEncryption();
             var encryptedData = new EncryptedData()
             {
                 Type = XmlNameSpace.Url[NS.XmlEncElementUrl],
@@ -41,7 +33,7 @@ namespace _SignedXml.Samples
 
             encryptedData.CipherData.CipherValue = encryptedXml.EncryptData(elementToEncrypt, key, false);
 
-            EncryptedXml.ReplaceElement(elementToEncrypt, encryptedData, false);
+            XmlDecryption.ReplaceElement(elementToEncrypt, encryptedData, false);
         }
 
         private static void Decrypt(XmlDocument doc, ICipherParameters key)
@@ -51,7 +43,7 @@ namespace _SignedXml.Samples
             var encryptedData = new EncryptedData();
             encryptedData.LoadXml(encryptedElement);
 
-            var encryptedXml = new EncryptedXml();
+            var encryptedXml = new XmlDecryption();
 
             byte[] rgbOutput = encryptedXml.DecryptData(encryptedData, key);
 

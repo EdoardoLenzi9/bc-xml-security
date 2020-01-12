@@ -1,19 +1,20 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information
-//
-// Unit tests for XmlDecryptionTransform
-//
-// Author:
-//	Sebastien Pouliot  <sebastien@ximian.com>
-//
-// Copyright (C) 2008 Novell, Inc (http://www.novell.com)
-//
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information.
+
+
+
+
+
+
+
+
+
+
+
+
 
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Encryption;
 using Org.BouncyCastle.Security;
 using System;
 using System.IO;
@@ -82,7 +83,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact]
         public void EncryptedXml_NotNull()
         {
-            Assert.NotNull(transform.EncryptedXml);
+            Assert.NotNull(transform.XmlDecryption);
         }
 
         [Fact]
@@ -240,11 +241,12 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             random.NextBytes(keyData);
             var key = new ParametersWithIV(new KeyParameter(keyData), ivData);
 
-            var encryptedXml = new EncryptedXml();
+            var encryptedXml = new XmlEncryption();
             encryptedXml.AddKeyNameMapping("aes", key);
+
             XmlElement elementToEncrypt = (XmlElement)doc.DocumentElement.SelectSingleNode(nodeToEncrypt);
             EncryptedData encryptedData = encryptedXml.Encrypt(elementToEncrypt, "aes");
-            EncryptedXml.ReplaceElement(elementToEncrypt, encryptedData, false);
+            XmlDecryption.ReplaceElement(elementToEncrypt, encryptedData, false);
 
             XmlNamespaceManager xmlNamespaceManager = new XmlNamespaceManager(doc.NameTable);
             xmlNamespaceManager.AddNamespace("enc", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
@@ -252,10 +254,14 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             encryptedNode.SetAttribute("ID", "#_0");
 
             transform.LoadInput(doc);
-            transform.EncryptedXml = encryptedXml;
+            
+            var dencryptedXml = new XmlDecryption();
+            dencryptedXml.AddKeyNameMapping("aes", key);
+
+            transform.XmlDecryption = dencryptedXml;
             XmlDocument transformedDocument = (XmlDocument)transform.GetOutput();
 
-            transform.EncryptedXml = null;
+            transform.XmlDecryption = null;
 
             return transformedDocument;
         }

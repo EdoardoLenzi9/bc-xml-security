@@ -1,29 +1,9 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
-// This file contains the classes necessary to represent the Transform processing model used in 
-// XMLDSIG. The basic idea is as follows. A Reference object contains within it a TransformChain, which
-// is an ordered set of XMLDSIG transforms (represented by <Transform>...</Transform> clauses in the XML).
-// A transform in XMLDSIG operates on an input of either an octet stream or a node set and produces
-// either an octet stream or a node set. Conversion between the two types is performed by parsing (octet stream->
-// node set) or C14N (node set->octet stream). We generalize this slightly to allow a transform to define an array of
-// input and output types (because I believe in the future there will be perf gains by being smarter about what goes in & comes out)
-// Each XMLDSIG transform is represented by a subclass of the abstract Transform class. We need to use CryptoConfig to
-// associate Transform classes with URLs for transform extensibility, but that's a future concern for this code.
-// Once the Transform chain is constructed, call TransformToOctetStream to convert some sort of input type to an octet
-// stream. (We only bother implementing that much now since every use of transform chains in XmlDsig ultimately yields something to hash).
-
 using System;
 using System.Collections;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Security;
-using System.Text;
 using System.Xml;
-using System.Xml.XPath;
-using System.Xml.Xsl;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -56,15 +36,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             set { _reference = value; }
         }
 
-        //
-        // protected constructors
-        //
-
         protected Transform() { }
-
-        //
-        // public properties
-        //
 
         public NS Algorithm
         {
@@ -74,8 +46,6 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public XmlResolver Resolver
         {
-            // This property only has a setter. The rationale for this is that we don't have a good value
-            // to return when it has not been explicitely set, as we are using XmlSecureResolver by default
             set
             {
                 _xmlResolver = value;
@@ -115,11 +85,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             }
             return false;
         }
-
-        //
-        // public methods
-        //
-
         public XmlElement GetXml()
         {
             XmlDocument document = new XmlDocument();
@@ -160,7 +125,6 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public virtual void GetDigestedOutput(IHash hash)
         {
-            // Default the buffer size to 4K.
             byte[] buffer = new byte[4096];
             int bytesRead;
             var inputStream = (Stream)GetOutput(typeof(Stream));
@@ -200,7 +164,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 Reference reference = Reference;
                 SignedXml signedXml = (reference == null ? SignedXml : reference.GetSignedXml());
 
-                // If the reference is not a Uri reference with a DataObject target, return an empty hashtable.
                 if (reference != null &&
                     ((reference.ReferenceTargetType != ReferenceTargetType.UriReference) ||
                      (string.IsNullOrEmpty(reference.Uri) || reference.Uri[0] != '#')))
@@ -213,9 +176,8 @@ namespace Org.BouncyCastle.Crypto.Xml
                 if (reference != null)
                     namespaces = reference._namespaces;
                 else if (signedXml?._context != null)
-                    namespaces = Utils.GetPropagatedAttributes(signedXml._context);
+                    namespaces = ElementUtils.GetPropagatedAttributes(signedXml._context);
 
-                // if no namespaces have been propagated, return an empty hashtable.
                 if (namespaces == null)
                 {
                     _propagatedNamespaces = new Hashtable(0);

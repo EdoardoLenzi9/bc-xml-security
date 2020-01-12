@@ -39,6 +39,9 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Security" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\portable-net40+sl4+win8+wp8\System.ValueTuple.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -53,6 +56,9 @@
     <Compile Include="Constants\XmlUri.cs" />
     <Compile Include="Constants\XmlNameSpace.cs" />
     <Compile Include="Constants\Padding.cs" />
+    <Compile Include="Encryption\EncryptedXml.cs" />
+    <Compile Include="Encryption\XmlEncryption.cs" />
+    <Compile Include="Encryption\CryptoHelpers.cs" />
     <Compile Include="Managers\AncestralNamespaceContextManager.cs" />
     <Compile Include="CanonicalXml\AttributeSortOrder.cs" />
     <Compile Include="Managers\C14NAncestralNamespaceContextManager.cs" />
@@ -69,12 +75,12 @@
     <Compile Include="Constants\CertUsageType.cs" />
     <Compile Include="Encryption\CipherData.cs" />
     <Compile Include="References\CipherReference.cs" />
-    <Compile Include="Encryption\CryptoHelpers.cs" />
     <Compile Include="Encryption\CryptoSignedXmlRecursionException.cs" />
     <Compile Include="RSAFormatters\IKeyFormatter.cs" />
     <Compile Include="RSAFormatters\IKeyDeformatter.cs" />
     <Compile Include="RSAFormatters\KeyExchangeDeformatter.cs" />
     <Compile Include="Signature\CheckSignatureManager.cs" />
+    <Compile Include="Signature\SignatureChecker.cs" />
     <Compile Include="Signature\DataObject.cs" />
     <Compile Include="References\DataReference.cs" />
     <Compile Include="Constants\DocPosition.cs" />
@@ -84,7 +90,7 @@
     <Compile Include="Encryption\EncryptedKey.cs" />
     <Compile Include="Encryption\EncryptedReference.cs" />
     <Compile Include="Encryption\EncryptedType.cs" />
-    <Compile Include="Encryption\EncryptedXml.cs" />
+    <Compile Include="Encryption\XmlDecryption.cs" />
     <Compile Include="Encryption\EncryptionMethod.cs" />
     <Compile Include="Encryption\EncryptionProperty.cs" />
     <Compile Include="Encryption\EncryptionPropertyCollection.cs" />
@@ -95,6 +101,13 @@
     <Compile Include="Signature\IReferenceLevelSortOrder.cs" />
     <Compile Include="Signature\ReferenceLevelSortOrder.cs" />
     <Compile Include="Signature\ReferenceManager.cs" />
+    <Compile Include="Utils\AttributeUtils.cs" />
+    <Compile Include="Utils\Validator.cs" />
+    <Compile Include="Utils\CryptoUtils.cs" />
+    <Compile Include="Utils\EncodingUtils.cs" />
+    <Compile Include="Utils\ParserUtils.cs" />
+    <Compile Include="Utils\ElementUtils.cs" />
+    <Compile Include="Utils\NodeUtils.cs" />
     <Compile Include="XmlDsig\IRelDecryptor.cs" />
     <Compile Include="KeyInfo\KeyInfo.cs" />
     <Compile Include="KeyInfo\KeyInfoClause.cs" />
@@ -125,7 +138,7 @@
     <Compile Include="XmlDsig\Transform.cs" />
     <Compile Include="XmlDsig\TransformChain.cs" />
     <Compile Include="XmlDsig\TransformInputType.cs" />
-    <Compile Include="Utils.cs">
+    <Compile Include="Utils\StreamUtils.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Constants\X509IncludeOption.cs" />

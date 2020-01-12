@@ -1,6 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
+﻿
 
 using System;
 using System.Collections;
@@ -12,6 +10,7 @@ using System.Xml;
 using System.Xml.XPath;
 using System.Xml.Xsl;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -55,12 +54,10 @@ namespace Org.BouncyCastle.Crypto.Xml
         {
             if (nodeList == null)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_UnknownTransform);
-            // check that the XSLT element is well formed
             XmlElement firstDataElement = null;
             int count = 0;
             foreach (XmlNode node in nodeList)
             {
-                // ignore whitespace, but make sure only one child element is present
                 if (node is XmlWhitespace) continue;
                 if (node is XmlElement)
                 {
@@ -70,7 +67,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                     count++;
                     continue;
                 }
-                // Only allow whitespace
                 count++;
             }
             if (count != 1 || firstDataElement == null)
@@ -115,31 +111,23 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public override object GetOutput()
         {
-            //  XSL transforms expose many powerful features by default:
-            //  1- we need to pass a null evidence to prevent script execution.
-            //  2- XPathDocument will expand entities, we don't want this, so set the resolver to null
-            //  3- We don't want the document function feature of XslTransforms.
 
-            // load the XSL Transform
             XslCompiledTransform xslt = new XslCompiledTransform();
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.XmlResolver = null;
-            settings.MaxCharactersFromEntities = Utils.MaxCharactersFromEntities;
-            settings.MaxCharactersInDocument = Utils.MaxCharactersInDocument;
+            settings.MaxCharactersFromEntities = StreamUtils.MaxCharactersFromEntities;
+            settings.MaxCharactersInDocument = StreamUtils.MaxCharactersInDocument;
             using (StringReader sr = new StringReader(_xslFragment))
             {
                 XmlReader readerXsl = XmlReader.Create(sr, settings, (string)null);
                 xslt.Load(readerXsl, XsltSettings.Default, null);
 
-                // Now load the input stream, XmlDocument can be used but is less efficient
                 XmlReader reader = XmlReader.Create(_inputStream, settings, BaseURI);
                 XPathDocument inputData = new XPathDocument(reader, XmlSpace.Preserve);
 
-                // Create an XmlTextWriter
                 MemoryStream ms = new MemoryStream();
                 XmlWriter writer = new XmlTextWriter(ms, null);
 
-                // Transform the data and send the output to the memory stream
                 xslt.Transform(inputData, null, writer);
                 ms.Position = 0;
                 return ms;

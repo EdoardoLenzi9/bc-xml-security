@@ -1,14 +1,11 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
 using System;
 using System.Xml;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
-    public sealed class CipherData
+    public sealed class CipherData 
     {
         private XmlElement _cachedXml = null;
         private CipherReference _cipherReference = null;
@@ -75,7 +72,6 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         internal XmlElement GetXml(XmlDocument document)
         {
-            // Create the CipherData element
             XmlElement cipherDataElement = document.CreateElement("CipherData", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
             if (CipherValue != null)
             {
@@ -85,7 +81,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             }
             else
             {
-                // No CipherValue specified, see if there is a CipherReference
                 if (CipherReference == null)
                     throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_CipherValueElementRequired);
                 cipherDataElement.AppendChild(CipherReference.GetXml(document));
@@ -107,7 +102,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             {
                 if (cipherReferenceNode != null)
                     throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_CipherValueElementRequired);
-                _cipherValue = Convert.FromBase64String(Utils.DiscardWhiteSpaces(cipherValueNode.InnerText));
+                _cipherValue = Convert.FromBase64String(ParserUtils.DiscardWhiteSpaces(cipherValueNode.InnerText));
             }
             else if (cipherReferenceNode != null)
             {
@@ -119,7 +114,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_CipherValueElementRequired);
             }
 
-            // Save away the cached value
             _cachedXml = value;
         }
     }

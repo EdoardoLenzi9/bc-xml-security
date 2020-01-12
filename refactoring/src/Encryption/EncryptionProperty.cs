@@ -1,10 +1,7 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
-using System;
+﻿using System;
 using System.Xml;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -15,7 +12,6 @@ namespace Org.BouncyCastle.Crypto.Xml
         private XmlElement _elemProp;
         private XmlElement _cachedXml = null;
 
-        // We are being lax here as per the spec
         public EncryptionProperty() { }
 
         public EncryptionProperty(XmlElement elementProperty)
@@ -83,10 +79,9 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (value.LocalName != "EncryptionProperty" || value.NamespaceURI != XmlNameSpace.Url[NS.XmlEncNamespaceUrl])
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidEncryptionProperty);
 
-            // cache the Xml
             _cachedXml = value;
-            _id = Utils.GetAttribute(value, "Id", NS.XmlEncNamespaceUrl);
-            _target = Utils.GetAttribute(value, "Target", NS.XmlEncNamespaceUrl);
+            _id = ElementUtils.GetAttribute(value, "Id", NS.XmlEncNamespaceUrl);
+            _target = ElementUtils.GetAttribute(value, "Target", NS.XmlEncNamespaceUrl);
             _elemProp = value;
         }
     }

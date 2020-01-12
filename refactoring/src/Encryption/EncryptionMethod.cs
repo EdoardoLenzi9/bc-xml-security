@@ -1,11 +1,8 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
-using System;
+﻿using System;
 using System.Linq;
 using System.Xml;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -67,13 +64,11 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         internal XmlElement GetXml(XmlDocument document)
         {
-            // Create the EncryptionMethod element
             XmlElement encryptionMethodElement = document.CreateElement("EncryptionMethod", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
             if (!(_algorithm == NS.None))
                 encryptionMethodElement.SetAttribute("Algorithm", XmlNameSpace.Url[_algorithm]);
             if (_keySize > 0)
             {
-                // Construct a KeySize element
                 XmlElement keySizeElement = document.CreateElement("KeySize", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
                 keySizeElement.AppendChild(document.CreateTextNode(_keySize.ToString(null, null)));
                 encryptionMethodElement.AppendChild(keySizeElement);
@@ -91,16 +86,15 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             XmlElement encryptionMethodElement = value;
 
-            var algorithmUrl = Utils.GetAttribute(encryptionMethodElement, "Algorithm", NS.XmlEncNamespaceUrl);
+            var algorithmUrl = ElementUtils.GetAttribute(encryptionMethodElement, "Algorithm", NS.XmlEncNamespaceUrl);
             _algorithm = XmlNameSpace.Url.FirstOrDefault(x => x.Value == algorithmUrl).Key;
 
             XmlNode keySizeNode = value.SelectSingleNode("enc:KeySize", nsm);
             if (keySizeNode != null)
             {
-                KeySize = Convert.ToInt32(Utils.DiscardWhiteSpaces(keySizeNode.InnerText), null);
+                KeySize = Convert.ToInt32(ParserUtils.DiscardWhiteSpaces(keySizeNode.InnerText), null);
             }
 
-            // Save away the cached value
             _cachedXml = value;
         }
     }

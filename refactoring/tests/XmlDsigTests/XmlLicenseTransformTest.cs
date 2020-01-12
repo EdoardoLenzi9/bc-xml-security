@@ -1,21 +1,21 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information
-//
-// XmlLicenseTransformTest.cs - Test Cases for XmlLicenseTransform
-//
-// Author:
-//  original:
-//	Sebastien Pouliot <sebastien@ximian.com>
-//	Aleksey Sanin (aleksey@aleksey.com)
-//  this file:
-//	Gert Driesen <drieseng@users.sourceforge.net>
-//
-// (C) 2003 Aleksey Sanin (aleksey@aleksey.com)
-// (C) 2004 Novell (http://www.novell.com)
-// (C) 2008 Gert Driesen
-//
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 using System;
 using System.IO;
@@ -79,11 +79,11 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact]
         public void InputTypes()
         {
-            // property does not return a clone
+
             transform.InputTypes[0] = null;
             Assert.Null(transform.InputTypes[0]);
 
-            // it's not a static array
+
             transform = new UnprotectedXmlLicenseTransform();
             Assert.NotNull(transform.InputTypes[0]);
         }
@@ -98,11 +98,11 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact]
         public void OutputTypes()
         {
-            // property does not return a clone
+
             transform.OutputTypes[0] = null;
             Assert.Null(transform.OutputTypes[0]);
 
-            // it's not a static array
+
             transform = new UnprotectedXmlLicenseTransform();
             Assert.NotNull(transform.OutputTypes[0]);
         }
@@ -188,7 +188,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             decryptor.AddAsymmetricKey(pair);
 
-            // Context is the input for this transform, argument is always ignored
+
             transform.LoadInput(null);
 
             XmlDocument decryptedDoc = transform.GetOutput() as XmlDocument;

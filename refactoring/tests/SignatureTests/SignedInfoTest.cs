@@ -1,16 +1,16 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information
-//
-// SignedInfoTest.cs - Test Cases for SignedInfo
-//
-// Author:
-//	Sebastien Pouliot <sebastien@ximian.com>
-//
-// (C) 2002, 2003 Motus Technologies Inc. (http://www.motus.com)
-// Copyright (C) 2005, 2009 Novell, Inc (http://www.novell.com)
-//
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information.
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 using System;
 using System.Xml;
@@ -86,7 +86,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             Assert.Equal(1, info.References.Count);
         }
 
-        // there are many (documented) not supported methods in SignedInfo
+
 
         [Fact]
         public void NotSupportedCount()
@@ -118,7 +118,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             Assert.Throws<NotSupportedException>(() => info.CopyTo(null, 0));
         }
 
-        // from phaos testcase
+
         const string xmlForGetXml = @"<player bats=""left"" id=""10012"" throws=""right"">
 	<!-- Here&apos;s a comment -->
 	<name>Alfonso Soriano</name>
@@ -170,19 +170,19 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact]
         public void SignatureLength()
         {
-            // we can set the length before the algorithm
+
             SignedInfo si = new SignedInfo();
             si.SignatureLength = "128";
             Assert.Equal("128", si.SignatureLength);
             Assert.Null(si.SignatureMethod);
 
-            // zero
+
             si.SignatureMethod = "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
             si.SignatureLength = "0";
             Assert.Equal("0", si.SignatureLength);
             Assert.Equal("http://www.w3.org/2000/09/xmldsig#rsa-sha1", si.SignatureMethod);
 
-            // mixup length and method
+
             si.SignatureLength = "http://www.w3.org/2000/09/xmldsig#rsa-sha1";
             si.SignatureMethod = "0";
             Assert.Equal("http://www.w3.org/2000/09/xmldsig#rsa-sha1", si.SignatureLength);

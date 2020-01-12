@@ -1,14 +1,10 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
-using System.Xml;
+﻿using System.Xml;
 using System.Text;
 using System.Collections;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
-    // the class that provides node subset state and canonicalization function to XmlElement
     internal class CanonicalXmlElement : XmlElement, ICanonicalizableNode
     {
         private bool _isInNodeSet;
@@ -36,13 +32,13 @@ namespace Org.BouncyCastle.Crypto.Xml
             {
                 foreach (XmlAttribute attr in attrList)
                 {
-                    if (((CanonicalXmlAttribute)attr).GetIsInNodeSet() || Utils.IsNamespaceNode(attr) || Utils.IsXmlNamespaceNode(attr))
+                    if (((CanonicalXmlAttribute)attr).GetIsInNodeSet() || NodeUtils.IsNamespaceNode(attr) || NodeUtils.IsXmlNamespaceNode(attr))
                     {
-                        if (Utils.IsNamespaceNode(attr))
+                        if (NodeUtils.IsNamespaceNode(attr))
                         {
                             anc.TrackNamespaceNode(attr, nsListToRender, nsLocallyDeclared);
                         }
-                        else if (Utils.IsXmlNamespaceNode(attr))
+                        else if (NodeUtils.IsXmlNamespaceNode(attr))
                         {
                             anc.TrackXmlNamespaceNode(attr, nsListToRender, attrListToRender, nsLocallyDeclared);
                         }
@@ -54,7 +50,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 }
             }
 
-            if (!Utils.IsCommittedNamespace(this, Prefix, NamespaceURI))
+            if (!ElementUtils.IsCommittedNamespace(this, Prefix, NamespaceURI))
             {
                 string name = ((Prefix.Length > 0) ? "xmlns" + ":" + Prefix : "xmlns");
                 XmlAttribute nsattrib = OwnerDocument.CreateAttribute(name);
@@ -109,13 +105,13 @@ namespace Org.BouncyCastle.Crypto.Xml
             {
                 foreach (XmlAttribute attr in attrList)
                 {
-                    if (((CanonicalXmlAttribute)attr).GetIsInNodeSet() || Utils.IsNamespaceNode(attr) || Utils.IsXmlNamespaceNode(attr))
+                    if (((CanonicalXmlAttribute)attr).GetIsInNodeSet() || NodeUtils.IsNamespaceNode(attr) || NodeUtils.IsXmlNamespaceNode(attr))
                     {
-                        if (Utils.IsNamespaceNode(attr))
+                        if (NodeUtils.IsNamespaceNode(attr))
                         {
                             anc.TrackNamespaceNode(attr, nsListToRender, nsLocallyDeclared);
                         }
-                        else if (Utils.IsXmlNamespaceNode(attr))
+                        else if (NodeUtils.IsXmlNamespaceNode(attr))
                         {
                             anc.TrackXmlNamespaceNode(attr, nsListToRender, attrListToRender, nsLocallyDeclared);
                         }
@@ -127,7 +123,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 }
             }
 
-            if (!Utils.IsCommittedNamespace(this, Prefix, NamespaceURI))
+            if (!ElementUtils.IsCommittedNamespace(this, Prefix, NamespaceURI))
             {
                 string name = ((Prefix.Length > 0) ? "xmlns" + ":" + Prefix : "xmlns");
                 XmlAttribute nsattrib = (XmlAttribute)OwnerDocument.CreateAttribute(name);

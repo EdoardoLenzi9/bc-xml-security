@@ -127,6 +127,7 @@
   <ItemGroup>
     <Compile Include="AssertCrypto.cs" />
     <Compile Include="AssertExtensions.cs" />
+    <Compile Include="X509IssuerSerialTest.cs" />
     <Compile Include="EncryptionTests\CipherDataTests.cs" />
     <Compile Include="SignatureTests\DataObjectTest.cs" />
     <Compile Include="SignatureTests\DataObjectTests.cs" />

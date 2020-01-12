@@ -1,15 +1,15 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information
-//
-// XmlDsigEnvelopedSignatureTransformTest.cs
-//
-// Author:
-//	Atsushi Enomoto <atsushi@ximian.com>
-//
-// (C) 2004 Novell Inc.
-//
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information.
+
+
+
+
+
+
+
+
+
+
+
+
 
 using System;
 using System.IO;
@@ -20,8 +20,8 @@ using Xunit;
 namespace Org.BouncyCastle.Crypto.Xml.Tests
 {
 
-    // Note: GetInnerXml is protected in XmlDsigEnvelopedSignatureTransform making it
-    // difficult to test properly. This class "open it up" :-)
+
+
     public class UnprotectedXmlDsigEnvelopedSignatureTransform : XmlDsigEnvelopedSignatureTransform
     {
         public UnprotectedXmlDsigEnvelopedSignatureTransform()
@@ -70,7 +70,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             Type[] input = transform.InputTypes;
             Assert.Equal(3, input.Length);
-            // check presence of every supported input types
+
             bool istream = false;
             bool ixmldoc = false;
             bool ixmlnl = false;
@@ -89,7 +89,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             Type[] output = transform.OutputTypes;
             Assert.Equal(2, output.Length);
-            // check presence of every supported output types
+
             bool oxmlnl = false;
             bool oxmldoc = false;
             foreach (Type t in output)
@@ -114,7 +114,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact]
         public void GetInnerXml()
         {
-            // Always returns null
+
             Assert.Null(transform.UnprotectedGetInnerXml());
         }
 

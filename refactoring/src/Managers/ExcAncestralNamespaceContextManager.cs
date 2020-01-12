@@ -1,36 +1,31 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
-using System.Collections;
+﻿using System.Collections;
 using System.Xml;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
-    // the stack of currently active NamespaceFrame contexts. this
-    // object also maintains the inclusive prefix list in a tokenized form.
     internal class ExcAncestralNamespaceContextManager : AncestralNamespaceContextManager
     {
         private Hashtable _inclusivePrefixSet = null;
 
         internal ExcAncestralNamespaceContextManager(string inclusiveNamespacesPrefixList)
         {
-            _inclusivePrefixSet = Utils.TokenizePrefixListString(inclusiveNamespacesPrefixList);
+            _inclusivePrefixSet = EncodingUtils.TokenizePrefixListString(inclusiveNamespacesPrefixList);
         }
 
         private bool HasNonRedundantInclusivePrefix(XmlAttribute attr)
         {
             int tmp;
-            string nsPrefix = Utils.GetNamespacePrefix(attr);
+            string nsPrefix = AttributeUtils.GetNamespacePrefix(attr);
             return _inclusivePrefixSet.ContainsKey(nsPrefix) &&
-                Utils.IsNonRedundantNamespaceDecl(attr, GetNearestNamespaceWithMatchingPrefix(nsPrefix, out tmp));
+                AttributeUtils.IsNonRedundantNamespaceDecl(attr, GetNearestNamespaceWithMatchingPrefix(nsPrefix, out tmp));
         }
 
         private void GatherNamespaceToRender(string nsPrefix, SortedList nsListToRender, Hashtable nsLocallyDeclared)
         {
             foreach (object a in nsListToRender.GetKeyList())
             {
-                if (Utils.HasNamespacePrefix((XmlAttribute)a, nsPrefix))
+                if (AttributeUtils.HasNamespacePrefix((XmlAttribute)a, nsPrefix))
                     return;
             }
 
@@ -40,7 +35,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             if (local != null)
             {
-                if (Utils.IsNonRedundantNamespaceDecl(local, rAncestral))
+                if (AttributeUtils.IsNonRedundantNamespaceDecl(local, rAncestral))
                 {
                     nsLocallyDeclared.Remove(nsPrefix);
                     nsListToRender.Add(local, null);
@@ -50,7 +45,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             {
                 int uDepth;
                 XmlAttribute uAncestral = GetNearestNamespaceWithMatchingPrefix(nsPrefix, out uDepth, false);
-                if (uAncestral != null && uDepth > rDepth && Utils.IsNonRedundantNamespaceDecl(uAncestral, rAncestral))
+                if (uAncestral != null && uDepth > rDepth && AttributeUtils.IsNonRedundantNamespaceDecl(uAncestral, rAncestral))
                 {
                     nsListToRender.Add(uAncestral, null);
                 }
@@ -70,18 +65,17 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         internal override void TrackNamespaceNode(XmlAttribute attr, SortedList nsListToRender, Hashtable nsLocallyDeclared)
         {
-            if (!Utils.IsXmlPrefixDefinitionNode(attr))
+            if (!AttributeUtils.IsXmlPrefixDefinitionNode(attr))
             {
                 if (HasNonRedundantInclusivePrefix(attr))
                     nsListToRender.Add(attr, null);
                 else
-                    nsLocallyDeclared.Add(Utils.GetNamespacePrefix(attr), attr);
+                    nsLocallyDeclared.Add(AttributeUtils.GetNamespacePrefix(attr), attr);
             }
         }
 
         internal override void TrackXmlNamespaceNode(XmlAttribute attr, SortedList nsListToRender, SortedList attrListToRender, Hashtable nsLocallyDeclared)
         {
-            // exclusive canonicalization treats Xml namespaces as simple attributes. They are not propagated.
             attrListToRender.Add(attr, null);
         }
     }

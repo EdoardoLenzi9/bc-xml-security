@@ -1,15 +1,15 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information
-//
-// EncryptedXmlTest.cs
-//
-// Author:
-//	Atsushi Enomoto  <atsushi@ximian.com>
-//
-// Copyright (C) 2006 Novell, Inc (http://www.novell.com)
-//
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information.
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 using System;
@@ -20,6 +20,7 @@ using System.Text;
 using System.Xml;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Encryption;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509;
 using Xunit;
@@ -38,7 +39,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact]
         public void Constructor_Default()
         {
-            EncryptedXml encryptedXml = new EncryptedXml();
+            XmlDecryption encryptedXml = new XmlDecryption();
             Assert.Equal(DefaultEncoding, encryptedXml.GetEncoding());
             Assert.Equal(DefaultCipherMode, encryptedXml.GetMode());
             Assert.Equal(DefaultPaddingMode, encryptedXml.GetPadding());
@@ -50,7 +51,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact]
         public void Constructor_XmlDocument()
         {
-            EncryptedXml encryptedXml = new EncryptedXml(null);
+            XmlDecryption encryptedXml = new XmlDecryption(null);
             Assert.Equal(DefaultEncoding, encryptedXml.GetEncoding());
             Assert.Equal(DefaultCipherMode, encryptedXml.GetMode());
             Assert.Equal(DefaultPaddingMode, encryptedXml.GetPadding());
@@ -74,7 +75,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                 doc.LoadXml(originalXml);
             }
 
-            EncryptedXml encxml = new EncryptedXml(doc);
+            XmlDecryption encxml = new XmlDecryption(doc);
             var certificate = TestHelpers.GetSampleX509Certificate();
             var rsaKey = certificate.Item2 as RsaKeyParameters;
             Assert.NotNull(rsaKey);
@@ -123,7 +124,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             XmlDocument doc = new XmlDocument();
             doc.PreserveWhitespace = true;
             doc.Load(TestHelpers.LoadResourceStream("Org.BouncyCastle.Crypto.Xml.Tests.EncryptedXmlSample2.xml"));
-            EncryptedXml encxml = new EncryptedXml(doc);
+            XmlDecryption encxml = new XmlDecryption(doc);
             EncryptedData edata = new EncryptedData();
             edata.LoadXml(doc.DocumentElement);
             encxml.ReplaceData(doc.DocumentElement, encxml.DecryptData(edata, param));
@@ -135,7 +136,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             using (StringWriter sw = new StringWriter())
             {
 
-                // Encryption
+
                 {
                     XmlDocument doc = new XmlDocument();
                     doc.PreserveWhitespace = true;
@@ -148,13 +149,13 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                     var keydata = Convert.FromBase64String("o/ilseZu+keLBBWGGPlUHweqxIPc4gzZEFWr2nBt640=");
                     var param = new ParametersWithIV(new KeyParameter(keydata), ivdata);
 
-                    EncryptedXml exml = new EncryptedXml();
+                    XmlEncryption exml = new XmlEncryption();
                     byte[] encrypted = exml.EncryptData(body, param, false);
                     EncryptedData edata = new EncryptedData();
                     edata.Type = XmlNameSpace.Url[NS.XmlEncElementUrl];
                     edata.EncryptionMethod = new EncryptionMethod(NS.XmlEncAES256Url);
                     EncryptedKey ekey = new EncryptedKey();
-                    // omit key encryption, here for testing
+
                     byte[] encKeyBytes = keydata;
                     ekey.CipherData = new CipherData(encKeyBytes);
                     ekey.EncryptionMethod = new EncryptionMethod(NS.XmlEncRSA15Url);
@@ -164,11 +165,11 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                     edata.KeyInfo.AddClause(new KeyInfoEncryptedKey(ekey));
                     ekey.KeyInfo.AddClause(new RsaKeyValue());
                     edata.CipherData.CipherValue = encrypted;
-                    EncryptedXml.ReplaceElement(doc.DocumentElement, edata, false);
+                    XmlDecryption.ReplaceElement(doc.DocumentElement, edata, false);
                     doc.Save(new XmlTextWriter(sw));
                 }
 
-                // Decryption
+
                 {
                     var aes = CipherUtilities.GetCipher("AES/CBC/ZEROBYTEPADDING");
                     var random = new SecureRandom();
@@ -180,7 +181,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                     XmlDocument doc = new XmlDocument();
                     doc.PreserveWhitespace = true;
                     doc.LoadXml(sw.ToString());
-                    EncryptedXml encxml = new EncryptedXml(doc);
+                    XmlDecryption encxml = new XmlDecryption(doc);
                     EncryptedData edata = new EncryptedData();
                     edata.LoadXml(doc.DocumentElement);
                     encxml.ReplaceData(doc.DocumentElement, encxml.DecryptData(edata, param));
@@ -204,12 +205,12 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             random.NextBytes(keydata);
             var param = new ParametersWithIV(new KeyParameter(keydata), ivdata);
 
-            EncryptedXml exml = new EncryptedXml();
+            XmlEncryption exml = new XmlEncryption();
             exml.AddKeyNameMapping("aes", param);
             EncryptedData ed = exml.Encrypt(doc.DocumentElement, "aes");
 
             doc.LoadXml(ed.GetXml().OuterXml);
-            EncryptedXml exmlDecryptor = new EncryptedXml(doc);
+            XmlDecryption exmlDecryptor = new XmlDecryption(doc);
             exmlDecryptor.AddKeyNameMapping("aes", param);
             exmlDecryptor.DecryptDocument();
 
@@ -225,7 +226,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             doc.LoadXml(xml);
 
             var certificate = TestHelpers.GetSampleX509Certificate();
-            EncryptedXml exml = new EncryptedXml();
+            XmlEncryption exml = new XmlEncryption();
             EncryptedData ed = exml.Encrypt(doc.DocumentElement, certificate.Item1);
 
             Assert.NotNull(ed);
@@ -242,7 +243,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         public void Encrypt_X509_XmlNull()
         {
             var certificate = TestHelpers.GetSampleX509Certificate();
-            EncryptedXml exml = new EncryptedXml();
+            XmlEncryption exml = new XmlEncryption();
             Assert.Throws<ArgumentNullException>(() => exml.Encrypt(null, certificate.Item1));
         }
 
@@ -251,7 +252,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         {
             XmlDocument doc = new XmlDocument();
             doc.LoadXml("<root />");
-            EncryptedXml exml = new EncryptedXml();
+            XmlEncryption exml = new XmlEncryption();
             X509Certificate certificate = null;
             Assert.Throws<ArgumentNullException>(() => exml.Encrypt(doc.DocumentElement, certificate));
         }
@@ -259,7 +260,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact]
         public void Encrypt_XmlNull()
         {
-            EncryptedXml exml = new EncryptedXml();
+            XmlEncryption exml = new XmlEncryption();
             Assert.Throws<ArgumentNullException>(() => exml.Encrypt(null, "aes"));
         }
 
@@ -268,7 +269,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         {
             XmlDocument doc = new XmlDocument();
             doc.LoadXml("<root />");
-            EncryptedXml exml = new EncryptedXml();
+            XmlEncryption exml = new XmlEncryption();
             string keyName = null;
             Assert.Throws<ArgumentNullException>(() => exml.Encrypt(doc.DocumentElement, keyName));
         }
@@ -278,7 +279,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         {
             XmlDocument doc = new XmlDocument();
             doc.LoadXml("<root />");
-            EncryptedXml exml = new EncryptedXml();
+            XmlEncryption exml = new XmlEncryption();
             Assert.Throws<System.Security.Cryptography.CryptographicException>(() => exml.Encrypt(doc.DocumentElement, "aes"));
         }
 
@@ -342,7 +343,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact]
         public void AddKeyNameMapping_KeyNameNull()
         {
-            EncryptedXml exml = new EncryptedXml();
+            XmlEncryption exml = new XmlEncryption();
 
             var random = new SecureRandom();
             var ivdata = new byte[128 / 8];
@@ -357,28 +358,28 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact]
         public void AddKeyNameMapping_KeyObjectNull()
         {
-            EncryptedXml exml = new EncryptedXml();
+            XmlEncryption exml = new XmlEncryption();
             Assert.Throws<ArgumentNullException>(() => exml.AddKeyNameMapping("no_object", null));
         }
 
         [Fact]
         public void AddKeyNameMapping_KeyObjectWrongType()
         {
-            EncryptedXml exml = new EncryptedXml();
+            XmlEncryption exml = new XmlEncryption();
             Assert.Throws<System.Security.Cryptography.CryptographicException>(() => exml.AddKeyNameMapping("string", ""));
         }
 
         [Fact]
         public void ReplaceData_XmlElementNull()
         {
-            EncryptedXml ex = new EncryptedXml();
+            XmlDecryption ex = new XmlDecryption();
             Assert.Throws<ArgumentNullException>(() => ex.ReplaceData(null, new byte[0]));
         }
 
         [Fact]
         public void ReplaceData_EncryptedDataNull()
         {
-            EncryptedXml ex = new EncryptedXml();
+            XmlDecryption ex = new XmlDecryption();
             XmlDocument doc = new XmlDocument();
             doc.LoadXml("<root />");
             Assert.Throws<ArgumentNullException>(() => ex.ReplaceData(doc.DocumentElement, null));
@@ -387,7 +388,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact]
         public void ReplaceElement_XmlElementNull()
         {
-            Assert.Throws<ArgumentNullException>(() => EncryptedXml.ReplaceElement(null, new EncryptedData(), true));
+            Assert.Throws<ArgumentNullException>(() => XmlDecryption.ReplaceElement(null, new EncryptedData(), true));
         }
 
         [Fact]
@@ -395,7 +396,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         {
             XmlDocument doc = new XmlDocument();
             doc.LoadXml("<root />");
-            Assert.Throws<ArgumentNullException>(() => EncryptedXml.ReplaceElement(doc.DocumentElement, null, false));
+            Assert.Throws<ArgumentNullException>(() => XmlDecryption.ReplaceElement(doc.DocumentElement, null, false));
         }
 
         [Fact]
@@ -405,7 +406,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             doc.LoadXml("<root />");
             EncryptedData edata = new EncryptedData();
             edata.CipherData.CipherValue = new byte[16];
-            EncryptedXml.ReplaceElement(doc.DocumentElement, edata, true);
+            XmlDecryption.ReplaceElement(doc.DocumentElement, edata, true);
             Assert.Equal("root", doc.DocumentElement.Name);
             Assert.Equal("EncryptedData", doc.DocumentElement.FirstChild.Name);
         }
@@ -413,21 +414,21 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact]
         public void GetIdElement_XmlDocumentNull()
         {
-            EncryptedXml ex = new EncryptedXml();
+            XmlDecryption ex = new XmlDecryption();
             Assert.Null(ex.GetIdElement(null, "value"));
         }
 
         [Fact]
         public void GetIdElement_StringNull()
         {
-            EncryptedXml ex = new EncryptedXml();
+            XmlDecryption ex = new XmlDecryption();
             Assert.Throws<ArgumentNullException>(() => ex.GetIdElement(new XmlDocument(), null));
         }
 
         [Fact]
         public void GetDecryptionKey_EncryptedDataNull()
         {
-            EncryptedXml ex = new EncryptedXml();
+            XmlDecryption ex = new XmlDecryption();
             Assert.Throws<ArgumentNullException>(() => ex.GetDecryptionKey(null, NS.XmlEncAES128Url));
         }
 
@@ -437,14 +438,14 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             EncryptedData edata = new EncryptedData();
             edata.KeyInfo = new KeyInfo();
             edata.KeyInfo.AddClause(new KeyInfoEncryptedKey(new EncryptedKey()));
-            EncryptedXml exml = new EncryptedXml();
+            XmlDecryption exml = new XmlDecryption();
             Assert.Throws<System.Security.Cryptography.CryptographicException>(() => exml.GetDecryptionKey(edata, NS.None));
         }
 
         [Fact]
         public void GetDecryptionKey_StringNull()
         {
-            EncryptedXml ex = new EncryptedXml();
+            XmlDecryption ex = new XmlDecryption();
             Assert.Null(ex.GetDecryptionKey(new EncryptedData(), NS.None));
         }
 
@@ -462,7 +463,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             edata.KeyInfo = new KeyInfo();
             edata.KeyInfo.AddClause(new KeyInfoName("aes"));
 
-            EncryptedXml exml = new EncryptedXml();
+            XmlDecryption exml = new XmlDecryption();
             exml.AddKeyNameMapping("aes", param);
             var decryptedAlg = exml.GetDecryptionKey(edata, NS.None);
 
@@ -490,7 +491,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             edata.KeyInfo.AddClause(new KeyInfoName("aes"));
 
             EncryptedKey ekey = new EncryptedKey();
-            byte[] encKeyBytes = EncryptedXml.EncryptKey(((KeyParameter)innerParam.Parameters).GetKey(), (KeyParameter)param.Parameters);
+            byte[] encKeyBytes = XmlEncryption.EncryptKey(((KeyParameter)innerParam.Parameters).GetKey(), (KeyParameter)param.Parameters);
             ekey.CipherData = new CipherData(encKeyBytes);
             ekey.EncryptionMethod = new EncryptionMethod(NS.XmlEncAES256Url);
             ekey.CarriedKeyName = "aes";
@@ -500,7 +501,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(ekey.GetXml().OuterXml);
 
-            EncryptedXml exml = new EncryptedXml(doc);
+            XmlDecryption exml = new XmlDecryption(doc);
             exml.AddKeyNameMapping("another_aes", param);
             var decryptedAlg = exml.GetDecryptionKey(edata, NS.XmlEncAES256Url);
 
@@ -511,14 +512,14 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact]
         public void GetDecryptionIV_EncryptedDataNull()
         {
-            EncryptedXml ex = new EncryptedXml();
+            XmlDecryption ex = new XmlDecryption();
             Assert.Throws<ArgumentNullException>(() => ex.GetDecryptionIV(null, NS.XmlEncAES128Url));
         }
 
         [Fact]
         public void GetDecryptionIV_StringNull()
         {
-            EncryptedXml ex = new EncryptedXml();
+            XmlDecryption ex = new XmlDecryption();
             EncryptedData encryptedData = new EncryptedData();
             encryptedData.EncryptionMethod = new EncryptionMethod(NS.XmlEncAES256Url);
             encryptedData.CipherData = new CipherData(new byte[16]);
@@ -528,7 +529,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact]
         public void GetDecryptionIV_StringNullWithoutEncryptionMethod()
         {
-            EncryptedXml ex = new EncryptedXml();
+            XmlDecryption ex = new XmlDecryption();
             EncryptedData encryptedData = new EncryptedData();
             encryptedData.CipherData = new CipherData(new byte[16]);
             Assert.Throws<System.Security.Cryptography.CryptographicException>(() => ex.GetDecryptionIV(encryptedData, NS.None));
@@ -537,7 +538,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact]
         public void GetDecryptionIV_InvalidAlgorithmUri()
         {
-            EncryptedXml ex = new EncryptedXml();
+            XmlDecryption ex = new XmlDecryption();
             EncryptedData encryptedData = new EncryptedData();
             encryptedData.CipherData = new CipherData(new byte[16]);
             Assert.Throws<System.Security.Cryptography.CryptographicException>(() => ex.GetDecryptionIV(encryptedData, NS.Invalid));
@@ -546,7 +547,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact]
         public void GetDecryptionIV_TripleDesUri()
         {
-            EncryptedXml ex = new EncryptedXml();
+            XmlDecryption ex = new XmlDecryption();
             EncryptedData encryptedData = new EncryptedData();
             encryptedData.CipherData = new CipherData(new byte[16]);
             Assert.Equal(8, ex.GetDecryptionIV(encryptedData, NS.XmlEncTripleDESUrl).Length);
@@ -562,13 +563,13 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             random.NextBytes(keydata);
             var param = new ParametersWithIV(new KeyParameter(keydata), ivdata);
 
-            Assert.Throws<ArgumentNullException>(() => EncryptedXml.DecryptKey(null, new KeyParameter(keydata)));
+            Assert.Throws<ArgumentNullException>(() => XmlDecryption.DecryptKey(null, new KeyParameter(keydata)));
         }
 
         [Fact]
         public void DecryptKey_SymmetricAlgorithmNull()
         {
-            Assert.Throws<ArgumentNullException>(() => EncryptedXml.DecryptKey(new byte[16], null));
+            Assert.Throws<ArgumentNullException>(() => XmlDecryption.DecryptKey(new byte[16], null));
         }
 
         [Fact]
@@ -581,13 +582,13 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             random.NextBytes(keydata);
             var param = new ParametersWithIV(new KeyParameter(keydata), ivdata);
 
-            Assert.Throws<ArgumentNullException>(() => EncryptedXml.EncryptKey(null, new KeyParameter(keydata)));
+            Assert.Throws<ArgumentNullException>(() => XmlEncryption.EncryptKey(null, new KeyParameter(keydata)));
         }
 
         [Fact]
         public void EncryptKey_SymmetricAlgorithmNull()
         {
-            Assert.Throws<ArgumentNullException>(() => EncryptedXml.EncryptKey(new byte[16], null));
+            Assert.Throws<ArgumentNullException>(() => XmlEncryption.EncryptKey(new byte[16], null));
         }
 
         /*
@@ -605,13 +606,13 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             keyGen.Init(new KeyGenerationParameters(new SecureRandom(), 1024));
             var pair = keyGen.GenerateKeyPair();
 
-            Assert.Throws<ArgumentNullException>(() => EncryptedXml.EncryptKey(null, (RsaKeyParameters)pair.Public, false));
+            Assert.Throws<ArgumentNullException>(() => XmlEncryption.EncryptKey(null, (RsaKeyParameters)pair.Public, false));
         }
 
         [Fact]
         public void EncryptKey_RSA_RSANull()
         {
-            Assert.Throws<ArgumentNullException>(() => EncryptedXml.EncryptKey(new byte[16], null, false));
+            Assert.Throws<ArgumentNullException>(() => XmlEncryption.EncryptKey(new byte[16], null, false));
         }
 
         [Fact]
@@ -622,15 +623,15 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             keyGen.Init(new KeyGenerationParameters(new SecureRandom(), 1024));
             var pair = keyGen.GenerateKeyPair();
 
-            byte[] encryptedData = EncryptedXml.EncryptKey(data, (RsaKeyParameters)pair.Public, true);
-            byte[] decryptedData = EncryptedXml.DecryptKey(encryptedData, (RsaKeyParameters)pair.Private, true);
+            byte[] encryptedData = XmlEncryption.EncryptKey(data, (RsaKeyParameters)pair.Public, true);
+            byte[] decryptedData = XmlDecryption.DecryptKey(encryptedData, (RsaKeyParameters)pair.Private, true);
             Assert.Equal(data, decryptedData);
         }
 
         [Fact]
         public void DecryptData_EncryptedDataNull()
         {
-            EncryptedXml ex = new EncryptedXml();
+            XmlDecryption ex = new XmlDecryption();
             var random = new SecureRandom();
             var ivdata = new byte[128 / 8];
             var keydata = new byte[256 / 8];
@@ -644,7 +645,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact]
         public void DecryptData_SymmetricAlgorithmNull()
         {
-            EncryptedXml ex = new EncryptedXml();
+            XmlDecryption ex = new XmlDecryption();
             Assert.Throws<ArgumentNullException>(() => ex.DecryptData(new EncryptedData(), null));
         }
 
@@ -663,14 +664,15 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             random.NextBytes(keydata);
             var param = new ParametersWithIV(new KeyParameter(keydata), ivdata);
 
-            EncryptedXml exml = new EncryptedXml();
+            XmlEncryption exml = new XmlEncryption();
+            XmlDecryption dexml = new XmlDecryption();
             exml.AddKeyNameMapping("aes", param);
             EncryptedData ed = exml.Encrypt(doc.DocumentElement, "aes");
             ed.CipherData = new CipherData();
             ed.CipherData.CipherReference = new CipherReference("invaliduri");
 
-            // https://github.com/dotnet/corefx/issues/19272
-            Action decrypt = () => exml.DecryptData(ed, param);
+
+            Action decrypt = () => dexml.DecryptData(ed, param);
             Assert.Throws<System.Security.Cryptography.CryptographicException>(decrypt);
         }
 
@@ -689,14 +691,15 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             random.NextBytes(keydata);
             var param = new ParametersWithIV(new KeyParameter(keydata), ivdata);
 
-            EncryptedXml exml = new EncryptedXml(doc);
+            XmlEncryption exml = new XmlEncryption(doc);
+            XmlDecryption dexml = new XmlDecryption(doc);
             string cipherValue = Convert.ToBase64String(exml.EncryptData(Encoding.UTF8.GetBytes(xml), param));
 
             EncryptedData ed = new EncryptedData();
             ed.Type = XmlNameSpace.Url[NS.XmlEncElementUrl];
             ed.EncryptionMethod = new EncryptionMethod(NS.XmlEncAES256Url);
             ed.CipherData = new CipherData();
-            // Create CipherReference: first extract node value, then convert from base64 using Transforms
+
             ed.CipherData.CipherReference = new CipherReference("#ID_0");
             string xslt = "<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\"><xsl:template match = \"/\"><xsl:value-of select=\".\" /></xsl:template></xsl:stylesheet>";
             XmlDsigXsltTransform xsltTransform = new XmlDsigXsltTransform();
@@ -706,7 +709,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             ed.CipherData.CipherReference.AddTransform(xsltTransform);
             ed.CipherData.CipherReference.AddTransform(new XmlDsigBase64Transform());
 
-            // Create a document with EncryptedData and node with the actual cipher data (with the ID)
+
             doc.LoadXml("<root></root>");
             XmlNode encryptedDataNode = doc.ImportNode(ed.GetXml(), true);
             doc.DocumentElement.AppendChild(encryptedDataNode);
@@ -715,14 +718,14 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             cipherDataByReference.InnerText = cipherValue;
             doc.DocumentElement.AppendChild(cipherDataByReference);
 
-            string decryptedXmlString = Encoding.UTF8.GetString(exml.DecryptData(ed, param));
+            string decryptedXmlString = Encoding.UTF8.GetString(dexml.DecryptData(ed, param));
             Assert.Equal(xml, decryptedXmlString);
         }
 
         [Fact]
         public void EncryptData_DataNull()
         {
-            EncryptedXml ex = new EncryptedXml();
+            XmlEncryption ex = new XmlEncryption();
 
             var random = new SecureRandom();
             var ivdata = new byte[128 / 8];
@@ -737,7 +740,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact]
         public void EncryptData_SymmetricAlgorithmNull()
         {
-            EncryptedXml ex = new EncryptedXml();
+            XmlEncryption ex = new XmlEncryption();
             Assert.Throws<ArgumentNullException>(() => ex.EncryptData(new byte[16], null));
         }
 
@@ -746,14 +749,14 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         {
             XmlDocument doc = new XmlDocument();
             doc.LoadXml("<root />");
-            EncryptedXml ex = new EncryptedXml();
+            XmlEncryption ex = new XmlEncryption();
             Assert.Throws<ArgumentNullException>(() => ex.EncryptData(doc.DocumentElement, null, true));
         }
 
         [Fact]
         public void EncryptData_Xml_XmlElementNull()
         {
-            EncryptedXml ex = new EncryptedXml();
+            XmlEncryption ex = new XmlEncryption();
             var random = new SecureRandom();
             var ivdata = new byte[128 / 8];
             var keydata = new byte[256 / 8];
@@ -767,14 +770,14 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact]
         public void DecryptEncryptedKey_Null()
         {
-            EncryptedXml ex = new EncryptedXml();
+            XmlDecryption ex = new XmlDecryption();
             Assert.Throws<ArgumentNullException>(() => ex.DecryptEncryptedKey(null));
         }
 
         [Fact]
         public void DecryptEncryptedKey_Empty()
         {
-            EncryptedXml ex = new EncryptedXml();
+            XmlDecryption ex = new XmlDecryption();
             EncryptedKey ek = new EncryptedKey();
             Assert.Null(ex.DecryptEncryptedKey(ek));
         }
@@ -799,11 +802,11 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             random.NextBytes(keydata);
             var innerParam = new ParametersWithIV(new KeyParameter(keydata), ivdata);
 
-            EncryptedXml exml = new EncryptedXml(doc);
+            XmlDecryption exml = new XmlDecryption(doc);
             exml.AddKeyNameMapping("aes", param);
 
             EncryptedKey ekey = new EncryptedKey();
-            byte[] encKeyBytes = EncryptedXml.EncryptKey(((KeyParameter)innerParam.Parameters).GetKey(), (KeyParameter)param.Parameters);
+            byte[] encKeyBytes = XmlEncryption.EncryptKey(((KeyParameter)innerParam.Parameters).GetKey(), (KeyParameter)param.Parameters);
             ekey.CipherData = new CipherData(encKeyBytes);
             ekey.EncryptionMethod = new EncryptionMethod(NS.XmlEncAES256Url);
             ekey.Id = "Key_ID";
@@ -848,11 +851,11 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             random.NextBytes(keydata);
             var outerParam = new KeyParameter(keydata);
 
-            EncryptedXml exml = new EncryptedXml(doc);
+            XmlDecryption exml = new XmlDecryption(doc);
             exml.AddKeyNameMapping("aes", param);
 
             EncryptedKey ekey = new EncryptedKey();
-            byte[] encKeyBytes = EncryptedXml.EncryptKey(outerParam.GetKey(), param);
+            byte[] encKeyBytes = XmlEncryption.EncryptKey(outerParam.GetKey(), param);
             ekey.CipherData = new CipherData(encKeyBytes);
             ekey.EncryptionMethod = new EncryptionMethod(NS.XmlEncAES256Url);
             ekey.Id = "Key_ID";
@@ -863,7 +866,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             topLevelKeyInfo.AddClause(new KeyInfoEncryptedKey(ekey));
 
             EncryptedKey ekeyTopLevel = new EncryptedKey();
-            byte[] encTopKeyBytes = EncryptedXml.EncryptKey(innerParam.GetKey(), outerParam);
+            byte[] encTopKeyBytes = XmlEncryption.EncryptKey(innerParam.GetKey(), outerParam);
             ekeyTopLevel.CipherData = new CipherData(encTopKeyBytes);
             ekeyTopLevel.EncryptionMethod = new EncryptionMethod(NS.XmlEncAES256Url);
             ekeyTopLevel.KeyInfo = topLevelKeyInfo;
@@ -890,10 +893,10 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             byte[] key = Encoding.ASCII.GetBytes("123456781234567812345678");
 
-            byte[] encryptedKey = EncryptedXml.EncryptKey(key, param);
+            byte[] encryptedKey = XmlEncryption.EncryptKey(key, param);
 
             Assert.NotNull(encryptedKey);
-            Assert.Equal(key, EncryptedXml.DecryptKey(encryptedKey, param));
+            Assert.Equal(key, XmlDecryption.DecryptKey(encryptedKey, param));
         }
 
         [Fact]
@@ -906,10 +909,10 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             byte[] key = Encoding.ASCII.GetBytes("123456781234567812345678");
 
-            byte[] encryptedKey = EncryptedXml.EncryptKey(key, param);
+            byte[] encryptedKey = XmlEncryption.EncryptKey(key, param);
 
             Assert.NotNull(encryptedKey);
-            Assert.Equal(key, EncryptedXml.DecryptKey(encryptedKey, param));
+            Assert.Equal(key, XmlDecryption.DecryptKey(encryptedKey, param));
         }
 
         [Fact]
@@ -922,10 +925,10 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             byte[] key = Encoding.ASCII.GetBytes("12345678");
 
-            byte[] encryptedKey = EncryptedXml.EncryptKey(key, param);
+            byte[] encryptedKey = XmlEncryption.EncryptKey(key, param);
 
             Assert.NotNull(encryptedKey);
-            Assert.Equal(key, EncryptedXml.DecryptKey(encryptedKey, param));
+            Assert.Equal(key, XmlDecryption.DecryptKey(encryptedKey, param));
         }
 
         [Fact]
@@ -938,7 +941,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             byte[] key = Encoding.ASCII.GetBytes("1234567");
 
-            Assert.Throws<System.Security.Cryptography.CryptographicException>(() => EncryptedXml.EncryptKey(key, param));
+            Assert.Throws<System.Security.Cryptography.CryptographicException>(() => XmlEncryption.EncryptKey(key, param));
         }
 
         [Fact]
@@ -951,7 +954,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             byte[] key = Encoding.ASCII.GetBytes("123");
 
-            Assert.Throws<System.Security.Cryptography.CryptographicException>(() => EncryptedXml.DecryptKey(key, param));
+            Assert.Throws<System.Security.Cryptography.CryptographicException>(() => XmlDecryption.DecryptKey(key, param));
         }
 
         [Fact]
@@ -964,10 +967,10 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             byte[] key = Encoding.ASCII.GetBytes("123456781234567812345678");
 
-            byte[] encryptedKey = EncryptedXml.EncryptKey(key, param);
+            byte[] encryptedKey = XmlEncryption.EncryptKey(key, param);
             encryptedKey[0] ^= 0xFF;
 
-            Assert.Throws<System.Security.Cryptography.CryptographicException>(() => EncryptedXml.DecryptKey(encryptedKey, param));
+            Assert.Throws<System.Security.Cryptography.CryptographicException>(() => XmlDecryption.DecryptKey(encryptedKey, param));
         }
 
         [Fact]
@@ -980,7 +983,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             byte[] key = Encoding.ASCII.GetBytes("123");
 
-            Assert.Throws<System.Security.Cryptography.CryptographicException>(() => EncryptedXml.DecryptKey(key, param));
+            Assert.Throws<System.Security.Cryptography.CryptographicException>(() => XmlDecryption.DecryptKey(key, param));
         }
 
         [Fact]
@@ -993,10 +996,10 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             byte[] key = Encoding.ASCII.GetBytes("123456781234567812345678");
 
-            byte[] encryptedKey = EncryptedXml.EncryptKey(key, param);
+            byte[] encryptedKey = XmlEncryption.EncryptKey(key, param);
             encryptedKey[0] ^= 0xFF;
 
-            Assert.Throws<System.Security.Cryptography.CryptographicException>(() => EncryptedXml.DecryptKey(encryptedKey, param));
+            Assert.Throws<System.Security.Cryptography.CryptographicException>(() => XmlDecryption.DecryptKey(encryptedKey, param));
         }
 
         [Fact]
@@ -1009,10 +1012,10 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             byte[] key = Encoding.ASCII.GetBytes("12345678");
 
-            byte[] encryptedKey = EncryptedXml.EncryptKey(key, param);
+            byte[] encryptedKey = XmlEncryption.EncryptKey(key, param);
             encryptedKey[0] ^= 0xFF;
 
-            Assert.Throws<System.Security.Cryptography.CryptographicException>(() => EncryptedXml.DecryptKey(encryptedKey, param));
+            Assert.Throws<System.Security.Cryptography.CryptographicException>(() => XmlDecryption.DecryptKey(encryptedKey, param));
         }
 
         /*
@@ -1030,19 +1033,19 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             keyGen.Init(new KeyGenerationParameters(new SecureRandom(), 1024));
             var pair = keyGen.GenerateKeyPair();
 
-            Assert.Throws<ArgumentNullException>(() => EncryptedXml.DecryptKey(null, (RsaKeyParameters)pair.Private, false));
+            Assert.Throws<ArgumentNullException>(() => XmlDecryption.DecryptKey(null, (RsaKeyParameters)pair.Private, false));
         }
 
         [Fact]
         public void DecryptKey_RSA_RSANull()
         {
-            Assert.Throws<ArgumentNullException>(() => EncryptedXml.DecryptKey(new byte[16], null, false));
+            Assert.Throws<ArgumentNullException>(() => XmlDecryption.DecryptKey(new byte[16], null, false));
         }
 
         [Fact]
         public void Properties()
         {
-            EncryptedXml exml = new EncryptedXml();
+            XmlEncryption exml = new XmlEncryption();
             exml.SetXmlDSigSearchDepth(10);
             exml.SetResolver(null);
             exml.SetPadding("NOPADDING");
@@ -1062,7 +1065,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         {
             XmlDocument doc = new XmlDocument();
             doc.LoadXml("<root />");
-            EncryptedXml exml = new EncryptedXml();
+            XmlEncryption exml = new XmlEncryption();
             exml.AddKeyNameMapping("key", algorithm);
 
             EncryptedData edata = exml.Encrypt(doc.DocumentElement, "key");

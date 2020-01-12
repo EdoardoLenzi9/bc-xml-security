@@ -1,16 +1,16 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information
-//
-// KeyInfoX509DataTest.cs - Test Cases for KeyInfoX509Data
-//
-// Author:
-//	Sebastien Pouliot  <sebastien@ximian.com>
-//
-// (C) 2002, 2003 Motus Technologies Inc. (http://www.motus.com)
-// Copyright (C) 2005 Novell, Inc (http://www.novell.com)
-//
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information.
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 using Org.BouncyCastle.X509;
 using System;
@@ -179,9 +179,9 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             Assert.Equal(1, data.SubjectKeyIds.Count);
             Assert.Null(data.SubjectNames);
             
-            //Comment from https://github.com/peterwurzinger
-            //TODO: This is senseless, since GetXml() will call Convert.ToBase64String(null), what will throw an exception not related to the Crypto-XML-API
-            //Assert.Equal("<X509Data xmlns=\"http://www.w3.org/2000/09/xmldsig#\" />", data.GetXml ().OuterXml); // May throw an exception
+
+
+
 
             Assert.Throws<ArgumentNullException>(() => data.GetXml().OuterXml);
         }
@@ -232,7 +232,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             byte[] c = (data1.Certificates[0] as X509Certificate).GetEncoded();
             AssertCrypto.AssertEquals("Certificate[0]", cert, c);
 
-            // add a second X.509 certificate
+
             X509Certificate x509 = new X509CertificateParser().ReadCertificate(cert2);
             data1.AddCertificate(x509);
             xel = data1.GetXml();
@@ -241,15 +241,15 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             c = (data1.Certificates[1] as X509Certificate).GetEncoded();
             Assert.Equal(cert2, c);
 
-            // add properties from a third X.509 certificate
+
             x509 = new X509CertificateParser().ReadCertificate(cert3);
             data1.AddIssuerSerial(x509.IssuerDN.ToString(), x509.SerialNumber.ToString());
             xel = data1.GetXml();
             data2.LoadXml(xel);
             Assert.Equal((data1.GetXml().OuterXml), (data2.GetXml().OuterXml));
-            // TODO: The type of IssuerSerial isn't documented
 
-            // X509Certificate doesn't export SubjectKeyId so we must improvise
+
+
             byte[] skid = { 0xDE, 0xAD, 0xC0, 0xDE };
             data1.AddSubjectKeyId(skid);
             xel = data1.GetXml();
@@ -264,9 +264,9 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             Assert.Equal(x509.SubjectDN.ToString(), s);
         }
 
-        // There's a bug in the framework 1.0 where a CRL entry cannot be included
-        // in a same X509Data entry. This is not per XMLDSIG spec so Mono will accept
-        // this (anyway the bug should be fixed by Microsoft in future release).
+
+
+
         [Fact]
         public void CRL()
         {
@@ -292,11 +292,11 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             KeyInfoX509Data data1 = new KeyInfoX509Data();
             data1.LoadXml(doc.DocumentElement);
 
-            // verify that proper XML is generated (equals to original)
+
             string s = (data1.GetXml().OuterXml);
             Assert.Equal(simple, s);
 
-            // verify that property is parsed correctly
+
             byte[] c = (data1.Certificates[0] as X509Certificate).GetEncoded();
             Assert.Equal(cert, c);
 

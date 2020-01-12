@@ -1,6 +1,6 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
+﻿
+
+
 
 using System;
 using System.Collections;
@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Org.BouncyCastle.Crypto.IO;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Encryption;
 using Org.BouncyCastle.Security;
 using Xunit;
 
@@ -94,13 +95,13 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
                         keyMismatch = false;
 
-                        // Decrypt session key
+
                         byte[] encryptedKeyValue = encryptedKey.CipherData.CipherValue;
 
                         if (encryptedKeyValue == null)
                             throw new System.Security.Cryptography.CryptographicException("MissingKeyCipher");
 
-                        decryptedKey = EncryptedXml.DecryptKey(encryptedKeyValue,
+                        decryptedKey = XmlDecryption.DecryptKey(encryptedKeyValue,
                                                                      rsaKey, true);
                         break;
                     }
@@ -138,11 +139,11 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             byte[] IV = new byte[decryptor.GetBlockSize()];
 
-            // Get the IV from the encrypted content.
+
             toDecrypt.Read(IV, 0, IV.Length);
             byte[] encryptedContentValue = new byte[toDecrypt.Length - IV.Length];
 
-            // Get the encrypted content following the IV.
+
             toDecrypt.Read(encryptedContentValue, 0, encryptedContentValue.Length);
 
             byte[] decryptedContent;
@@ -170,7 +171,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                 new KeyInfoEncryptedKey(
                     encKey = new EncryptedKey()
                     {
-                        CipherData = new CipherData(EncryptedXml.EncryptKey(keyData, key, useOAEP: true)),
+                        CipherData = new CipherData(XmlEncryption.EncryptKey(keyData, key, useOAEP: true)),
                         EncryptionMethod = new EncryptionMethod(NS.XmlEncRSAOAEPUrl)
                     }));
 
@@ -179,7 +180,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             byte[] dataToEncrypt = new byte[toEncrypt.Length];
             toEncrypt.Read(dataToEncrypt, 0, (int)toEncrypt.Length);
 
-            var encryptedXml = new EncryptedXml();
+            var encryptedXml = new XmlEncryption();
             encryptedXml.SetPadding("PKCS7");
             encryptedXml.SetMode("CBC");
             byte[] encryptedData = encryptedXml.EncryptData(dataToEncrypt, sessionKey);

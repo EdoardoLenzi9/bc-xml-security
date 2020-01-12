@@ -20,16 +20,19 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         void AddKeyNameMapping(string keyName, object keyObject);
         void ClearKeyNameMappings();
-        byte[] DecryptData(EncryptedData encryptedData, ICipherParameters symmetricAlgorithm);
-        void DecryptDocument();
-        byte[] DecryptEncryptedKey(EncryptedKey encryptedKey, RsaKeyParameters privateKey = null);
+
         EncryptedData Encrypt(XmlElement inputElement, string keyName);
         EncryptedData Encrypt(XmlElement inputElement, X509Certificate certificate);
         byte[] EncryptData(byte[] plaintext, ICipherParameters symmetricAlgorithm);
         byte[] EncryptData(XmlElement inputElement, ICipherParameters symmetricAlgorithm, bool content);
+        
+        byte[] DecryptEncryptedKey(EncryptedKey encryptedKey, RsaKeyParameters privateKey = null);
+        byte[] DecryptData(EncryptedData encryptedData, ICipherParameters symmetricAlgorithm);
         byte[] GetDecryptionIV(EncryptedData encryptedData, string symmetricAlgorithmUri);
+        void DecryptDocument();
         ICipherParameters GetDecryptionKey(EncryptedData encryptedData, string symmetricAlgorithmUri);
         XmlElement GetIdElement(XmlDocument document, string idValue);
         void ReplaceData(XmlElement inputElement, byte[] decryptedData);
+        
     }
 }

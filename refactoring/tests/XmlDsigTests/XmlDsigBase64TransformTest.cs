@@ -1,16 +1,16 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information
-//
-// XmlDsigBase64TransformTest.cs - Test Cases for XmlDsigBase64Transform
-//
-// Author:
-//	Sebastien Pouliot <sebastien@ximian.com>
-//
-// (C) 2002 Motus Technologies Inc. (http://www.motus.com)
-// (C) 2004 Novell (http://www.novell.com)
-//
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information.
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 using System;
 using System.IO;
@@ -22,8 +22,8 @@ using Xunit;
 namespace Org.BouncyCastle.Crypto.Xml.Tests
 {
 
-    // Note: GetInnerXml is protected in XmlDsigBase64Transform making it
-    // difficult to test properly. This class "open it up" :-)
+
+
     public class UnprotectedXmlDsigBase64Transform : XmlDsigBase64Transform
     {
 
@@ -51,7 +51,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             Type[] input = transform.InputTypes;
             Assert.True((input.Length == 3), "Input #");
-            // check presence of every supported input types
+
             bool istream = false;
             bool ixmldoc = false;
             bool ixmlnl = false;
@@ -70,7 +70,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             Type[] output = transform.OutputTypes;
             Assert.True((output.Length == 1), "Output #");
-            // check presence of every supported output types
+
             bool ostream = false;
             foreach (Type t in input)
             {
@@ -87,12 +87,12 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             input[0] = null;
             input[1] = null;
             input[2] = null;
-            // property does not return a clone
+
             foreach (Type t in transform.InputTypes)
             {
                 Assert.Null(t);
             }
-            // it's not a static array
+
             XmlDsigBase64Transform t2 = new XmlDsigBase64Transform();
             foreach (Type t in t2.InputTypes)
             {
@@ -153,7 +153,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             transform.LoadInput(doc.ChildNodes);
             Stream s = (Stream)transform.GetOutput();
             string output = Stream2String(s);
-            // Note that ChildNodes does not contain the text node.
+
             Assert.Equal(string.Empty, output);
         }
 
@@ -174,7 +174,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         public void LoadInputWithUnsupportedType()
         {
             byte[] bad = { 0xBA, 0xD };
-            // input MUST be one of InputType - but no exception is thrown (not documented)
+
             transform.LoadInput(bad);
         }
 

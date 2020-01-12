@@ -1,17 +1,17 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information
-//
-// XmlDsigXsltTransformTest.cs - Test Cases for XmlDsigXsltTransform
-//
-// Author:
-//	Sebastien Pouliot <sebastien@ximian.com>
-//	Atsushi Enomoto <atsushi@ximian.com>
-//
-// (C) 2002, 2003 Motus Technologies Inc. (http://www.motus.com)
-// (C) 2004 Novell (http://www.novell.com)
-//
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 using System;
 using System.Collections;
@@ -24,8 +24,8 @@ using Xunit;
 namespace Org.BouncyCastle.Crypto.Xml.Tests
 {
 
-    // Note: GetInnerXml is protected in XmlDsigXsltTransform making it
-    // difficult to test properly. This class "open it up" :-)
+
+
     public class UnprotectedXmlDsigXsltTransform : XmlDsigXsltTransform
     {
         public UnprotectedXmlDsigXsltTransform()
@@ -74,7 +74,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             Type[] input = transform.InputTypes;
             Assert.True((input.Length == 3), "Input #");
-            // check presence of every supported input types
+
             bool istream = false;
             bool ixmldoc = false;
             bool ixmlnl = false;
@@ -93,7 +93,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             Type[] output = transform.OutputTypes;
             Assert.True((output.Length == 1), "Output #");
-            // check presence of every supported output types
+
             bool ostream = false;
             foreach (Type t in output)
             {
@@ -135,8 +135,8 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         }
 
         [Fact]
-        // Note that this is _valid_ as an "embedded stylesheet".
-        // (see XSLT spec 2.7)
+
+
         public void EmbeddedStylesheet()
         {
             string test = "<Test xsl:version='1.0' xmlns:xsl='http://www.w3.org/1999/XSL/Transform'>XmlDsigXsltTransform</Test>";
@@ -163,7 +163,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             }
             catch (Exception e)
             {
-                // we must deal with an internal exception
+
                 result = (e.GetType().ToString().EndsWith("XsltLoadException"));
                 result = true;
             }
@@ -277,7 +277,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         public void UnsupportedInput()
         {
             byte[] bad = { 0xBA, 0xD };
-            // input MUST be one of InputType - but no exception is thrown (not documented)
+
             transform.LoadInput(bad);
         }
 

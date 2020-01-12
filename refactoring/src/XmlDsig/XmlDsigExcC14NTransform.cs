@@ -1,6 +1,6 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
+﻿
+
+
 
 using System;
 using System.Collections;
@@ -12,6 +12,7 @@ using System.Xml;
 using System.Xml.XPath;
 using System.Xml.Xsl;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -63,13 +64,13 @@ namespace Org.BouncyCastle.Crypto.Xml
                     {
                         if (e.LocalName.Equals("InclusiveNamespaces")
                         && e.NamespaceURI.Equals(NS.XmlDsigExcC14NTransformUrl) &&
-                        Utils.HasAttribute(e, "PrefixList", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]))
+                        ElementUtils.HasAttribute(e, "PrefixList", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]))
                         {
-                            if (!Utils.VerifyAttributes(e, "PrefixList"))
+                            if (!ElementUtils.VerifyAttributes(e, "PrefixList"))
                             {
                                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_UnknownTransform);
                             }
-                            this.InclusiveNamespacesPrefixList = Utils.GetAttribute(e, "PrefixList", NS.XmlDsigNamespaceUrl);
+                            this.InclusiveNamespacesPrefixList = ElementUtils.GetAttribute(e, "PrefixList", NS.XmlDsigNamespaceUrl);
                             return;
                         }
                         else

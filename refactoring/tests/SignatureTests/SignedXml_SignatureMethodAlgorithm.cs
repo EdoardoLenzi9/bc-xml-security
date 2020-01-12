@@ -1,5 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information.
+﻿
 
 using System.Xml;
 using Org.BouncyCastle.Crypto.Xml.Constants;
@@ -22,7 +21,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             var signatureNode = (XmlElement)xmlDoc.GetElementsByTagName("Signature", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl])[0];
 
-            SignedXml signedXml = new SignedXml(xmlDoc);
+            SignatureChecker signedXml = new SignatureChecker(xmlDoc);
             signedXml.LoadXml(signatureNode);
             Assert.Throws<System.Security.Cryptography.CryptographicException>(() => signedXml.CheckSignature());
         }

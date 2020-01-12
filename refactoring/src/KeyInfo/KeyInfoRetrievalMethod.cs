@@ -1,10 +1,7 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
-using System;
+﻿using System;
 using System.Xml;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -12,10 +9,6 @@ namespace Org.BouncyCastle.Crypto.Xml
     {
         private string _uri;
         private string _type;
-
-        //
-        // public constructors
-        //
 
         public KeyInfoRetrievalMethod() { }
 
@@ -30,16 +23,8 @@ namespace Org.BouncyCastle.Crypto.Xml
             _type = typeName;
         }
 
-        //
-        // public properties
-        //
-
         public string GetUri()
         { return _uri; }
-
-        //
-        // public properties
-        //
 
         public void SetUri(string value)
         { _uri = value; }
@@ -59,7 +44,6 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         internal override XmlElement GetXml(XmlDocument xmlDocument)
         {
-            // Create the actual element
             XmlElement retrievalMethodElement = xmlDocument.CreateElement("RetrievalMethod", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
 
             if (!string.IsNullOrEmpty(_uri))
@@ -74,8 +58,8 @@ namespace Org.BouncyCastle.Crypto.Xml
         {
             if (element == null)
                 throw new ArgumentNullException(nameof(element));
-            _uri = Utils.GetAttribute(element, "URI", NS.XmlDsigNamespaceUrl);
-            _type = Utils.GetAttribute(element, "Type", NS.XmlDsigNamespaceUrl);
+            _uri = ElementUtils.GetAttribute(element, "URI", NS.XmlDsigNamespaceUrl);
+            _type = ElementUtils.GetAttribute(element, "Type", NS.XmlDsigNamespaceUrl);
         }
     }
 }

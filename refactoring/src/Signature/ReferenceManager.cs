@@ -31,7 +31,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                     SignedXmlDebugLog.LogSignedXmlRecursionLimit(signedXml, digestedReference);
                     return false;
                 }
-                // Compare both hashes
                 SignedXmlDebugLog.LogVerifyReferenceHash(signedXml, digestedReference, calculatedHash, digestedReference.DigestValue);
 
                 if (!CryptographicEquals(calculatedHash, digestedReference.DigestValue))
@@ -63,7 +62,6 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         private static bool IsSafeTransform(NS transformAlgorithm, SignedXml signedXml)
         {
-            // All canonicalization algorithms are valid transform algorithms.
             foreach (string safeAlgorithm in signedXml.SafeCanonicalizationMethods)
             {
                 if (string.Equals(safeAlgorithm, XmlNameSpace.Url[transformAlgorithm], StringComparison.OrdinalIgnoreCase))
@@ -95,14 +93,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 {
                     List<string> safeAlgorithms = new List<string>();
 
-                    // Built in algorithms
-
-                    // KnownCanonicalizationMethods don't need to be added here, because
-                    // the validator will automatically accept those.
-                    //
-                    // xmldsig 6.6.1:
-                    //     Any canonicalization algorithm that can be used for
-                    //     CanonicalizationMethod can be used as a Transform.
                     safeAlgorithms.Add(XmlNameSpace.Url[NS.XmlDsigEnvelopedSignatureTransformUrl]);
                     safeAlgorithms.Add(XmlNameSpace.Url[NS.XmlDsigBase64TransformUrl]);
                     safeAlgorithms.Add(XmlNameSpace.Url[NS.XmlLicenseTransformUrl]);
@@ -114,11 +104,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 return s_defaultSafeTransformMethods;
         }
 
-        // Methods _must_ be marked both No Inlining and No Optimization to be fully opted out of optimization.
-        // This is because if a candidate method is inlined, its method level attributes, including the NoOptimization
-        // attribute, are lost. 
-        // This method makes no attempt to disguise the length of either of its inputs. It is assumed the attacker has 
-        // knowledge of the algorithms used, and thus the output length. Length is difficult to properly blind in modern CPUs.
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         private static bool CryptographicEquals(byte[] a, byte[] b)
         {
@@ -127,21 +112,14 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             int result = 0;
 
-            // Short cut if the lengths are not identical
             if (a.Length != b.Length)
                 return false;
 
             unchecked
             {
-                // Normally this caching doesn't matter, but with the optimizer off, this nets a non-trivial speedup.
                 int aLength = a.Length;
 
                 for (int i = 0; i < aLength; i++)
-                    // We use subtraction here instead of XOR because the XOR algorithm gets ever so
-                    // slightly faster as more and more differences pile up.
-                    // This cannot overflow more than once (and back to 0) because bytes are 1 byte
-                    // in length, and result is 4 bytes. The OR propagates all set bytes, so the differences
-                    // can't add up and overflow a second time.
                     result = result | (a[i] - b[i]);
             }
 
@@ -150,15 +128,12 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public static void BuildDigestedReferences(SignedXml signedXml)
         {
-            // Default the DigestMethod and Canonicalization
             ArrayList references = signedXml.SignedInfo.References;
-            // Reset the cache
             signedXml.RefProcessed = new bool[references.Count];
             signedXml.RefLevelCache = new int[references.Count];
 
             ReferenceLevelSortOrder sortOrder = new ReferenceLevelSortOrder();
             sortOrder.SetReferences(references);
-            // Don't alter the order of the references array list
             ArrayList sortedReferences = new ArrayList();
             foreach (Reference reference in references)
             {
@@ -173,14 +148,12 @@ namespace Org.BouncyCastle.Crypto.Xml
             }
             foreach (Reference reference in sortedReferences)
             {
-                // If no DigestMethod has yet been set, default it to sha1
                 if (reference.DigestMethod == null)
                     reference.DigestMethod = XmlNameSpace.Url[NS.XmlDsigSHA256Url];
 
                 SignedXmlDebugLog.LogSigningReference(signedXml, reference);
 
                 reference.UpdateHashValue(signedXml.ContainingDocument, nodeList);
-                // If this reference has an Id attribute, add it
                 if (reference.GetId() != null)
                     nodeList.Add(reference.GetXml());
             }

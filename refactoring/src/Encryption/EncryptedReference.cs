@@ -1,10 +1,7 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
 using System;
 using System.Xml;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -94,12 +91,10 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (ReferenceType == null)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_ReferenceTypeRequired);
 
-            // Create the Reference
             XmlElement referenceElement = document.CreateElement(ReferenceType, XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
             if (!string.IsNullOrEmpty(_uri))
                 referenceElement.SetAttribute("URI", _uri);
 
-            // Add the transforms to the CipherReference
             if (TransformChain.Count > 0)
                 referenceElement.AppendChild(TransformChain.GetXml(document, NS.XmlDsigNamespaceUrl));
 
@@ -113,19 +108,17 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             ReferenceType = value.LocalName;
             
-            string uri = Utils.GetAttribute(value, "URI", NS.XmlEncNamespaceUrl);
+            string uri = ElementUtils.GetAttribute(value, "URI", NS.XmlEncNamespaceUrl);
             if (uri == null)
                 throw new ArgumentNullException(SR.Cryptography_Xml_UriRequired);
             Uri = uri;
 
-            // Transforms
             XmlNamespaceManager nsm = new XmlNamespaceManager(value.OwnerDocument.NameTable);
             nsm.AddNamespace("ds", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
             XmlNode transformsNode = value.SelectSingleNode("ds:Transforms", nsm);
             if (transformsNode != null)
                 TransformChain.LoadXml(transformsNode as XmlElement);
 
-            // cache the Xml
             _cachedXml = value;
         }
     }

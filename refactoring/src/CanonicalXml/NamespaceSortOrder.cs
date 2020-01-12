@@ -1,10 +1,7 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
-using System;
+﻿using System;
 using System.Xml;
 using System.Collections;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -22,8 +19,8 @@ namespace Org.BouncyCastle.Crypto.Xml
                 throw argumentException;
             }
 
-            bool nodeAdefault = Utils.IsDefaultNamespaceNode(nodeA);
-            bool nodeBdefault = Utils.IsDefaultNamespaceNode(nodeB);
+            bool nodeAdefault = NodeUtils.IsDefaultNamespaceNode(nodeA);
+            bool nodeBdefault = NodeUtils.IsDefaultNamespaceNode(nodeB);
             if (nodeAdefault && nodeBdefault) return 0;
             if (nodeAdefault) return -1;
             if (nodeBdefault) return 1;

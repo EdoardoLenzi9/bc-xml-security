@@ -1,10 +1,7 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
 using System;
 using System.Xml;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -15,10 +12,6 @@ namespace Org.BouncyCastle.Crypto.Xml
         private string _encoding;
         private CanonicalXmlNodeList _elData;
         private XmlElement _cachedXml;
-
-        //
-        // public constructors
-        //
 
         public DataObject()
         {
@@ -38,10 +31,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             _elData.Add(data);
             _cachedXml = null;
         }
-
-        //
-        // public properties
-        //
 
         public string Id
         {
@@ -81,7 +70,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 if (value == null)
                     throw new ArgumentNullException(nameof(value));
 
-                // Reset the node list
                 _elData = new CanonicalXmlNodeList();
                 foreach (XmlNode node in value)
                 {
@@ -98,10 +86,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 return (_cachedXml != null);
             }
         }
-
-        //
-        // public methods
-        //
 
         public XmlElement GetXml()
         {
@@ -139,16 +123,15 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (value == null)
                 throw new ArgumentNullException(nameof(value));
 
-            _id = Utils.GetAttribute(value, "Id", NS.XmlDsigNamespaceUrl);
-            _mimeType = Utils.GetAttribute(value, "MimeType", NS.XmlDsigNamespaceUrl);
-            _encoding = Utils.GetAttribute(value, "Encoding", NS.XmlDsigNamespaceUrl);
+            _id = ElementUtils.GetAttribute(value, "Id", NS.XmlDsigNamespaceUrl);
+            _mimeType = ElementUtils.GetAttribute(value, "MimeType", NS.XmlDsigNamespaceUrl);
+            _encoding = ElementUtils.GetAttribute(value, "Encoding", NS.XmlDsigNamespaceUrl);
 
             foreach (XmlNode node in value.ChildNodes)
             {
                 _elData.Add(node);
             }
 
-            // Save away the cached value
             _cachedXml = value;
         }
     }

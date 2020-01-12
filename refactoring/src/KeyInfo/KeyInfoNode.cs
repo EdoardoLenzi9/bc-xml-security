@@ -1,19 +1,10 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
-using System.Xml;
+﻿using System.Xml;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
-    // This is for generic, unknown nodes
     public class KeyInfoNode : KeyInfoClause
     {
         private XmlElement _node;
-
-        //
-        // public constructors
-        //
 
         public KeyInfoNode() { }
 
@@ -21,25 +12,13 @@ namespace Org.BouncyCastle.Crypto.Xml
         {
             _node = node;
         }
-
-        //
-        // public properties
-        //
-
+        
         public XmlElement GetValue()
         { return _node; }
-
-        //
-        // public properties
-        //
-
+        
         public void SetValue(XmlElement value)
         { _node = value; }
-
-        //
-        // public methods
-        //
-
+        
         public override XmlElement GetXml()
         {
             XmlDocument xmlDocument = new XmlDocument();

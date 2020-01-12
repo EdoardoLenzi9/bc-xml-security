@@ -1,8 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
-using System;
+﻿using System;
 using System.Xml;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
@@ -11,9 +7,6 @@ using Org.BouncyCastle.Security;
 
 namespace _SignedXml.Samples
 {
-    // Based on implementation of MSDN samples:
-    // Signing: https://msdn.microsoft.com/en-us/library/ms229745(v=vs.110).aspx
-    // Verifying: https://msdn.microsoft.com/en-us/library/ms229745(v=vs.110).aspx
     public class SigningAndVerifyingWithCustomSignatureMethod
     {
         const string ExampleXml = @"<?xml version=""1.0""?>
@@ -49,7 +42,7 @@ namespace _SignedXml.Samples
             xmlDoc.PreserveWhitespace = true;
             xmlDoc.LoadXml(signedXmlText);
 
-            SignedXml signedXml = new SignedXml(xmlDoc);
+            SignatureChecker signedXml = new SignatureChecker(xmlDoc);
             var signatureNode = (XmlElement)xmlDoc.GetElementsByTagName("Signature")[0];
             signedXml.LoadXml(signatureNode);
             return signedXml.CheckSignature(key);

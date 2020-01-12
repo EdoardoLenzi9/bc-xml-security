@@ -1,10 +1,7 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
-using System;
+﻿using System;
 using System.Xml;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
@@ -27,7 +24,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             ReferenceType = "CipherReference";
         }
 
-        // This method is used to cache results from resolved cipher references.
         internal byte[] CipherValue
         {
             get
@@ -56,12 +52,10 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (ReferenceType == null)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_ReferenceTypeRequired);
 
-            // Create the Reference
             XmlElement referenceElement = document.CreateElement(ReferenceType, XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
             if (!string.IsNullOrEmpty(Uri))
                 referenceElement.SetAttribute("URI", Uri);
 
-            // Add the transforms to the CipherReference
             if (TransformChain.Count > 0)
                 referenceElement.AppendChild(TransformChain.GetXml(document, NS.XmlEncNamespaceUrl));
 
@@ -74,17 +68,15 @@ namespace Org.BouncyCastle.Crypto.Xml
                 throw new ArgumentNullException(nameof(value));
 
             ReferenceType = value.LocalName;
-            string uri = Utils.GetAttribute(value, "URI", NS.XmlEncNamespaceUrl);
+            string uri = ElementUtils.GetAttribute(value, "URI", NS.XmlEncNamespaceUrl);
             Uri = uri ?? throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_UriRequired);
 
-            // Transforms
             XmlNamespaceManager nsm = new XmlNamespaceManager(value.OwnerDocument.NameTable);
             nsm.AddNamespace("enc", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
             XmlNode transformsNode = value.SelectSingleNode("enc:Transforms", nsm);
             if (transformsNode != null)
                 TransformChain.LoadXml(transformsNode as XmlElement);
 
-            // cache the Xml
             _cachedXml = value;
         }
     }

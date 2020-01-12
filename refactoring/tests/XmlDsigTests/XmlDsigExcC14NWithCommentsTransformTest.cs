@@ -1,22 +1,22 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information
-//
-// XmlDsigExcC14NWithCommentsTransformTest.cs - Test Cases for
-// XmlDsigExcC14NWithCommentsTransform
-//
-// Author:
-//  original:
-//	Sebastien Pouliot <sebastien@ximian.com>
-//	Aleksey Sanin (aleksey@aleksey.com)
-//  this file:
-//	Gert Driesen <drieseng@users.sourceforge.net>
-//
-// (C) 2003 Aleksey Sanin (aleksey@aleksey.com)
-// (C) 2004 Novell (http://www.novell.com)
-// (C) 2008 Gert Driesen
-//
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 using System;
 using System.IO;
@@ -81,7 +81,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             Type[] input = transform.InputTypes;
             Assert.Equal(3, input.Length);
-            // check presence of every supported input types
+
             bool istream = false;
             bool ixmldoc = false;
             bool ixmlnl = false;
@@ -110,10 +110,10 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             input[0] = null;
             input[1] = null;
             input[2] = null;
-            // property does not return a clone
+
             Assert.All(transform.InputTypes, Assert.Null);
 
-            // it's not a static array
+
             transform = new UnprotectedXmlDsigExcC14NWithCommentsTransform();
             Assert.All(transform.InputTypes, Assert.NotNull);
         }
@@ -128,11 +128,11 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact]
         public void OutputTypes()
         {
-            // property does not return a clone
+
             transform.OutputTypes[0] = null;
             Assert.Null(transform.OutputTypes[0]);
 
-            // it's not a static array
+
             transform = new UnprotectedXmlDsigExcC14NWithCommentsTransform();
             Assert.NotNull(transform.OutputTypes[0]);
         }

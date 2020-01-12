@@ -1,13 +1,10 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
 using System;
 using System.Xml;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Xml;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Encryption;
 
 namespace _SignedXml.Samples
 {
@@ -26,17 +23,12 @@ namespace _SignedXml.Samples
             var elementToEncrypt = (XmlElement)doc.GetElementsByTagName(elementName)[0];
 
             ICipherParameters innerKey = innerKeyFactory();
-            // Encrypt the key with another key
             var encryptedKey = new EncryptedKey()
             {
-                CipherData = new CipherData(EncryptedXml.EncryptKey(((KeyParameter)((ParametersWithIV)innerKey).Parameters).GetKey(), (KeyParameter)((ParametersWithIV)key).Parameters)),
+                CipherData = new CipherData(XmlEncryption.EncryptKey(((KeyParameter)((ParametersWithIV)innerKey).Parameters).GetKey(), (KeyParameter)((ParametersWithIV)key).Parameters)),
                 EncryptionMethod = new EncryptionMethod(EncryptingAndDecryptingSymmetric.GetEncryptionMethodName(key, keyWrap: true))
             };
 
-            // Specify which EncryptedData
-            // uses this key. An XML document can have
-            // multiple EncryptedData elements that use
-            // different keys.
             encryptedKey.AddReference(new DataReference()
             {
                 Uri = "#" + encryptionElementID
@@ -47,8 +39,6 @@ namespace _SignedXml.Samples
                 Type = XmlNameSpace.Url[NS.XmlEncElementUrl],
                 Id = encryptionElementID,
 
-                // Create an EncryptionMethod element so that the
-                // receiver knows which algorithm to use for decryption.
                 EncryptionMethod = new EncryptionMethod(EncryptingAndDecryptingSymmetric.GetEncryptionMethodName(innerKey, keyWrap: false))
             };
 
@@ -58,15 +48,15 @@ namespace _SignedXml.Samples
                 Value = keyName
             });
 
-            var encryptedXml = new EncryptedXml();
+            var encryptedXml = new XmlEncryption();
             encryptedData.CipherData.CipherValue = encryptedXml.EncryptData(elementToEncrypt, innerKey, false);
 
-            EncryptedXml.ReplaceElement(elementToEncrypt, encryptedData, false);
+            XmlDecryption.ReplaceElement(elementToEncrypt, encryptedData, false);
         }
 
         public static void Decrypt(XmlDocument doc, ICipherParameters key, string keyName)
         {
-            var encrypted = new EncryptedXml(doc);
+            var encrypted = new XmlDecryption(doc);
             encrypted.AddKeyNameMapping(keyName, key);
             encrypted.DecryptDocument();
         }
@@ -102,7 +92,6 @@ namespace _SignedXml.Samples
 
         public void SymmetricKeyWrapEncryptionRoundtrip()
         {
-            // DES is not supported in keywrap scenario, there is no specification string for it either
             foreach (var factory in EncryptingAndDecryptingSymmetric.GetSymmetricAlgorithms(skipDes: true))
                 foreach (var innerFactory in EncryptingAndDecryptingSymmetric.GetSymmetricAlgorithms(skipDes: true))
                     SymmetricKeyWrapEncryptionRoundtrip(factory, innerFactory);

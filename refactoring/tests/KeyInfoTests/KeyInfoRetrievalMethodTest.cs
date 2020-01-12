@@ -1,16 +1,16 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information
-//
-// KeyInfoRetrievalMethodTest.cs - Test Cases for KeyInfoRetrievalMethod
-//
-// Author:
-//	Sebastien Pouliot  <sebastien@ximian.com>
-//
-// (C) 2002, 2003 Motus Technologies Inc. (http://www.motus.com)
-// Copyright (C) 2005 Novell, Inc (http://www.novell.com)
-//
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information.
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 using System;
 using System.Xml;
@@ -54,11 +54,11 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             KeyInfoRetrievalMethod uri1 = new KeyInfoRetrievalMethod();
             uri1.LoadXml(doc.DocumentElement);
 
-            // verify that proper XML is generated (equals to original)
+
             string s = (uri1.GetXml().OuterXml);
             Assert.Equal(value, s);
 
-            // verify that property is parsed correctly
+
             Assert.Equal("http://www.go-mono.com/", uri1.GetUri());
         }
 
@@ -77,7 +77,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             doc.LoadXml(bad);
 
             KeyInfoRetrievalMethod uri1 = new KeyInfoRetrievalMethod();
-            // no exception is thrown
+
             uri1.LoadXml(doc.DocumentElement);
             AssertCrypto.AssertXmlEquals("invalid", "<RetrievalMethod xmlns=\"http://www.w3.org/2000/09/xmldsig#\" />", (uri1.GetXml().OuterXml));
         }

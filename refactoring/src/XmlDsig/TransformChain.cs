@@ -1,34 +1,12 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
-// This file contains the classes necessary to represent the Transform processing model used in 
-// XMLDSIG. The basic idea is as follows. A Reference object contains within it a TransformChain, which
-// is an ordered set of XMLDSIG transforms (represented by <Transform>...</Transform> clauses in the XML).
-// A transform in XMLDSIG operates on an input of either an octet stream or a node set and produces
-// either an octet stream or a node set. Conversion between the two types is performed by parsing (octet stream->
-// node set) or C14N (node set->octet stream). We generalize this slightly to allow a transform to define an array of
-// input and output types (because I believe in the future there will be perf gains by being smarter about what goes in & comes out)
-// Each XMLDSIG transform is represented by a subclass of the abstract Transform class. We need to use CryptoConfig to
-// associate Transform classes with URLs for transform extensibility, but that's a future concern for this code.
-// Once the Transform chain is constructed, call TransformToOctetStream to convert some sort of input type to an octet
-// stream. (We only bother implementing that much now since every use of transform chains in XmlDsig ultimately yields something to hash).
-
-using System;
+﻿using System;
 using System.Collections;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Security;
-using System.Text;
 using System.Xml;
-using System.Xml.XPath;
-using System.Xml.Xsl;
 using Org.BouncyCastle.Crypto.Xml.Constants;
+using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
-    // This class represents an ordered chain of transforms
-
     public class TransformChain
     {
         private ArrayList _transforms;
@@ -64,8 +42,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             }
         }
 
-        // The goal behind this method is to pump the input stream through the transforms and get back something that
-        // can be hashed
         internal Stream TransformToOctetStream(object inputObject, Type inputType, XmlResolver resolver, string baseUri)
         {
             object currentInput = inputObject;
@@ -73,7 +49,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             {
                 if (currentInput == null || transform.AcceptsType(currentInput.GetType()))
                 {
-                    //in this case, no translation necessary, pump it through
                     transform.Resolver = resolver;
                     transform.BaseURI = baseUri;
                     transform.LoadInput(currentInput);
@@ -81,8 +56,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 }
                 else
                 {
-                    // We need translation 
-                    // For now, we just know about Stream->{XmlNodeList,XmlDocument} and {XmlNodeList,XmlDocument}->Stream
                     if (currentInput is Stream)
                     {
                         if (transform.AcceptsType(typeof(XmlDocument)))
@@ -90,7 +63,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                             Stream currentInputStream = currentInput as Stream;
                             XmlDocument doc = new XmlDocument();
                             doc.PreserveWhitespace = true;
-                            XmlReader valReader = Utils.PreProcessStreamInput(currentInputStream, resolver, baseUri);
+                            XmlReader valReader = StreamUtils.PreProcessStreamInput(currentInputStream, resolver, baseUri);
                             doc.Load(valReader);
                             transform.LoadInput(doc);
                             currentInputStream.Close();
@@ -138,7 +111,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 }
             }
 
-            // Final processing, either we already have a stream or have to canonicalize
             if (currentInput is Stream)
             {
                 return currentInput as Stream;
@@ -175,7 +147,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             {
                 if (transform != null)
                 {
-                    // Construct the individual transform element
                     XmlElement transformElement = transform.GetXml(document);
                     if (transformElement != null)
                         transformsElement.AppendChild(transformElement);
@@ -200,11 +171,10 @@ namespace Org.BouncyCastle.Crypto.Xml
             for (int i = 0; i < transformNodes.Count; ++i)
             {
                 XmlElement transformElement = (XmlElement)transformNodes.Item(i);
-                string algorithm = Utils.GetAttribute(transformElement, "Algorithm", NS.XmlDsigNamespaceUrl);
+                string algorithm = ElementUtils.GetAttribute(transformElement, "Algorithm", NS.XmlDsigNamespaceUrl);
                 Transform transform = CryptoHelpers.CreateFromName<Transform>(algorithm);
                 if (transform == null)
                     throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_UnknownTransform);
-                // let the transform read the children of the transformElement for data
                 transform.LoadInnerXml(transformElement.ChildNodes);
                 _transforms.Add(transform);
             }
