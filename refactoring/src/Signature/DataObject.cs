@@ -1,7 +1,3 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
 using System;
 using System.Xml;
 using Org.BouncyCastle.Crypto.Xml.Constants;
@@ -16,10 +12,6 @@ namespace Org.BouncyCastle.Crypto.Xml
         private string _encoding;
         private CanonicalXmlNodeList _elData;
         private XmlElement _cachedXml;
-
-        //
-        // public constructors
-        //
 
         public DataObject()
         {
@@ -39,10 +31,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             _elData.Add(data);
             _cachedXml = null;
         }
-
-        //
-        // public properties
-        //
 
         public string Id
         {
@@ -99,10 +87,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 return (_cachedXml != null);
             }
         }
-
-        //
-        // public methods
-        //
 
         public XmlElement GetXml()
         {

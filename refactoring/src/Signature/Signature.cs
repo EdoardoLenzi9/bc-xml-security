@@ -1,7 +1,3 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
 using System;
 using System.Collections;
 using System.Xml;
@@ -27,26 +23,15 @@ namespace Org.BouncyCastle.Crypto.Xml
         internal void SetSignedXml(SignedXml value)
         { _signedXml = value; }
 
-        //
-        // public constructors
-        //
-
         public Signature()
         {
             _embeddedObjects = new ArrayList();
             _referencedItems = new CanonicalXmlNodeList();
         }
 
-        //
-        // public properties
-        //
-
         public string GetId()
         { return _id; }
 
-        //
-        // public properties
-        //
 
         public void SetId(string value)
         { _id = value; }
@@ -89,10 +74,6 @@ namespace Org.BouncyCastle.Crypto.Xml
         {
             get { return _referencedItems; }
         }
-
-        //
-        // public methods
-        //
 
         public XmlElement GetXml()
         {

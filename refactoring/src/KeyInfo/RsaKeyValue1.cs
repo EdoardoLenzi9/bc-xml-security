@@ -1,8 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
-using Org.BouncyCastle.Crypto.Parameters;
+﻿using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Xml.Constants;
 using Org.BouncyCastle.Crypto.Xml.Utils;
 using System;
@@ -13,10 +9,6 @@ namespace Org.BouncyCastle.Crypto.Xml
     public class RsaKeyValue : KeyInfoClause
     {
         private RsaKeyParameters _key;
-
-        //
-        // public constructors
-        //
 
         public RsaKeyValue()
         {
@@ -29,33 +21,12 @@ namespace Org.BouncyCastle.Crypto.Xml
             _key = key;
         }
 
-        //
-        // public properties
-        //
-
         public RsaKeyParameters GetKey()
         { return _key; }
-
-        //
-        // public properties
-        //
 
         public void SetKey(RsaKeyParameters value)
         { _key = value; }
 
-        //
-        // public methods
-        //
-
-        /// <summary>
-        /// Create an XML representation.
-        /// </summary>
-        /// <remarks>
-        /// Based upon https://www.w3.org/TR/xmldsig-core/#sec-RSAKeyValue. 
-        /// </remarks>
-        /// <returns>
-        /// An <see cref="XmlElement"/> containing the XML representation.
-        /// </returns>
         public override XmlElement GetXml()
         {
             XmlDocument xmlDocument = new XmlDocument();
@@ -86,21 +57,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             return keyValueElement;
         }
 
-        /// <summary>
-        /// Deserialize from the XML representation.
-        /// </summary>
-        /// <remarks>
-        /// Based upon https://www.w3.org/TR/xmldsig-core/#sec-RSAKeyValue. 
-        /// </remarks>
-        /// <param name="element">
-        /// An <see cref="XmlElement"/> containing the XML representation. This cannot be null.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="element"/> cannot be null.
-        /// </exception>
-        /// <exception cref="CryptographicException">
-        /// The XML has the incorrect schema or the RSA parameters are invalid.
-        /// </exception>
         public override void LoadXml(XmlElement element)
         {
             if (element == null)

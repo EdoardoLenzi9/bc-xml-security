@@ -19,8 +19,6 @@ namespace Org.BouncyCastle.Crypto.Xml.Encryption
         public XmlEncryption() : base() { }
         public XmlEncryption(XmlDocument document) : base(document) { }
 
-        // Encrypts the given element with the certificate specified. The certificate is added as
-        // an X509Data KeyInfo to an EncryptedKey (AES session key) generated randomly.
         public EncryptedData Encrypt(XmlElement inputElement, X509Certificate certificate)
         {
             Validator.checkNull(inputElement);
@@ -30,17 +28,14 @@ namespace Org.BouncyCastle.Crypto.Xml.Encryption
             if (!(rsaPublicKey is RsaKeyParameters))
                 throw new NotSupportedException(SR.NotSupported_KeyAlgorithm);
 
-            // Create the EncryptedData object, using an AES-256 session key by default.
             EncryptedData ed = new EncryptedData();
             ed.Type = XmlNameSpace.Url[NS.XmlEncElementUrl];
             ed.EncryptionMethod = new EncryptionMethod(NS.XmlEncAES256Url);
 
-            // Include the certificate in the EncryptedKey KeyInfo.
             EncryptedKey ek = new EncryptedKey();
             ek.EncryptionMethod = new EncryptionMethod(NS.XmlEncRSA15Url);
             ek.KeyInfo.AddClause(new KeyInfoX509Data(certificate));
 
-            // Create a random AES session key and encrypt it with the public key associated with the certificate.
             IBufferedCipher rijn = CipherUtilities.GetCipher("RIJNDAEL/CBC/PKCS7");
             KeyParameter keyParam = new KeyParameter(CryptoUtils.GenerateRandomBlock(rijn.GetBlockSize()));
             ParametersWithIV rijnKey = new ParametersWithIV(keyParam, CryptoUtils.GenerateRandomBlock(rijn.GetBlockSize()));
@@ -54,9 +49,6 @@ namespace Org.BouncyCastle.Crypto.Xml.Encryption
             return ed;
         }
 
-        // Encrypts the given element with the key name specified. A corresponding key name mapping 
-        // has to be defined before calling this method. The key name is added as
-        // a KeyNameInfo KeyInfo to an EncryptedKey (AES session key) generated randomly.
         public EncryptedData Encrypt(XmlElement inputElement, string keyName)
         {
             Validator.checkNull(inputElement);
@@ -133,7 +125,6 @@ namespace Org.BouncyCastle.Crypto.Xml.Encryption
             return ed;
         }
 
-        // encrypts the supplied arbitrary data
         public byte[] EncryptData(byte[] plaintext, ICipherParameters symmetricAlgorithm)
         {
             Validator.checkNull(plaintext);
@@ -168,7 +159,6 @@ namespace Org.BouncyCastle.Crypto.Xml.Encryption
             return output;
         }
 
-        // encrypts the supplied input element
         public byte[] EncryptData(XmlElement inputElement, ICipherParameters symmetricAlgorithm, bool content)
         {
             Validator.checkNull(inputElement);
@@ -178,7 +168,6 @@ namespace Org.BouncyCastle.Crypto.Xml.Encryption
             return EncryptData(plainText, symmetricAlgorithm);
         }
 
-        // wraps the supplied input key data using the provided symmetric algorithm
         public static byte[] EncryptKey(byte[] keyData, KeyParameter symmetricAlgorithm)
         {
             Validator.checkNull(keyData);
@@ -196,9 +185,6 @@ namespace Org.BouncyCastle.Crypto.Xml.Encryption
             }
         }
 
-
-        // encrypts the supplied input key data using an RSA key and specifies whether we want to use OAEP 
-        // padding or PKCS#1 v1.5 padding as described in the PKCS specification
         public static byte[] EncryptKey(byte[] keyData, RsaKeyParameters rsa, bool useOAEP)
         {
             Validator.checkNull(keyData);

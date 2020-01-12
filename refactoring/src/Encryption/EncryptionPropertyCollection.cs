@@ -1,8 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
-using System;
+﻿using System;
 using System.Collections;
 
 namespace Org.BouncyCastle.Crypto.Xml
@@ -26,7 +22,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             get { return _props.Count; }
         }
 
-        /// <internalonly/>
         int IList.Add(object value)
         {
             if (!(value is EncryptionProperty))
@@ -45,7 +40,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             _props.Clear();
         }
 
-        /// <internalonly/>
         bool IList.Contains(object value)
         {
             if (!(value is EncryptionProperty))
@@ -59,7 +53,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             return _props.Contains(value);
         }
 
-        /// <internalonly/>
         int IList.IndexOf(object value)
         {
             if (!(value is EncryptionProperty))
@@ -73,7 +66,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             return _props.IndexOf(value);
         }
 
-        /// <internalonly/>
         void IList.Insert(int index, object value)
         {
             if (!(value is EncryptionProperty))
@@ -87,7 +79,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             _props.Insert(index, value);
         }
 
-        /// <internalonly/>
         void IList.Remove(object value)
         {
             if (!(value is EncryptionProperty))
@@ -134,7 +125,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             }
         }
 
-        /// <internalonly/>
         object IList.this[int index]
         {
             get { return _props[index]; }

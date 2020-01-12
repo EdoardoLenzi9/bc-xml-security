@@ -1,8 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
-using System;
+﻿using System;
 using System.Xml;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Parameters;
@@ -40,10 +36,6 @@ namespace _SignedXml.Samples
                 EncryptionMethod = new EncryptionMethod(useOAEP ? NS.XmlEncRSAOAEPUrl : NS.XmlEncRSA15Url)
             };
 
-            // Specify which EncryptedData
-            // uses this key. An XML document can have
-            // multiple EncryptedData elements that use
-            // different keys.
             encryptedKey.AddReference(new DataReference()
             {
                 Uri = "#" + encryptionElementID
@@ -54,8 +46,6 @@ namespace _SignedXml.Samples
                 Type = XmlNameSpace.Url[NS.XmlEncElementUrl],
                 Id = encryptionElementID,
 
-                // Create an EncryptionMethod element so that the
-                // receiver knows which algorithm to use for decryption.
                 EncryptionMethod = new EncryptionMethod(NS.XmlEncAES256Url)
             };
 

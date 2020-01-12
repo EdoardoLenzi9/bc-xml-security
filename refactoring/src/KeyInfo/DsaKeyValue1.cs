@@ -1,8 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
-using Org.BouncyCastle.Crypto.Parameters;
+﻿using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Xml.Constants;
 using Org.BouncyCastle.Crypto.Xml.Utils;
 using System;
@@ -14,9 +10,6 @@ namespace Org.BouncyCastle.Crypto.Xml
     {
         private DsaPublicKeyParameters _key;
 
-        //
-        // public constructors
-        //
 
         public DsaKeyValue()
         {
@@ -29,33 +22,14 @@ namespace Org.BouncyCastle.Crypto.Xml
             _key = key;
         }
 
-        //
-        // public properties
-        //
 
         public DsaPublicKeyParameters GetKey()
         { return _key; }
 
-        //
-        // public properties
-        //
 
         public void SetKey(DsaPublicKeyParameters value)
         { _key = value; }
 
-        //
-        // public methods
-        //
-
-        /// <summary>
-        /// Create an XML representation.
-        /// </summary>
-        /// <remarks>
-        /// Based upon https://www.w3.org/TR/xmldsig-core/#sec-DSAKeyValue. 
-        /// </remarks>
-        /// <returns>
-        /// An <see cref="XmlElement"/> containing the XML representation.
-        /// </returns>
         public override XmlElement GetXml()
         {
             XmlDocument xmlDocument = new XmlDocument();
@@ -119,21 +93,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             return keyValueElement;
         }
 
-        /// <summary>
-        /// Deserialize from the XML representation.
-        /// </summary>
-        /// <remarks>
-        /// Based upon https://www.w3.org/TR/xmldsig-core/#sec-DSAKeyValue. 
-        /// </remarks>
-        /// <param name="value">
-        /// An <see cref="XmlElement"/> containing the XML representation. This cannot be null.
-        /// </param>
-        /// <exception cref="ArgumentNullException">
-        /// <paramref name="value"/> cannot be null.
-        /// </exception>
-        /// <exception cref="CryptographicException">
-        /// The XML has the incorrect schema or the DSA parameters are invalid.
-        /// </exception>
         public override void LoadXml(XmlElement value)
         {
             if (value == null)

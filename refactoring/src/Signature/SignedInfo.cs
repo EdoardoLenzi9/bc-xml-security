@@ -1,7 +1,3 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
 using System;
 using System.Collections;
 using System.Globalization;
@@ -63,10 +59,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             get { throw new NotSupportedException(); }
         }
 
-        //
-        // public properties
-        //
-
         public string Id
         {
             get { return _id; }
@@ -81,7 +73,6 @@ namespace Org.BouncyCastle.Crypto.Xml
         {
             get
             {
-                // Default the canonicalization method to C14N
                 if (_canonicalizationMethod == null)
                     return XmlNameSpace.Url[NS.XmlDsigC14NTransformUrl];
                 return _canonicalizationMethod;
@@ -147,10 +138,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 return true;
             }
         }
-
-        //
-        // public methods
-        //
 
         public XmlElement GetXml()
         {

@@ -1,7 +1,3 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
 using System;
 using System.Collections;
 using System.Xml;
@@ -15,25 +11,15 @@ namespace Org.BouncyCastle.Crypto.Xml
         private string _id = null;
         private readonly ArrayList _keyInfoClauses;
 
-        //
-        // public constructors
-        //
 
         public KeyInfo()
         {
             _keyInfoClauses = new ArrayList();
         }
 
-        //
-        // public properties
-        //
-
         public string GetId()
         { return _id; }
 
-        //
-        // public properties
-        //
 
         public void SetId(string value)
         { _id = value; }
@@ -121,10 +107,6 @@ namespace Org.BouncyCastle.Crypto.Xml
         {
             get { return _keyInfoClauses.Count; }
         }
-
-        //
-        // public constructors
-        //
 
         public void AddClause(KeyInfoClause clause)
         {

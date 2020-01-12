@@ -1,9 +1,3 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
-using Org.BouncyCastle.Asn1;
-using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Crypto.Macs;
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Xml.Constants;
@@ -48,11 +42,6 @@ namespace Org.BouncyCastle.Crypto.Xml
         // defines the XML encryption processing rules
         protected XmlDecryption _exml = null;
 
-
-        //
-        // public constructors
-        //
-
         public SignedXml()
         {
             Initialize(null);
@@ -84,11 +73,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             _safeCanonicalizationMethods = new Collection<string>(KnownCanonicalizationMethods);
         }
 
-        //
-        // public properties
-        //
-
-        /// <internalonly/>
         public string SigningKeyName
         {
             get { return m_strSigningKeyName; }
@@ -182,10 +166,6 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             IsCacheValid = false;
         }
-
-        //
-        // public methods
-        //
 
         public void AddReference(Reference reference)
         {
@@ -290,10 +270,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             Buffer.BlockCopy(hashValue, 0, MSignature.GetSignatureValue(), 0, signatureLength / 8);
         }
 
-        //
-        // virtual methods
-        //
-
         protected virtual AsymmetricKeyParameter GetPublicKey()
         {
             if (KeyInfo == null)
@@ -365,29 +341,18 @@ namespace Org.BouncyCastle.Crypto.Xml
             }
             catch (XmlException)
             {
-                // Identifiers are required to be an NCName
-                //   (xml:id version 1.0, part 4, paragraph 2, bullet 1)
-                //
-                // If it isn't an NCName, it isn't allowed to match.
                 return null;
             }
 
-            // Get the element with idValue
             XmlElement elem = document.GetElementById(idValue);
 
             if (elem != null)
             {
-                // Have to check for duplicate ID values from the DTD.
 
                 XmlDocument docClone = (XmlDocument)document.CloneNode(true);
                 XmlElement cloneElem = docClone.GetElementById(idValue);
-
-                // If it's null here we want to know about it, because it means that
-                // GetElementById failed to work across the cloning, and our uniqueness
-                // test is invalid.
                 System.Diagnostics.Debug.Assert(cloneElem != null);
 
-                // Guard against null anyways
                 if (cloneElem != null)
                 {
                     cloneElem.Attributes.RemoveAll();
@@ -416,18 +381,14 @@ namespace Org.BouncyCastle.Crypto.Xml
         }
 
 
-        // Get a list of the built in canonicalization algorithms, as well as any that the machine admin has
-        // added to the valid set.
         protected static IList<string> KnownCanonicalizationMethods
         {
             get
             {
                 if (s_knownCanonicalizationMethods == null)
                 {
-                    // Start with the list that the machine admin added, if any
                     List<string> safeAlgorithms = new List<string>();
 
-                    // Built in algorithms
                     safeAlgorithms.Add(XmlNameSpace.Url[NS.XmlDsigC14NTransformUrl]);
                     safeAlgorithms.Add(XmlNameSpace.Url[NS.XmlDsigC14NWithCommentsTransformUrl]);
                     safeAlgorithms.Add(XmlNameSpace.Url[NS.XmlDsigExcC14NTransformUrl]);

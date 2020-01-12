@@ -3,20 +3,14 @@
 // See the LICENSE file in the project root for more information.
 
 using System;
-using System.Collections;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Security;
-using System.Text;
 using System.Xml;
 using System.Xml.XPath;
-using System.Xml.Xsl;
 using Org.BouncyCastle.Crypto.Xml.Constants;
 using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
-    // A class representing DSIG XPath Transforms
 
     public class XmlDsigXPathTransform : Transform
     {
@@ -99,26 +93,21 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             if (_nsm != null)
             {
-                // Add each of the namespaces as attributes of the element
                 foreach (string prefix in _nsm)
                 {
                     switch (prefix)
                     {
-                        // Ignore the xml namespaces
                         case "xml":
                         case "xmlns":
                             break;
 
-                        // Other namespaces
                         default:
-                            // Ignore the default namespace
                             if (prefix != null && prefix.Length > 0)
                                 element.SetAttribute("xmlns:" + prefix, _nsm.LookupNamespace(prefix));
                             break;
                     }
                 }
             }
-            // Add the XPath as the inner xml of the element
             element.InnerXml = _xpathexpr;
             document.AppendChild(element);
             return document.ChildNodes;

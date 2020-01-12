@@ -1,7 +1,3 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Xml.Constants;
 using Org.BouncyCastle.Crypto.Xml.Utils;
@@ -28,10 +24,6 @@ namespace Org.BouncyCastle.Crypto.Xml
         private SignedXml _signedXml = null;
         internal CanonicalXmlNodeList _namespaces = null;
         private byte[] _hashval = null;
-
-        //
-        // public constructors
-        //
 
         public Reference()
         {
@@ -69,18 +61,9 @@ namespace Org.BouncyCastle.Crypto.Xml
             _cachedXml = null;
             _digestMethod = XmlNameSpace.Url[NS.XmlDsigSHA256Url];
         }
-
-        //
-        // public properties
-        //
-
         public string GetId()
         { return _id; }
-
-        //
-        // public properties
-        //
-
+        
         public void SetId(string value)
         { _id = value; }
 
@@ -160,10 +143,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 return _refTargetType;
             }
         }
-
-        //
-        // public methods
-        //
 
         public XmlElement GetXml()
         {
@@ -338,12 +317,8 @@ namespace Org.BouncyCastle.Crypto.Xml
             DigestValue = CalculateHashValue(document, refList);
         }
 
-        // What we want to do is pump the input throug the TransformChain and then 
-        // hash the output of the chain document is the document context for resolving relative references
         internal byte[] CalculateHashValue(XmlDocument document, CanonicalXmlNodeList refList)
         {
-            // refList is a list of elements that might be targets of references
-            // Now's the time to create our hashing algorithm
             IDigest digest = CryptoHelpers.CreateFromName<IDigest>(_digestMethod);
             if (digest == null)
             {
@@ -351,7 +326,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 if (mac == null)
                     throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_CreateHashAlgorithmFailed);
 
-                // For compatibility to corefx' HMAC implementation
                 byte[] randomKey = CryptoUtils.GenerateRandomBlock(mac.GetMacSize());
                 mac.Init(new KeyParameter(randomKey));
 
@@ -362,7 +336,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 _hashAlgorithm = new DigestHashWrapper(digest);
             }
 
-            // Let's go get the target.
             string baseUri = document == null ? Environment.CurrentDirectory + "\\" : document.BaseURI;
             Stream hashInputStream = null;
             WebResponse response = null;
@@ -375,47 +348,33 @@ namespace Org.BouncyCastle.Crypto.Xml
                 switch (_refTargetType)
                 {
                     case ReferenceTargetType.Stream:
-                        // This is the easiest case. We already have a stream, so just pump it through the TransformChain
                         resolver = (GetSignedXml().ResolverSet ? GetSignedXml()._xmlResolver : new XmlSecureResolver(new XmlUrlResolver(), baseUri));
                         hashInputStream = TransformChain.TransformToOctetStream((Stream)_refTarget, resolver, baseUri);
                         break;
                     case ReferenceTargetType.UriReference:
-                        // Second-easiest case -- dereference the URI & pump through the TransformChain
-                        // handle the special cases where the URI is null (meaning whole doc)
-                        // or the URI is just a fragment (meaning a reference to an embedded Object)
                         if (_uri == null)
                         {
-                            // We need to create a DocumentNavigator out of the XmlElement
                             resolver = (GetSignedXml().ResolverSet ? GetSignedXml()._xmlResolver : new XmlSecureResolver(new XmlUrlResolver(), baseUri));
-                            // In the case of a Uri-less reference, we will simply pass null to the transform chain.
-                            // The first transform in the chain is expected to know how to retrieve the data to hash.
                             hashInputStream = TransformChain.TransformToOctetStream((Stream)null, resolver, baseUri);
                         }
                         else if (_uri.Length == 0)
                         {
-                            // This is the self-referential case. First, check that we have a document context.
-                            // The Enveloped Signature does not discard comments as per spec; those will be omitted during the transform chain process
                             if (document == null)
                                 throw new System.Security.Cryptography.CryptographicException(string.Format(CultureInfo.CurrentCulture, SR.Cryptography_Xml_SelfReferenceRequiresContext, _uri));
 
-                            // Normalize the containing document
                             resolver = (GetSignedXml().ResolverSet ? GetSignedXml()._xmlResolver : new XmlSecureResolver(new XmlUrlResolver(), baseUri));
                             XmlDocument docWithNoComments = StreamUtils.DiscardComments(StreamUtils.PreProcessDocumentInput(document, resolver, baseUri));
                             hashInputStream = TransformChain.TransformToOctetStream(docWithNoComments, resolver, baseUri);
                         }
                         else if (_uri[0] == '#')
                         {
-                            // If we get here, then we are constructing a Reference to an embedded DataObject
-                            // referenced by an Id = attribute. Go find the relevant object
                             bool discardComments = true;
                             string idref = ParserUtils.GetIdFromLocalUri(_uri, out discardComments);
                             if (idref == "xpointer(/)")
                             {
-                                // This is a self referencial case
                                 if (document == null)
                                     throw new System.Security.Cryptography.CryptographicException(string.Format(CultureInfo.CurrentCulture, SR.Cryptography_Xml_SelfReferenceRequiresContext, _uri));
 
-                                // We should not discard comments here!!!
                                 resolver = (GetSignedXml().ResolverSet ? GetSignedXml()._xmlResolver : new XmlSecureResolver(new XmlUrlResolver(), baseUri));
                                 hashInputStream = TransformChain.TransformToOctetStream(StreamUtils.PreProcessDocumentInput(document, resolver, baseUri), resolver, baseUri);
                                 break;
@@ -445,19 +404,16 @@ namespace Org.BouncyCastle.Crypto.Xml
                                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidReference);
 
                             XmlDocument normDocument = StreamUtils.PreProcessElementInput(elem, resolver, baseUri);
-                            // Add the propagated attributes
                             ElementUtils.AddNamespaces(normDocument.DocumentElement, _namespaces);
 
                             resolver = (GetSignedXml().ResolverSet ? GetSignedXml()._xmlResolver : new XmlSecureResolver(new XmlUrlResolver(), baseUri));
                             if (discardComments)
                             {
-                                // We should discard comments before going into the transform chain
                                 XmlDocument docWithNoComments = StreamUtils.DiscardComments(normDocument);
                                 hashInputStream = TransformChain.TransformToOctetStream(docWithNoComments, resolver, baseUri);
                             }
                             else
                             {
-                                // This is an XPointer reference, do not discard comments!!!
                                 hashInputStream = TransformChain.TransformToOctetStream(normDocument, resolver, baseUri);
                             }
                         }
@@ -467,7 +423,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                         }
                         break;
                     case ReferenceTargetType.XmlElement:
-                        // We need to create a DocumentNavigator out of the XmlElement
                         resolver = (GetSignedXml().ResolverSet ? GetSignedXml()._xmlResolver : new XmlSecureResolver(new XmlUrlResolver(), baseUri));
                         hashInputStream = TransformChain.TransformToOctetStream(StreamUtils.PreProcessElementInput((XmlElement)_refTarget, resolver, baseUri), resolver, baseUri);
                         break;
@@ -475,9 +430,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                         throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_UriNotResolved, _uri);
                 }
 
-                // Compute the new hash value
                 hashInputStream = SignedXmlDebugLog.LogReferenceData(this, hashInputStream);
-                // Default the buffer size to 4K.
                 byte[] buffer = new byte[4096];
                 int bytesRead;
                 _hashAlgorithm.Reset();

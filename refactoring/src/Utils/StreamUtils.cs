@@ -1,7 +1,3 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
 using System;
 using System.IO;
 using System.Xml;
@@ -10,15 +6,8 @@ namespace Org.BouncyCastle.Crypto.Xml.Utils
 {
     internal class StreamUtils
     {
-        // The maximum number of characters in an XML document (0 means no limit).
         internal const int MaxCharactersInDocument = 0;
-
-        // The entity expansion limit. This is used to prevent entity expansion denial of service attacks.
         internal const long MaxCharactersFromEntities = (long)1e7;
-
-        // The default XML Dsig recursion limit.
-        // This should be within limits of real world scenarios.
-        // Keeping this number low will preserve some stack space
         internal const int XmlDsigSearchDepth = 20;
 
         private StreamUtils() { }
@@ -98,18 +87,8 @@ namespace Org.BouncyCastle.Crypto.Xml.Utils
         }
 
 
-
-
-
-
-
-        // Writes one stream (starting from the current position) into
-        // an output stream, connecting them up and reading until
-        // hitting the end of the input stream.
-        // returns the number of bytes copied
         internal static long Pump(Stream input, Stream output)
         {
-            // Use MemoryStream's WriteTo(Stream) method if possible
             MemoryStream inputMS = input as MemoryStream;
             if (inputMS != null && inputMS.Position == 0)
             {
@@ -130,10 +109,5 @@ namespace Org.BouncyCastle.Crypto.Xml.Utils
 
             return totalBytes;
         }
-
-
-
-
-
     }
 }

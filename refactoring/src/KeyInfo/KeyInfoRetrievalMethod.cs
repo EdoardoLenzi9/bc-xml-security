@@ -1,8 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
-using System;
+﻿using System;
 using System.Xml;
 using Org.BouncyCastle.Crypto.Xml.Constants;
 using Org.BouncyCastle.Crypto.Xml.Utils;
@@ -13,10 +9,6 @@ namespace Org.BouncyCastle.Crypto.Xml
     {
         private string _uri;
         private string _type;
-
-        //
-        // public constructors
-        //
 
         public KeyInfoRetrievalMethod() { }
 
@@ -31,16 +23,8 @@ namespace Org.BouncyCastle.Crypto.Xml
             _type = typeName;
         }
 
-        //
-        // public properties
-        //
-
         public string GetUri()
         { return _uri; }
-
-        //
-        // public properties
-        //
 
         public void SetUri(string value)
         { _uri = value; }

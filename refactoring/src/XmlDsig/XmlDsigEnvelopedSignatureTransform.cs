@@ -1,16 +1,6 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
-using System;
-using System.Collections;
+﻿using System;
 using System.IO;
-using System.Runtime.InteropServices;
-using System.Security;
-using System.Text;
 using System.Xml;
-using System.Xml.XPath;
-using System.Xml.Xsl;
 using Org.BouncyCastle.Crypto.Xml.Constants;
 using Org.BouncyCastle.Crypto.Xml.Utils;
 
@@ -52,15 +42,12 @@ namespace Org.BouncyCastle.Crypto.Xml
         {
             get { return _outputTypes; }
         }
-
-        // An enveloped signature has no inner XML elements
         public override void LoadInnerXml(XmlNodeList nodeList)
         {
             if (nodeList != null && nodeList.Count > 0)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_UnknownTransform);
         }
 
-        // An enveloped signature has no inner XML elements
         protected override XmlNodeList GetInnerXml()
         {
             return null;
@@ -127,10 +114,8 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (_containingDocument == null)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_EnvelopedSignatureRequiresContext);
 
-            // If we have received an XmlNodeList as input
             if (_inputNodeList != null)
             {
-                // If the position has not been set, then we don't want to remove any signature tags
                 if (_signaturePosition == 0) return _inputNodeList;
                 XmlNodeList signatureList = _containingDocument.SelectNodes("//dsig:Signature", _nsm);
                 if (signatureList == null) return _inputNodeList;
@@ -146,7 +131,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                     }
                     else
                     {
-                        // SelectSingleNode throws an exception for xmldecl PI for example, so we will just ignore those exceptions
                         try
                         {
                             // Find the nearest signature ancestor tag 
@@ -167,7 +151,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 }
                 return resultNodeList;
             }
-            // Else we have received either a stream or a document as input
             else
             {
                 XmlNodeList signatureList = _containingDocument.SelectNodes("//dsig:Signature", _nsm);

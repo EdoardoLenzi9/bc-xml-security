@@ -1,8 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
-
-using Org.BouncyCastle.Crypto.Xml.Constants;
+﻿using Org.BouncyCastle.Crypto.Xml.Constants;
 using Org.BouncyCastle.Crypto.Xml.Utils;
 using Org.BouncyCastle.Math;
 using Org.BouncyCastle.X509;
@@ -25,11 +21,6 @@ namespace Org.BouncyCastle.Crypto.Xml
         private ArrayList _subjectNames = null;
         // A raw byte data representing a certificate revocation list
         private byte[] _CRL = null;
-
-        //
-        // public constructors
-        //
-
         public KeyInfoX509Data() { }
 
         public KeyInfoX509Data(byte[] rgbCert)
@@ -77,10 +68,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                     break;
             }
         }
-
-        //
-        // public properties
-        //
 
         public ArrayList Certificates
         {
@@ -172,10 +159,6 @@ namespace Org.BouncyCastle.Crypto.Xml
         public void SetCRL(byte[] value)
         { _CRL = value; }
 
-        //
-        // private methods
-        //
-
         private void Clear()
         {
             _CRL = null;
@@ -184,10 +167,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (_issuerSerials != null) _issuerSerials.Clear();
             if (_certificates != null) _certificates.Clear();
         }
-
-        //
-        // public methods
-        //
 
         public override XmlElement GetXml()
         {
