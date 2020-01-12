@@ -183,7 +183,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             return signedInfoElement;
         }
 
-        public void LoadXml(XmlElement value)
+        public XmlElement LoadXml1(XmlElement value) 
         {
             if (value == null)
                 throw new ArgumentNullException(nameof(value));
@@ -192,14 +192,13 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (!signedInfoElement.LocalName.Equals("SignedInfo"))
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "SignedInfo");
 
-            XmlNamespaceManager nsm = new XmlNamespaceManager(value.OwnerDocument.NameTable);
-            nsm.AddNamespace("ds", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
-            int expectedChildNodes = 0;
-
             _id = ElementUtils.GetAttribute(signedInfoElement, "Id", NS.XmlDsigNamespaceUrl);
             if (!ElementUtils.VerifyAttributes(signedInfoElement, "Id"))
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "SignedInfo");
-
+            
+            return signedInfoElement;
+        }
+        public (XmlElement, int) LoadXml2(XmlElement signedInfoElement, int expectedChildNodes, XmlNamespaceManager nsm) {
             XmlNodeList canonicalizationMethodNodes = signedInfoElement.SelectNodes("ds:CanonicalizationMethod", nsm);
             if (canonicalizationMethodNodes == null || canonicalizationMethodNodes.Count == 0 || canonicalizationMethodNodes.Count > 1)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "SignedInfo/CanonicalizationMethod");
@@ -221,7 +220,21 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (_signatureMethod == null || !ElementUtils.VerifyAttributes(signatureMethodElement, "Algorithm"))
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "SignedInfo/SignatureMethod");
 
-            XmlElement signatureLengthElement = signatureMethodElement.SelectSingleNode("ds:HMACOutputLength", nsm) as XmlElement;
+            return (signatureMethodElement.SelectSingleNode("ds:HMACOutputLength", nsm) as XmlElement, expectedChildNodes);
+        }
+
+        public void LoadXml(XmlElement value)
+        {
+            XmlElement signedInfoElement  = LoadXml1(value);
+            int expectedChildNodes = 0;
+
+            XmlNamespaceManager nsm = new XmlNamespaceManager(value.OwnerDocument.NameTable);
+            nsm.AddNamespace("ds", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
+
+            var res = LoadXml2(signedInfoElement, expectedChildNodes, nsm);
+            var signatureLengthElement = res.Item1;
+            expectedChildNodes = res.Item2;
+            
             if (signatureLengthElement != null)
                 _signatureLength = signatureLengthElement.InnerXml;
 

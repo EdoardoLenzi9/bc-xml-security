@@ -117,8 +117,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             return signatureElement;
         }
 
-        public void LoadXml(XmlElement value)
-        {
+        private XmlElement LoadXml1(XmlElement value) {
             if (value == null)
                 throw new ArgumentNullException(nameof(value));
 
@@ -130,18 +129,16 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (!ElementUtils.VerifyAttributes(signatureElement, "Id"))
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "Signature");
 
-            XmlNamespaceManager nsm = new XmlNamespaceManager(value.OwnerDocument.NameTable);
-            nsm.AddNamespace("ds", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
-            int expectedChildNodes = 0;
+            return signatureElement;
+        }
 
+        private int LoadXml2(XmlElement signatureElement, XmlNamespaceManager nsm, int expectedChildNodes)
+        {
             XmlNodeList signedInfoNodes = signatureElement.SelectNodes("ds:SignedInfo", nsm);
             if (signedInfoNodes == null || signedInfoNodes.Count == 0 || signedInfoNodes.Count > 1)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "SignedInfo");
             XmlElement signedInfoElement = signedInfoNodes[0] as XmlElement;
             expectedChildNodes += signedInfoNodes.Count;
-
-            SignedInfo = new SignedInfo();
-            SignedInfo.LoadXml(signedInfoElement);
 
             XmlNodeList signatureValueNodes = signatureElement.SelectNodes("ds:SignatureValue", nsm);
             if (signatureValueNodes == null || signatureValueNodes.Count == 0 || signatureValueNodes.Count > 1)
@@ -153,6 +150,19 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (!ElementUtils.VerifyAttributes(signatureValueElement, "Id"))
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "SignatureValue");
 
+            SignedInfo = new SignedInfo();
+            SignedInfo.LoadXml(signedInfoElement);
+
+            return expectedChildNodes;
+        }
+     
+        public void LoadXml(XmlElement value)
+        {
+            var signatureElement = LoadXml1(value);
+            XmlNamespaceManager nsm = new XmlNamespaceManager(value.OwnerDocument.NameTable);
+            nsm.AddNamespace("ds", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
+            int expectedChildNodes = LoadXml2(signatureElement, nsm, 0);
+            
             XmlNodeList keyInfoNodes = signatureElement.SelectNodes("ds:KeyInfo", nsm);
             _keyInfo = new KeyInfo();
             if (keyInfoNodes != null)

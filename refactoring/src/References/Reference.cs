@@ -153,8 +153,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             return GetXml(document);
         }
 
-        internal XmlElement GetXml(XmlDocument document)
-        {
+        private XmlElement GetXml1(XmlDocument document) {
             XmlElement referenceElement = document.CreateElement("Reference", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
 
             if (!string.IsNullOrEmpty(_id))
@@ -171,6 +170,12 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             if (string.IsNullOrEmpty(_digestMethod))
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_DigestMethodRequired);
+            return referenceElement;
+        }
+
+        internal XmlElement GetXml(XmlDocument document)
+        {
+            XmlElement referenceElement = GetXml1(document);
 
             XmlElement digestMethodElement = document.CreateElement("DigestMethod", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
             digestMethodElement.SetAttribute("Algorithm", _digestMethod);
@@ -190,8 +195,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             return referenceElement;
         }
 
-        public void LoadXml(XmlElement value)
-        {
+        private void LoadXml1(XmlElement value) {
             if (value == null)
                 throw new ArgumentNullException(nameof(value));
 
@@ -200,6 +204,37 @@ namespace Org.BouncyCastle.Crypto.Xml
             _type = ElementUtils.GetAttribute(value, "Type", NS.XmlDsigNamespaceUrl);
             if (!ElementUtils.VerifyAttributes(value, new string[] { "Id", "URI", "Type" }))
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "Reference");
+        }
+
+
+        private void LoadXml2(XmlElement value, XmlNamespaceManager nsm, bool hasTransforms)
+        {
+            XmlNodeList digestMethodNodes = value.SelectNodes("ds:DigestMethod", nsm);
+            if (digestMethodNodes == null || digestMethodNodes.Count == 0 || digestMethodNodes.Count > 1)
+                throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "Reference/DigestMethod");
+            XmlElement digestMethodElement = digestMethodNodes[0] as XmlElement;
+            _digestMethod = ElementUtils.GetAttribute(digestMethodElement, "Algorithm", NS.XmlDsigNamespaceUrl);
+            if (_digestMethod == null || !ElementUtils.VerifyAttributes(digestMethodElement, "Algorithm"))
+                throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "Reference/DigestMethod");
+
+
+            XmlNodeList digestValueNodes = value.SelectNodes("ds:DigestValue", nsm);
+            if (digestValueNodes == null || digestValueNodes.Count == 0 || digestValueNodes.Count > 1)
+                throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "Reference/DigestValue");
+            XmlElement digestValueElement = digestValueNodes[0] as XmlElement;
+            _digestValue = Convert.FromBase64String(ParserUtils.DiscardWhiteSpaces(digestValueElement.InnerText));
+            if (!ElementUtils.VerifyAttributes(digestValueElement, (string[])null))
+                throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "Reference/DigestValue");
+            int expectedChildNodeCount = hasTransforms ? 3 : 2;
+            if (value.SelectNodes("*").Count != expectedChildNodeCount)
+                throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "Reference");
+
+            _cachedXml = value;
+        }
+
+        public void LoadXml(XmlElement value)
+        {
+            LoadXml1(value);
 
             XmlNamespaceManager nsm = new XmlNamespaceManager(value.OwnerDocument.NameTable);
             nsm.AddNamespace("ds", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
@@ -269,27 +304,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 }
             }
 
-            XmlNodeList digestMethodNodes = value.SelectNodes("ds:DigestMethod", nsm);
-            if (digestMethodNodes == null || digestMethodNodes.Count == 0 || digestMethodNodes.Count > 1)
-                throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "Reference/DigestMethod");
-            XmlElement digestMethodElement = digestMethodNodes[0] as XmlElement;
-            _digestMethod = ElementUtils.GetAttribute(digestMethodElement, "Algorithm", NS.XmlDsigNamespaceUrl);
-            if (_digestMethod == null || !ElementUtils.VerifyAttributes(digestMethodElement, "Algorithm"))
-                throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "Reference/DigestMethod");
-
-
-            XmlNodeList digestValueNodes = value.SelectNodes("ds:DigestValue", nsm);
-            if (digestValueNodes == null || digestValueNodes.Count == 0 || digestValueNodes.Count > 1)
-                throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "Reference/DigestValue");
-            XmlElement digestValueElement = digestValueNodes[0] as XmlElement;
-            _digestValue = Convert.FromBase64String(ParserUtils.DiscardWhiteSpaces(digestValueElement.InnerText));
-            if (!ElementUtils.VerifyAttributes(digestValueElement, (string[])null))
-                throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "Reference/DigestValue");
-            int expectedChildNodeCount = hasTransforms ? 3 : 2;
-            if (value.SelectNodes("*").Count != expectedChildNodeCount)
-                throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "Reference");
-
-            _cachedXml = value;
+            LoadXml2(value, nsm, hasTransforms);
         }
 
         public void AddTransform(Transform transform)
