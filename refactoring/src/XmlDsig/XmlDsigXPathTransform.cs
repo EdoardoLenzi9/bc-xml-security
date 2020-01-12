@@ -1,6 +1,5 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
+﻿
+
 
 using System;
 using System.IO;
@@ -37,7 +36,6 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public override void LoadInnerXml(XmlNodeList nodeList)
         {
-            // XPath transform is specified by text child of first XPath child
             if (nodeList == null)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_UnknownTransform);
 
@@ -58,7 +56,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                         {
                             throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_UnknownTransform);
                         }
-                        // Look for a namespace in the attributes
                         foreach (XmlAttribute attrib in elem.Attributes)
                         {
                             if (attrib.Prefix == "xmlns")
@@ -140,7 +137,6 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         private void LoadXmlNodeListInput(XmlNodeList nodeList)
         {
-            // Use C14N to get a document
             XmlResolver resolver = (ResolverSet ? _xmlResolver : new XmlSecureResolver(new XmlUrlResolver(), BaseURI));
             CanonicalXml c14n = new CanonicalXml((XmlNodeList)nodeList, resolver, true);
             using (MemoryStream ms = new MemoryStream(c14n.GetBytes()))
@@ -174,7 +170,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                         resultNodeList.Add(node);
                 }
 
-                // keep namespaces
                 it = navigator.Select("//namespace::*");
                 while (it.MoveNext())
                 {

@@ -69,7 +69,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 return false;
             }
 
-            // Now is the time to go through all the references and see if their DigestValues are good
             if (!ReferenceManager.CheckDigestedReferences(MSignature, this))
             {
                 SignedXmlDebugLog.LogVerificationFailure(this, SR.Log_VerificationFailed_References);
@@ -107,7 +106,6 @@ namespace Org.BouncyCastle.Crypto.Xml
         {
             if (!verifySignatureOnly)
             {
-                // Check key usages to make sure it is good for signing.
                 var exts = certificate.CertificateStructure.TbsCertificate.Extensions;
                 foreach (DerObjectIdentifier extension in exts.ExtensionOids)
                 {

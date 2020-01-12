@@ -15,7 +15,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Utils
     internal class CryptoUtils
     {
 
-        // Mimic the behavior of the X509IssuerSerial constructor with null and empty checks
+
         internal static X509IssuerSerial CreateX509IssuerSerial(string issuerName, string serialNumber)
         {
             if (issuerName == null || issuerName.Length == 0)
@@ -72,24 +72,24 @@ namespace Org.BouncyCastle.Crypto.Xml.Utils
             _ = new X509CertificateParser();
             var builder = new PkixCertPathBuilder();
 
-            // Separate root from itermediate
+
             var intermediateCerts = new List<X509Certificate>();
             var rootCerts = new BouncyCastle.Utilities.Collections.HashSet();
 
             foreach (var cert in additionalCertificates)
             {
-                // Separate root and subordinate certificates
+
                 if (cert.IssuerDN.Equivalent(cert.SubjectDN))
                     rootCerts.Add(new TrustAnchor(cert, null));
                 else
                     intermediateCerts.Add(cert);
             }
 
-            // Create chain for this certificate
+
             var holder = new X509CertStoreSelector();
             holder.Certificate = primaryCertificate;
 
-            // WITHOUT THIS LINE BUILDER CANNOT BEGIN BUILDING THE CHAIN
+
             intermediateCerts.Add(holder.Certificate);
 
             PkixBuilderParameters builderParams = new PkixBuilderParameters(rootCerts, holder);

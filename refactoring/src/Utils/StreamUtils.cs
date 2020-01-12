@@ -38,7 +38,6 @@ namespace Org.BouncyCastle.Crypto.Xml.Utils
             MyXmlDocument doc = new MyXmlDocument();
             doc.PreserveWhitespace = document.PreserveWhitespace;
 
-            // Normalize the document
             using (TextReader stringReader = new StringReader(document.OuterXml))
             {
                 XmlReaderSettings settings = new XmlReaderSettings();
@@ -59,7 +58,6 @@ namespace Org.BouncyCastle.Crypto.Xml.Utils
 
             MyXmlDocument doc = new MyXmlDocument();
             doc.PreserveWhitespace = true;
-            // Normalize the document
             using (TextReader stringReader = new StringReader(elem.OuterXml))
             {
                 XmlReaderSettings settings = new XmlReaderSettings();

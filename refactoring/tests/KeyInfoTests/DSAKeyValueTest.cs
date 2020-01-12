@@ -1,15 +1,15 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information
-//
-// DSAKeyValueTest.cs - Test Cases for DSAKeyValue
-//
-// Author:
-//	Sebastien Pouliot (spouliot@motus.com)
-//
-// (C) 2002, 2003 Motus Technologies Inc. (http://www.motus.com)
-//
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information.
+
+
+
+
+
+
+
+
+
+
+
+
 
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Crypto.Xml.Constants;
@@ -44,9 +44,9 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         {
             DsaKeyValue dsaKeyValue = new DsaKeyValue(null);
 
-            //From https://github.com/peterwurzinger:
-            //This assertion is incorrect, since the parameter value is stored unvalidated/unprocessed
-            //Assert.NotNull(dsaKeyValue.Key);
+
+
+
 
             Assert.Null(dsaKeyValue.GetKey());
         }
@@ -65,16 +65,16 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                 .Select(elementName => xmlkey.SelectSingleNode($"/schema:DSAKeyValue/schema:{elementName}", ns))
                 .Where(element => element != null);
 
-            //There MUST be existing elements
+
             Assert.NotEmpty(elements);
 
-            //Existing elements MUST include a "Y"-Element
+
             Assert.True(elements.SingleOrDefault(element => element.Name == "Y") != null);
 
-            //Existing elements MUST contain InnerText
+
             Assert.True(elements.All(element => !string.IsNullOrEmpty(element.InnerText)));
 
-            //Existing elements MUST be convertible from BASE64
+
             elements.Select(element => Convert.FromBase64String(element.InnerText));
         }
 
@@ -156,7 +156,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                 Assert.Equal(kv.Value, node.InnerText);
             }
 
-            // Either both null or both have correct values
+
             XmlNode seedNode = el.SelectSingleNode($"//*[local-name()='DSAKeyValue']/*[local-name()='Seed']");
             XmlNode counterNode = el.SelectSingleNode($"//*[local-name()='DSAKeyValue']/*[local-name()='PgenCounter']");
 

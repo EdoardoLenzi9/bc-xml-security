@@ -3,7 +3,6 @@ using System.Text;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
-    // the class that provides node subset state and canonicalization function to XmlEntityReference
     internal class CanonicalXmlEntityReference : XmlEntityReference, ICanonicalizableNode
     {
         private bool _isInNodeSet;

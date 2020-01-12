@@ -31,7 +31,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                     SignedXmlDebugLog.LogSignedXmlRecursionLimit(signedXml, digestedReference);
                     return false;
                 }
-                // Compare both hashes
                 SignedXmlDebugLog.LogVerifyReferenceHash(signedXml, digestedReference, calculatedHash, digestedReference.DigestValue);
 
                 if (!CryptographicEquals(calculatedHash, digestedReference.DigestValue))
@@ -63,7 +62,6 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         private static bool IsSafeTransform(NS transformAlgorithm, SignedXml signedXml)
         {
-            // All canonicalization algorithms are valid transform algorithms.
             foreach (string safeAlgorithm in signedXml.SafeCanonicalizationMethods)
             {
                 if (string.Equals(safeAlgorithm, XmlNameSpace.Url[transformAlgorithm], StringComparison.OrdinalIgnoreCase))
@@ -114,7 +112,6 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             int result = 0;
 
-            // Short cut if the lengths are not identical
             if (a.Length != b.Length)
                 return false;
 
@@ -132,13 +129,11 @@ namespace Org.BouncyCastle.Crypto.Xml
         public static void BuildDigestedReferences(SignedXml signedXml)
         {
             ArrayList references = signedXml.SignedInfo.References;
-            // Reset the cache
             signedXml.RefProcessed = new bool[references.Count];
             signedXml.RefLevelCache = new int[references.Count];
 
             ReferenceLevelSortOrder sortOrder = new ReferenceLevelSortOrder();
             sortOrder.SetReferences(references);
-            // Don't alter the order of the references array list
             ArrayList sortedReferences = new ArrayList();
             foreach (Reference reference in references)
             {
@@ -153,14 +148,12 @@ namespace Org.BouncyCastle.Crypto.Xml
             }
             foreach (Reference reference in sortedReferences)
             {
-                // If no DigestMethod has yet been set, default it to sha1
                 if (reference.DigestMethod == null)
                     reference.DigestMethod = XmlNameSpace.Url[NS.XmlDsigSHA256Url];
 
                 SignedXmlDebugLog.LogSigningReference(signedXml, reference);
 
                 reference.UpdateHashValue(signedXml.ContainingDocument, nodeList);
-                // If this reference has an Id attribute, add it
                 if (reference.GetId() != null)
                     nodeList.Add(reference.GetXml());
             }

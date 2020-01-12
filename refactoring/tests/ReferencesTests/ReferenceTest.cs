@@ -1,16 +1,16 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information
-//
-// ReferenceTest.cs - Test Cases for Reference
-//
-// Author:
-//	Sebastien Pouliot <sebastien@ximian.com>
-//
-// (C) 2002, 2003 Motus Technologies Inc. (http://www.motus.com)
-// (C) 2004 Novell (http://www.novell.com)
-//
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information.
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 using System;
 using System.Collections.Generic;
@@ -120,7 +120,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         public void LoadXPathTransforms()
         {
             Reference reference = new Reference();
-            // test1 (MS) is an XML equivalent to test2 (Mono)
+
             string test1 = "<Reference xmlns=\"http://www.w3.org/2000/09/xmldsig#\"><Transforms><Transform Algorithm=\"http://www.w3.org/TR/1999/REC-xpath-19991116\"><XPath></XPath></Transform></Transforms><DigestMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#sha1\" /><DigestValue>AAAAAAAAAAAAAAAAAAAAAAAAAAA=</DigestValue></Reference>";
             string test2 = "<Reference xmlns=\"http://www.w3.org/2000/09/xmldsig#\"><Transforms><Transform Algorithm=\"http://www.w3.org/TR/1999/REC-xpath-19991116\"><XPath /></Transform></Transforms><DigestMethod Algorithm=\"http://www.w3.org/2000/09/xmldsig#sha1\" /><DigestValue>AAAAAAAAAAAAAAAAAAAAAAAAAAA=</DigestValue></Reference> ";
             XmlDocument doc = new XmlDocument();
@@ -193,12 +193,12 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         public void AddAllTransforms()
         {
             Reference reference = new Reference();
-            // adding an empty hash value
+
             byte[] hash = new byte[20];
             reference.DigestMethod = XmlNameSpace.Url[NS.XmlDsigSHA1Url];
             reference.DigestValue = hash;
             XmlElement xel = reference.GetXml();
-            // this is the minimal Reference (DigestValue)!
+
             Assert.NotNull(xel);
 
             reference.AddTransform(new XmlDsigBase64Transform());
@@ -211,9 +211,9 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             string test1 = @"<Reference xmlns=""http://www.w3.org/2000/09/xmldsig#""><Transforms><Transform Algorithm=""http://www.w3.org/2000/09/xmldsig#base64"" /><Transform Algorithm=""http://www.w3.org/TR/2001/REC-xml-c14n-20010315"" /><Transform Algorithm=""http://www.w3.org/TR/2001/REC-xml-c14n-20010315#WithComments"" /><Transform Algorithm=""http://www.w3.org/2000/09/xmldsig#enveloped-signature"" /><Transform Algorithm=""http://www.w3.org/TR/1999/REC-xpath-19991116""><XPath /></Transform><Transform Algorithm=""http://www.w3.org/TR/1999/REC-xslt-19991116"" /></Transforms><DigestMethod Algorithm=""http://www.w3.org/2000/09/xmldsig#sha1"" /><DigestValue>AAAAAAAAAAAAAAAAAAAAAAAAAAA=</DigestValue></Reference>";
             string result = reference.GetXml().OuterXml;
             Assert.Equal(test1, result);
-            // however this value cannot be loaded as it's missing some transform (xslt) parameters
 
-            // can we add them again ?
+
+
             reference.AddTransform(new XmlDsigBase64Transform());
             reference.AddTransform(new XmlDsigC14NTransform());
             reference.AddTransform(new XmlDsigC14NWithCommentsTransform());
@@ -221,7 +221,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             reference.AddTransform(new XmlDsigXPathTransform());
             reference.AddTransform(new XmlDsigXsltTransform());
 
-            // seems so ;-)
+
             Assert.Equal(12, reference.TransformChain.Count);
         }
 
@@ -229,7 +229,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         public void Null()
         {
             Reference reference = new Reference();
-            // null DigestMethod -> "" DigestMethod !!!
+
             reference.DigestMethod = null;
             Assert.Null(reference.DigestMethod);
         }
@@ -239,7 +239,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         {
             Reference reference = new Reference();
             reference.Uri = "#MyObjectId";
-            // not enough info
+
             Assert.Throws<System.Security.Cryptography.CryptographicException>(()=> reference.GetXml());
         }
 
@@ -247,7 +247,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         public void Bad2()
         {
             Reference reference = new Reference();
-            // bad hash - there's no validation!
+
             reference.DigestMethod = "http://www.w3.org/2000/09/xmldsig#mono";
         }
 

@@ -84,7 +84,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Utils
         {
             string idref = uri.Substring(1);
 
-            // Deal with XPointer of type #xpointer(id("ID")). Other XPointer support isn't handled here and is anyway optional
+
             if (idref.StartsWith("xpointer(id(", StringComparison.Ordinal))
             {
                 int startId = idref.IndexOf("id(", StringComparison.Ordinal);
@@ -101,10 +101,10 @@ namespace Org.BouncyCastle.Crypto.Xml.Utils
         internal static string GetIdFromLocalUri(string uri, out bool discardComments)
         {
             string idref = uri.Substring(1);
-            // initialize the return value
+
             discardComments = true;
 
-            // Deal with XPointer of type #xpointer(id("ID")). Other XPointer support isn't handled here and is anyway optional
+
             if (idref.StartsWith("xpointer(id(", StringComparison.Ordinal))
             {
                 int startId = idref.IndexOf("id(", StringComparison.Ordinal);

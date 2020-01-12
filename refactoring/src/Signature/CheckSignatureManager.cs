@@ -20,7 +20,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             else
                 signatureLength = Convert.ToInt32(m_signature.SignedInfo.SignatureLength, null);
 
-            // signatureLength should be less than hash size
             if (signatureLength < 0 || signatureLength > macAlg.GetMacSize() * 8)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidSignatureLength);
             if (signatureLength % 8 != 0)
@@ -30,7 +29,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (m_signature.GetSignatureValue().Length != signatureLength / 8)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidSignatureLength);
 
-            // Calculate the hash
             GetC14NDigest(new MacHashWrapper(macAlg), signedXml);
             byte[] hashValue = new byte[macAlg.GetMacSize()];
             macAlg.DoFinal(hashValue, 0);
@@ -51,7 +49,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 XmlResolver resolver = (signedXml._bResolverSet ? signedXml._xmlResolver : new XmlSecureResolver(new XmlUrlResolver(), baseUri));
                 XmlDocument doc = StreamUtils.PreProcessElementInput(signedXml.SignedInfo.GetXml(), resolver, baseUri);
 
-                // Add non default namespaces in scope
                 CanonicalXmlNodeList namespaces = (signedXml._context == null ? null : ElementUtils.GetPropagatedAttributes(signedXml._context));
                 SignedXmlDebugLog.LogNamespacePropagation(signedXml, namespaces);
                 ElementUtils.AddNamespaces(doc.DocumentElement, namespaces);

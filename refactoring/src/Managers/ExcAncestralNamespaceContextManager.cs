@@ -76,7 +76,6 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         internal override void TrackXmlNamespaceNode(XmlAttribute attr, SortedList nsListToRender, SortedList attrListToRender, Hashtable nsLocallyDeclared)
         {
-            // exclusive canonicalization treats Xml namespaces as simple attributes. They are not propagated.
             attrListToRender.Add(attr, null);
         }
     }

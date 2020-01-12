@@ -4,7 +4,6 @@ using System.Collections;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
-    // This class does lexicographic sorting by NamespaceURI first and then by LocalName.
     internal class AttributeSortOrder : IComparer
     {
         internal AttributeSortOrder() { }

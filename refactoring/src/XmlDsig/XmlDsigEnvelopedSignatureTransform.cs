@@ -26,7 +26,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             Algorithm = NS.XmlDsigEnvelopedSignatureTransformUrl;
         }
 
-        /// <internalonly/>
         public XmlDsigEnvelopedSignatureTransform(bool includeComments)
         {
             _includeComments = includeComments;
@@ -88,7 +87,6 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         private void LoadXmlNodeListInput(XmlNodeList nodeList)
         {
-            // Empty node list is not acceptable
             if (nodeList == null)
                 throw new ArgumentNullException(nameof(nodeList));
             _containingDocument = NodeUtils.GetOwnerDocument(nodeList);
@@ -124,7 +122,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 foreach (XmlNode node in _inputNodeList)
                 {
                     if (node == null) continue;
-                    // keep namespaces
                     if (NodeUtils.IsXmlNamespaceNode(node) || NodeUtils.IsNamespaceNode(node))
                     {
                         resultNodeList.Add(node);
@@ -133,7 +130,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                     {
                         try
                         {
-                            // Find the nearest signature ancestor tag 
                             XmlNode result = node.SelectSingleNode("ancestor-or-self::dsig:Signature[1]", _nsm);
                             int position = 0;
                             foreach (XmlNode node1 in signatureList)
@@ -157,7 +153,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 if (signatureList == null) return _containingDocument;
                 if (signatureList.Count < _signaturePosition || _signaturePosition <= 0) return _containingDocument;
 
-                // Remove the signature node with all its children nodes
                 signatureList[_signaturePosition - 1].ParentNode.RemoveChild(signatureList[_signaturePosition - 1]);
                 return _containingDocument;
             }

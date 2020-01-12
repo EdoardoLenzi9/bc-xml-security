@@ -1,17 +1,17 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information
-//
-// DataObjectTest.cs - Test Cases for DataObject
-//
-// Author:
-//	Sebastien Pouliot (spouliot@motus.com)
-//	Atsushi Enomoto (atsushi@ximian.com)
-//
-// (C) 2002, 2003 Motus Technologies Inc. (http://www.motus.com)
-// (C) 2004 Novell Inc.
-//
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 using System;
 using System.Xml;
@@ -115,8 +115,8 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         public void InvalidDataObject3()
         {
             DataObject obj1 = new DataObject();
-            // seems this isn't invalid !?!
-            // but no exception is thrown
+
+
             string value = "<Test>Bad</Test>";
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(value);
@@ -133,7 +133,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             DataObject obj = new DataObject();
             XmlElement el1 = obj.GetXml();
             obj.LoadXml(doc.DocumentElement);
-            //			obj.Id = "hogehoge";
+
             XmlElement el2 = obj.GetXml();
             Assert.Equal(doc, el2.OwnerDocument);
         }

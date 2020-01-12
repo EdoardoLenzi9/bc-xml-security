@@ -92,7 +92,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 {
                     if (elem.LocalName == "Except" && elem.NamespaceURI == XmlNameSpace.Url[NS.XmlDecryptionTransformNamespaceUrl])
                     {
-                        // the Uri is required
                         string uri = ElementUtils.GetAttribute(elem, "URI", NS.XmlDecryptionTransformNamespaceUrl);
                         if (uri == null || uri.Length == 0 || uri[0] != '#')
                             throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_UriRequired);
@@ -150,7 +149,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             _containingDocument = document;
             _nsm = new XmlNamespaceManager(_containingDocument.NameTable);
             _nsm.AddNamespace("enc", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
-            // select all EncryptedData elements
             _encryptedDataList = document.SelectNodes("//enc:EncryptedData", _nsm);
         }
 
@@ -161,7 +159,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             _containingDocument = document;
             _nsm = new XmlNamespaceManager(document.NameTable);
             _nsm.AddNamespace("enc", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
-            // select all EncryptedData elements
             _encryptedDataList = document.SelectNodes("//enc:EncryptedData", _nsm);
         }
 
@@ -219,7 +216,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                     XmlNode parent = encryptedDataElement.ParentNode;
                     if (ProcessEncryptedDataItem(encryptedDataElement))
                     {
-                        // find the new decrypted element.
                         XmlNode child = parent.FirstChild;
                         while (child != null && child.NextSibling != sibling)
                             child = child.NextSibling;
@@ -244,10 +240,8 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public override object GetOutput()
         {
-            // decrypt the encrypted sections
             if (_encryptedDataList != null)
                 ProcessElementRecursively(_encryptedDataList);
-            // propagate namespaces
             ElementUtils.AddNamespaces(_containingDocument.DocumentElement, PropagatedNamespaces);
             return _containingDocument;
         }

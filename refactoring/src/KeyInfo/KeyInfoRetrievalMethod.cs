@@ -44,7 +44,6 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         internal override XmlElement GetXml(XmlDocument xmlDocument)
         {
-            // Create the actual element
             XmlElement retrievalMethodElement = xmlDocument.CreateElement("RetrievalMethod", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
 
             if (!string.IsNullOrEmpty(_uri))

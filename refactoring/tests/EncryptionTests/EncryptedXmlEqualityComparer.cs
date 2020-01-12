@@ -1,6 +1,6 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
+﻿
+
+
 
 using System;
 using System.Collections.Generic;
@@ -12,18 +12,18 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 {
     public class EncryptedXmlEqualityComparer: IEqualityComparer<XmlDecryption>
     {
-        /// <summary>
-        /// Are the two <see cref="XmlDecryption"/> objects equal?
-        /// </summary>
-        /// <param name="x">
-        /// The first <see cref="XmlDecryption"/> object to compare.
-        /// </param>
-        /// <param name="y">
-        /// The second <see cref="XmlDecryption"/> object to compare.
-        /// </param>
-        /// <returns>
-        /// True if they are equal, false otherwise.
-        /// </returns>
+
+
+
+
+
+
+
+
+
+
+
+
         public bool Equals(XmlDecryption x, XmlDecryption y)
         {
             if (x == null && y == null)
@@ -37,23 +37,23 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             }
             else
             {
-                // TODO
+
                 return false;
             }
         }
 
-        /// <summary>
-        /// Get the hash code.
-        /// </summary>
-        /// <param name="obj">
-        /// The object to get the hash code of.
-        /// </param>
-        /// <returns>
-        /// The hash code.
-        /// </returns>
+
+
+
+
+
+
+
+
+
         public int GetHashCode(XmlDecryption obj)
         {
-            // Use the actual implementation since this is unused.
+
             return obj.GetHashCode();
         }
     }

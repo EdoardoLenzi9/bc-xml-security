@@ -1,6 +1,6 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
+
+
+
 
 using System;
 using System.Collections.Generic;
@@ -115,7 +115,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             yield return new object[] { "<name xmlns:enc=\"http://www.w3.org/2001/04/xmlenc#\"><enc:KeySize>  1   </enc:KeySize></name>", string.Empty, 1 };
             yield return new object[] { "<name xmlns:enc=\"http://www.w3.org/2001/04/xmlenc#\" Algorithm=\"algorithm\" ><enc:KeySize>1</enc:KeySize></name>", "algorithm", 1 };
 
-            // Custom namespace
+
             yield return new object[] { "<name xmlns:enc=\"http://www.w3.org/2001/04/xmlenc#\" enc:Algorithm=\"algorithm\"/>", "algorithm", 0 };
             yield return new object[] { "<name xmlns:abc=\"http://www.w3.org/2001/04/xmlenc#\" abc:Algorithm=\"algorithm\"/>", "algorithm", 0 };
             yield return new object[] { "<name xmlns:abc=\"http://www.w3.org/2001/04/xmlenc#\"><abc:KeySize>1</abc:KeySize></name>", string.Empty, 1 };

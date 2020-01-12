@@ -4,7 +4,6 @@ using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
-    // the class that provides node subset state and canonicalization function to XmlText
     internal class CanonicalXmlText : XmlText, ICanonicalizableNode
     {
         private bool _isInNodeSet;

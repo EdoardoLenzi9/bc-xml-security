@@ -41,7 +41,6 @@ namespace Org.BouncyCastle.Crypto.Xml.Encryption
             ParametersWithIV rijnKey = new ParametersWithIV(keyParam, CryptoUtils.GenerateRandomBlock(rijn.GetBlockSize()));
             ek.CipherData.CipherValue = EncryptKey(keyParam.GetKey(), (RsaKeyParameters)rsaPublicKey, false);
 
-            // Encrypt the input element with the random session key that we've created above.
             KeyInfoEncryptedKey kek = new KeyInfoEncryptedKey(ek);
             ed.KeyInfo.AddClause(kek);
             ed.CipherData.CipherValue = EncryptData(inputElement, rijnKey, false);
@@ -61,17 +60,14 @@ namespace Org.BouncyCastle.Crypto.Xml.Encryption
             if (encryptionKey == null)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_MissingEncryptionKey);
 
-            // kek is either a SymmetricAlgorithm or an RSA key, otherwise, we wouldn't be able to insert it in the hash table
             ParametersWithIV iv = encryptionKey as ParametersWithIV;
             KeyParameter symKey = encryptionKey as KeyParameter;
             RsaKeyParameters rsa = encryptionKey as RsaKeyParameters;
 
-            // Create the EncryptedData object, using an AES-256 session key by default.
             EncryptedData ed = new EncryptedData();
             ed.Type = XmlNameSpace.Url[NS.XmlEncElementUrl];
             ed.EncryptionMethod = new EncryptionMethod(NS.XmlEncAES256Url);
 
-            // Include the key name in the EncryptedKey KeyInfo.
             NS encryptionMethod = NS.None;
             if (symKey == null && iv == null)
             {
@@ -86,12 +82,10 @@ namespace Org.BouncyCastle.Crypto.Xml.Encryption
             {
                 if (symKey is DesParameters)
                 {
-                    // CMS Triple DES Key Wrap
                     encryptionMethod = NS.XmlEncTripleDESKeyWrapUrl;
                 }
                 else
                 {
-                    // FIPS AES Key Wrap
                     switch (symKey.GetKey().Length * 8)
                     {
                         case 128:
@@ -111,13 +105,11 @@ namespace Org.BouncyCastle.Crypto.Xml.Encryption
             ek.EncryptionMethod = new EncryptionMethod(encryptionMethod);
             ek.KeyInfo.AddClause(new KeyInfoName(keyName));
 
-            // Create a random AES session key and encrypt it with the public key associated with the certificate.
             var keydata = CryptoUtils.GenerateRandomBlock(256 / 8);
             var ivdata = CryptoUtils.GenerateRandomBlock(128 / 8);
             var rijn = new ParametersWithIV(new KeyParameter(keydata), ivdata);
             ek.CipherData.CipherValue = (symKey == null ? EncryptKey(keydata, rsa, false) : EncryptKey(keydata, symKey));
 
-            // Encrypt the input element with the random session key that we've created above.
             KeyInfoEncryptedKey kek = new KeyInfoEncryptedKey(ek);
             ed.KeyInfo.AddClause(kek);
             ed.CipherData.CipherValue = EncryptData(inputElement, rijn, false);
@@ -175,12 +167,10 @@ namespace Org.BouncyCastle.Crypto.Xml.Encryption
 
             if (symmetricAlgorithm is DesParameters)
             {
-                // CMS Triple DES Key Wrap
                 return SymmetricKeyWrap.TripleDESKeyWrapEncrypt(symmetricAlgorithm.GetKey(), keyData);
             }
             else
             {
-                // FIPS AES Key Wrap
                 return SymmetricKeyWrap.AESKeyWrapEncrypt(symmetricAlgorithm.GetKey(), keyData);
             }
         }

@@ -84,18 +84,15 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         internal XmlElement GetXml(XmlDocument document)
         {
-            // Create the Signature
             XmlElement signatureElement = (XmlElement)document.CreateElement("Signature", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
             if (!string.IsNullOrEmpty(_id))
                 signatureElement.SetAttribute("Id", _id);
 
-            // Add the SignedInfo
             if (_signedInfo == null)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_SignedInfoRequired);
 
             signatureElement.AppendChild(_signedInfo.GetXml(document));
 
-            // Add the SignatureValue
             if (_signatureValue == null)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_SignatureValueRequired);
 
@@ -105,11 +102,9 @@ namespace Org.BouncyCastle.Crypto.Xml
                 signatureValueElement.SetAttribute("Id", _signatureValueId);
             signatureElement.AppendChild(signatureValueElement);
 
-            // Add the KeyInfo
             if (KeyInfo.Count > 0)
                 signatureElement.AppendChild(KeyInfo.GetXml(document));
 
-            // Add the Objects
             foreach (object obj in _embeddedObjects)
             {
                 DataObject dataObj = obj as DataObject;
@@ -124,16 +119,13 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public void LoadXml(XmlElement value)
         {
-            // Make sure we don't get passed null
             if (value == null)
                 throw new ArgumentNullException(nameof(value));
 
-            // Signature
             XmlElement signatureElement = value;
             if (!signatureElement.LocalName.Equals("Signature"))
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "Signature");
 
-            // Id attribute -- optional
             _id = ElementUtils.GetAttribute(signatureElement, "Id", NS.XmlDsigNamespaceUrl);
             if (!ElementUtils.VerifyAttributes(signatureElement, "Id"))
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "Signature");
@@ -142,7 +134,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             nsm.AddNamespace("ds", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
             int expectedChildNodes = 0;
 
-            // SignedInfo
             XmlNodeList signedInfoNodes = signatureElement.SelectNodes("ds:SignedInfo", nsm);
             if (signedInfoNodes == null || signedInfoNodes.Count == 0 || signedInfoNodes.Count > 1)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "SignedInfo");
@@ -152,7 +143,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             SignedInfo = new SignedInfo();
             SignedInfo.LoadXml(signedInfoElement);
 
-            // SignatureValue
             XmlNodeList signatureValueNodes = signatureElement.SelectNodes("ds:SignatureValue", nsm);
             if (signatureValueNodes == null || signatureValueNodes.Count == 0 || signatureValueNodes.Count > 1)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "SignatureValue");
@@ -163,7 +153,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (!ElementUtils.VerifyAttributes(signatureValueElement, "Id"))
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "SignatureValue");
 
-            // KeyInfo - optional single element
             XmlNodeList keyInfoNodes = signatureElement.SelectNodes("ds:KeyInfo", nsm);
             _keyInfo = new KeyInfo();
             if (keyInfoNodes != null)
@@ -181,7 +170,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 expectedChildNodes += keyInfoNodes.Count;
             }
 
-            // Object - zero or more elements allowed
             XmlNodeList objectNodes = signatureElement.SelectNodes("ds:Object", nsm);
             _embeddedObjects.Clear();
             if (objectNodes != null)
@@ -199,7 +187,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 expectedChildNodes += objectNodes.Count;
             }
 
-            // Select all elements that have Id attributes
             XmlNodeList nodeList = signatureElement.SelectNodes("//*[@Id]", nsm);
             if (nodeList != null)
             {
@@ -208,7 +195,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                     _referencedItems.Add(node);
                 }
             }
-            // Verify that there aren't any extra nodes that aren't allowed
             if (signatureElement.SelectNodes("*").Count != expectedChildNodes)
             {
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "Signature");

@@ -9,8 +9,7 @@ using Org.BouncyCastle.Security;
 
 namespace _SignedXml.Samples
 {
-    // Simplified implementation of MSDN sample:
-    // https://msdn.microsoft.com/en-us/library/ms229746(v=vs.110).aspx
+
     public class EncryptingAndDecryptingAsymmetric
     {
         private static XmlDocument LoadXmlFromString(string xml)
@@ -29,7 +28,6 @@ namespace _SignedXml.Samples
             var sessionKeyIV = EncryptingAndDecryptingSymmetric.GenerateBlock(128);
             var sessionKey = new ParametersWithIV(new KeyParameter(sessionKeyData), sessionKeyIV);
 
-            // Encrypt the session key and add it to an EncryptedKey element.
             var encryptedKey = new EncryptedKey()
             {
                 CipherData = new CipherData(XmlEncryption.EncryptKey(sessionKeyData, rsaKey, useOAEP)),

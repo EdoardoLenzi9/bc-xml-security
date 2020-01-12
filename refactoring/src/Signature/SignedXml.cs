@@ -32,14 +32,11 @@ namespace Org.BouncyCastle.Crypto.Xml
         protected Func<SignedXml, bool> _signatureFormatValidator = CheckSignatureManager.DefaultSignatureFormatValidator;
         protected Collection<string> _safeCanonicalizationMethods;
 
-        // Built in canonicalization algorithm URIs
         protected static IList<string> s_knownCanonicalizationMethods = null;
-        // Built in transform algorithm URIs (excluding canonicalization URIs)
         public static IList<string> s_defaultSafeTransformMethods = null;
 
         public bool IsCacheValid { get; set; } = false;
 
-        // defines the XML encryption processing rules
         protected XmlDecryption _exml = null;
 
         public SignedXml()
@@ -145,7 +142,6 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public XmlElement GetXml()
         {
-            // If we have a document context, then return a signature element in this context
             if (ContainingDocument != null)
                 return MSignature.GetXml(ContainingDocument);
             else
@@ -184,13 +180,11 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             ReferenceManager.BuildDigestedReferences(this);
 
-            // Load the key
             AsymmetricKeyParameter key = SigningKey;
 
             if (key == null)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_LoadKeyFailed);
 
-            // Check the signature algorithm associated with the key so that we can accordingly set the signature method
             if (SignedInfo.SignatureMethod == null)
             {
                 if (key is DsaKeyParameters)
@@ -208,7 +202,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 }
             }
 
-            // See if there is a signature description class defined in the Config file
             ISigner signatureDescription = CryptoHelpers.CreateFromName<ISigner>(SignedInfo.SignatureMethod);
             if (signatureDescription == null)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_SignatureDescriptionNotCreated);
@@ -233,7 +226,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 signatureLength = macAlg.GetMacSize() * 8;
             else
                 signatureLength = Convert.ToInt32(MSignature.SignedInfo.SignatureLength, null);
-            // signatureLength should be less than hash size
             if (signatureLength < 0 || signatureLength > macAlg.GetMacSize() * 8)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidSignatureLength);
             if (signatureLength % 8 != 0)
@@ -285,7 +277,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (_keyInfoEnum == null)
                 _keyInfoEnum = KeyInfo.GetEnumerator();
 
-            // In our implementation, we move to the next KeyInfo clause which is an RSAKeyValue, DSAKeyValue or KeyInfoX509Data
             while (_keyInfoEnum.MoveNext())
             {
                 RsaKeyValue rsaKeyValue = _keyInfoEnum.Current as RsaKeyValue;
@@ -424,7 +415,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                     RefLevelCache[index] = 0;
                     return 0;
                 }
-                // If this is pointing to another reference
                 for (int j = 0; j < references.Count; ++j)
                 {
                     if (((Reference)references[j]).GetId() == idref)
@@ -433,11 +423,9 @@ namespace Org.BouncyCastle.Crypto.Xml
                         return (RefLevelCache[index]);
                     }
                 }
-                // Then the reference points to an object tag
                 RefLevelCache[index] = 0;
                 return 0;
             }
-            // Malformed reference
             throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidReference);
         }
     }

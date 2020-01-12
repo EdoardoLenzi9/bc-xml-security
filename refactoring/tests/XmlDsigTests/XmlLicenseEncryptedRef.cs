@@ -1,6 +1,6 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
+﻿
+
+
 
 using System;
 using System.Collections;
@@ -95,7 +95,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
                         keyMismatch = false;
 
-                        // Decrypt session key
+
                         byte[] encryptedKeyValue = encryptedKey.CipherData.CipherValue;
 
                         if (encryptedKeyValue == null)
@@ -139,11 +139,11 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             byte[] IV = new byte[decryptor.GetBlockSize()];
 
-            // Get the IV from the encrypted content.
+
             toDecrypt.Read(IV, 0, IV.Length);
             byte[] encryptedContentValue = new byte[toDecrypt.Length - IV.Length];
 
-            // Get the encrypted content following the IV.
+
             toDecrypt.Read(encryptedContentValue, 0, encryptedContentValue.Length);
 
             byte[] decryptedContent;

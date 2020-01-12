@@ -55,7 +55,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Utils
                 return 0xFF;
         }
 
-        // output of this routine is always big endian
+
         internal static byte[] ConvertIntToByteArray(int dwInput)
         {
             byte[] rgbTemp = new byte[8]; // int can never be greater than Int64
@@ -72,9 +72,9 @@ namespace Org.BouncyCastle.Crypto.Xml.Utils
                 t1 = (t1 - t2) / 256;
                 i++;
             }
-            // Now, copy only the non-zero part of rgbTemp and reverse
+
             byte[] rgbOutput = new byte[i];
-            // copy and reverse in one pass
+
             for (int j = 0; j < i; j++)
             {
                 rgbOutput[j] = rgbTemp[i - j - 1];
@@ -84,7 +84,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Utils
 
         internal static int ConvertByteArrayToInt(byte[] input)
         {
-            // Input to this routine is always big endian
+
             int dwOutput = 0;
             for (int i = 0; i < input.Length; i++)
             {

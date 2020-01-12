@@ -72,7 +72,6 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         internal XmlElement GetXml(XmlDocument document)
         {
-            // Create the CipherData element
             XmlElement cipherDataElement = document.CreateElement("CipherData", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
             if (CipherValue != null)
             {
@@ -82,7 +81,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             }
             else
             {
-                // No CipherValue specified, see if there is a CipherReference
                 if (CipherReference == null)
                     throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_CipherValueElementRequired);
                 cipherDataElement.AppendChild(CipherReference.GetXml(document));
@@ -116,7 +114,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_CipherValueElementRequired);
             }
 
-            // Save away the cached value
             _cachedXml = value;
         }
     }

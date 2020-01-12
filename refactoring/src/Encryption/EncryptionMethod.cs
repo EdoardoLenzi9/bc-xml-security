@@ -64,13 +64,11 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         internal XmlElement GetXml(XmlDocument document)
         {
-            // Create the EncryptionMethod element
             XmlElement encryptionMethodElement = document.CreateElement("EncryptionMethod", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
             if (!(_algorithm == NS.None))
                 encryptionMethodElement.SetAttribute("Algorithm", XmlNameSpace.Url[_algorithm]);
             if (_keySize > 0)
             {
-                // Construct a KeySize element
                 XmlElement keySizeElement = document.CreateElement("KeySize", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
                 keySizeElement.AppendChild(document.CreateTextNode(_keySize.ToString(null, null)));
                 encryptionMethodElement.AppendChild(keySizeElement);
@@ -97,7 +95,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 KeySize = Convert.ToInt32(ParserUtils.DiscardWhiteSpaces(keySizeNode.InnerText), null);
             }
 
-            // Save away the cached value
             _cachedXml = value;
         }
     }

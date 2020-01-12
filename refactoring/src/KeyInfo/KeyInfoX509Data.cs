@@ -11,15 +11,10 @@ namespace Org.BouncyCastle.Crypto.Xml
 {
     public class KeyInfoX509Data : KeyInfoClause
     {
-        // An array of certificates representing the certificate chain
         private ArrayList _certificates = null;
-        // An array of issuer serial structs
         private ArrayList _issuerSerials = null;
-        // An array of SKIs
         private ArrayList _subjectKeyIds = null;
-        // An array of subject names
         private ArrayList _subjectNames = null;
-        // A raw byte data representing a certificate revocation list
         private byte[] _CRL = null;
         public KeyInfoX509Data() { }
 
@@ -46,7 +41,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             switch (includeOption)
             {
                 case X509IncludeOption.ExcludeRoot:
-                    // Build the certificate chain
                     chain = CryptoUtils.BuildCertificateChain(cert, additional);
 
                     for (int index = 0; index < (CryptoUtils.IsSelfSigned(chain) ? 1 : chain.Count - 1); index++)
@@ -58,7 +52,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                     AddCertificate(certificate);
                     break;
                 case X509IncludeOption.WholeChain:
-                    // Build the certificate chain
                     chain = CryptoUtils.BuildCertificateChain(cert, additional);
 
                     foreach (var element in chain)
@@ -145,7 +138,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             _issuerSerials.Add(CryptoUtils.CreateX509IssuerSerial(issuerName, h.ToString()));
         }
 
-        // When we load an X509Data from Xml, we know the serial number is in decimal representation.
         internal void InternalAddIssuerSerial(string issuerName, string serialNumber)
         {
             if (_issuerSerials == null)
@@ -252,7 +244,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                     && x509SubjectNameNodes.Count == 0 && x509CertificateNodes.Count == 0)) // Bad X509Data tag, or Empty tag
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "X509Data");
 
-            // Flush anything in the lists
             Clear();
 
             if (x509CRLNodes.Count != 0)

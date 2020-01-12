@@ -396,12 +396,9 @@ namespace Org.BouncyCastle.Crypto.Xml
             }
         }
 
-        /// <summary>
-        ///     Log the computation of a signature value when signing with an asymmetric algorithm
-        /// </summary>
-        /// <param name="signedXml">SignedXml object calculating the signature</param>
-        /// <param name="key">key used for signing</param>
-        /// <param name="signatureDescription">signature description being used to create the signature</param>
+
+
+
         internal static void LogSigning(SignedXml signedXml,
                                         object key,
                                         ISigner signatureDescription)

@@ -40,18 +40,14 @@ namespace Org.BouncyCastle.Crypto.Xml
         private const string KeyValueElementName = "KeyValue";
         private const string DSAKeyValueElementName = "DSAKeyValue";
 
-        //Optional {P,Q}-Sequence
         private const string PElementName = "P";
         private const string QElementName = "Q";
 
-        //Optional Members
         private const string GElementName = "G";
         private const string JElementName = "J";
 
-        //Mandatory Members
         private const string YElementName = "Y";
 
-        //Optional {Seed,PgenCounter}-Sequence
         private const string SeedElementName = "Seed";
         private const string PgenCounterElementName = "PgenCounter";
 

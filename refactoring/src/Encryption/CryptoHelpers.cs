@@ -52,7 +52,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                     return new KeyInfoEncryptedKey();
                 case "http://www.w3.org/2000/09/xmldsig#dsa-sha1":
                 case "System.Security.Cryptography.DSASignatureDescription":
-                    //return SignerUtilities.GetSigner("DSAWITHSHA1");
                     return new DsaDigestSigner2(new DsaSigner(), new Sha1Digest());
                 case "http://www.w3.org/2000/09/xmldsig#rsa-sha1":
                 case "System.Security.Cryptography.RSASignatureDescription":
@@ -71,8 +70,7 @@ namespace Org.BouncyCastle.Crypto.Xml
                 case "urn:ietf:params:xml:ns:cpxmlsec:algorithms:gostr34102012-gostr34112012512":
                     return new Gost3410DigestSigner(new ECGost3410Signer(), new Gost3411_2012_512Digest());
 
-                // workarounds for issue https://github.com/dotnet/corefx/issues/16563
-                // remove attribute from this method when removing them
+
                 case "http://www.w3.org/2000/09/xmldsig#sha1":
                     return DigestUtilities.GetDigest("SHA-1");
                 case "http://www.w3.org/2001/04/xmlenc#sha256":

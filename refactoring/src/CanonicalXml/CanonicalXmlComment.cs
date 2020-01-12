@@ -3,7 +3,6 @@ using System.Text;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
-    // the class that provides node subset state and canonicalization function to XmlComment
     internal class CanonicalXmlComment : XmlComment, ICanonicalizableNode
     {
         public CanonicalXmlComment(string comment, XmlDocument doc, bool defaultNodeSetInclusionState, bool includeComments)

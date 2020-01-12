@@ -1,6 +1,6 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
+﻿
+
+
 
 using System;
 using System.Collections;
@@ -16,7 +16,7 @@ using Org.BouncyCastle.Crypto.Xml.Constants;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
-    // A class representing conversion from Base64 using CryptoStream
+
     public class XmlDsigBase64Transform : Transform
     {
         private Type[] _inputTypes = { typeof(Stream), typeof(XmlNodeList), typeof(XmlDocument) };

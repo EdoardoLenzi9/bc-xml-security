@@ -28,7 +28,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             get { return _nodeArray.Count; }
         }
 
-        // IList methods
         public int Add(object value)
         {
             if (!(value is XmlNode))

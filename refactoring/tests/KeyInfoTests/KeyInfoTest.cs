@@ -1,16 +1,16 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information
-//
-// KeyInfoTest.cs - Test Cases for KeyInfo
-//
-// Author:
-//	Sebastien Pouliot <sebastien@ximian.com>
-//
-// (C) 2002, 2003 Motus Technologies Inc. (http://www.motus.com)
-// Copyright (C) 2004-2005 Novell, Inc (http://www.novell.com)
-//
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information.
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 using Org.BouncyCastle.Crypto.Parameters;
 using Org.BouncyCastle.Math;
@@ -66,10 +66,10 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         private static string dsaQ = "tf0K9rMyvUrU4cIkwbCrDRhQAJk=";
         private static string dsaG = "S8Z+1pGCed00w6DtVcqZLKjfqlCJ7JsugEFIgSy/Vxtu9YGCMclV4ijGEbPo/jU8YOSMuD7E9M7UaopMRcmKQjoKZzoJjkgVFP48Ohxl1f08lERnButsxanx3+OstFwUGQ8XNaGg3KrIoZt1FUnfxN3RHHTvVhjzNSHxMGULGaU=";
         private static string dsaY = "LnrxxRGLYeV2XLtK3SYz8RQHlHFZYrtznDZyMotuRfO5uC5YODhSFyLXvb1qB3WeGtF4h3Eo4KzHgMgfN2ZMlffxFRhJgTtH3ctbL8lfQoDkjeiPPnYGhspdJxr0tyZmiy0gkjJG3vwHYrLnvZWx9Wm/unqiOlGBPNuxJ+hOeP8=";
-        //private static string dsaJ = "9RhE5TycDtdEIXxS3HfxFyXYgpy81zY5lVjwD6E9JP37MWEi80BlX6ab1YPm6xYSEoqReMPP9RgGiW6DuACpgI7+8vgCr4i/7VhzModJAA56PwvTu6UMt9xxKU/fT672v8ucREkMWoc7lEey";
-        //private static string dsaSeed = "HxW3N4RHWVgqDQKuGg7iJTUTiCs=";
-        //private static string dsaPgenCounter = "Asw=";
-        // private static string xmlDSA = "<DSAKeyValue><P>" + dsaP + "</P><Q>" + dsaQ + "</Q><G>" + dsaG + "</G><Y>" + dsaY + "</Y><J>" + dsaJ + "</J><Seed>" + dsaSeed + "</Seed><PgenCounter>" + dsaPgenCounter + "</PgenCounter></DSAKeyValue>";
+
+
+
+
         private static string xmlDSA = "<DSAKeyValue><P>" + dsaP + "</P><Q>" + dsaQ + "</Q><G>" + dsaG + "</G><Y>" + dsaY + "</Y></DSAKeyValue>";
 
         [Fact]
@@ -81,9 +81,9 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                     q: new BigInteger(1, Convert.FromBase64String(dsaQ)),
                     g: new BigInteger(1, Convert.FromBase64String(dsaG))
                 ));
-            //J = Convert.FromBase64String(dsaJ),
-            //Seed = Convert.FromBase64String(dsaSeed),
-            //Counter = BitConverter.ToUInt16(Convert.FromBase64String(dsaPgenCounter), 0)
+
+
+
 
             DsaKeyValue dsa = new DsaKeyValue(key);
             info.AddClause(dsa);
@@ -256,14 +256,14 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                     Assert.Equal(Convert.FromBase64String(dsaG), dsaParams.G.ToByteArrayUnsigned());
                     Assert.Equal(Convert.FromBase64String(dsaY), dsaKey.Y.ToByteArrayUnsigned());
 
-                    // J is an optimization it should either be null or correct value
-                    //if (dsaParams.J != null)
-                    //{
-                    //    Assert.Equal(Convert.FromBase64String(dsaJ), dsaParams.J);
-                    //}
 
-                    // Seed and Counter are not guaranteed to roundtrip
-                    // they should either both be non-null or both null
+
+
+
+
+
+
+
                     var seed = dsaParams.ValidationParameters.GetSeed();
                     if (seed != null)
                     {
@@ -324,7 +324,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                 }
             }
 
-            // 0x1f = b11111, number of ones = 5
+
             Assert.Equal(pathsCovered, 0x1f);
             Assert.Equal(5, i);
         }
@@ -333,10 +333,10 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         public void NullClause()
         {
             Assert.Equal(0, info.Count);
-            // null is accepted...
+
             info.AddClause(null);
             Assert.Equal(1, info.Count);
-            // but can't get XML out if it!
+
             Assert.Throws<NullReferenceException>(() => info.GetXml());
         }
 
@@ -353,7 +353,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(bad);
             info.LoadXml(doc.DocumentElement);
-            // no expection but Xml isn't loaded
+
             Assert.Equal("<KeyInfo xmlns=\"http://www.w3.org/2000/09/xmldsig#\" />", (info.GetXml().OuterXml));
             Assert.Equal(0, info.Count);
         }

@@ -14,7 +14,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Utils
             return n.NodeType == XmlNodeType.Attribute && n.Prefix.Equals("xml");
         }
 
-        // We consider xml:space style attributes as default namespace nodes since they obey the same propagation rules
+
         internal static bool IsDefaultNamespaceNode(XmlNode n)
         {
             bool b1 = n.NodeType == XmlNodeType.Attribute && n.Prefix.Length == 0 && n.LocalName.Equals("xmlns");
@@ -50,7 +50,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Utils
             do
             {
                 XmlNode rootNode = elementList[index];
-                // Add the children nodes
+
                 XmlNodeList childNodes = rootNode.ChildNodes;
                 if (childNodes != null)
                 {
@@ -62,7 +62,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Utils
                         }
                     }
                 }
-                // Add the attribute nodes
+
                 XmlAttributeCollection attribNodes = rootNode.Attributes;
                 if (attribNodes != null)
                 {

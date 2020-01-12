@@ -1,15 +1,15 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information
-//
-// EncryptedXmlTest.cs
-//
-// Author:
-//	Atsushi Enomoto  <atsushi@ximian.com>
-//
-// Copyright (C) 2006 Novell, Inc (http://www.novell.com)
-//
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information.
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 using System;
@@ -136,7 +136,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             using (StringWriter sw = new StringWriter())
             {
 
-                // Encryption
+
                 {
                     XmlDocument doc = new XmlDocument();
                     doc.PreserveWhitespace = true;
@@ -155,7 +155,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                     edata.Type = XmlNameSpace.Url[NS.XmlEncElementUrl];
                     edata.EncryptionMethod = new EncryptionMethod(NS.XmlEncAES256Url);
                     EncryptedKey ekey = new EncryptedKey();
-                    // omit key encryption, here for testing
+
                     byte[] encKeyBytes = keydata;
                     ekey.CipherData = new CipherData(encKeyBytes);
                     ekey.EncryptionMethod = new EncryptionMethod(NS.XmlEncRSA15Url);
@@ -169,7 +169,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                     doc.Save(new XmlTextWriter(sw));
                 }
 
-                // Decryption
+
                 {
                     var aes = CipherUtilities.GetCipher("AES/CBC/ZEROBYTEPADDING");
                     var random = new SecureRandom();
@@ -671,7 +671,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             ed.CipherData = new CipherData();
             ed.CipherData.CipherReference = new CipherReference("invaliduri");
 
-            // https://github.com/dotnet/corefx/issues/19272
+
             Action decrypt = () => dexml.DecryptData(ed, param);
             Assert.Throws<System.Security.Cryptography.CryptographicException>(decrypt);
         }
@@ -699,7 +699,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             ed.Type = XmlNameSpace.Url[NS.XmlEncElementUrl];
             ed.EncryptionMethod = new EncryptionMethod(NS.XmlEncAES256Url);
             ed.CipherData = new CipherData();
-            // Create CipherReference: first extract node value, then convert from base64 using Transforms
+
             ed.CipherData.CipherReference = new CipherReference("#ID_0");
             string xslt = "<xsl:stylesheet version=\"1.0\" xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\"><xsl:template match = \"/\"><xsl:value-of select=\".\" /></xsl:template></xsl:stylesheet>";
             XmlDsigXsltTransform xsltTransform = new XmlDsigXsltTransform();
@@ -709,7 +709,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             ed.CipherData.CipherReference.AddTransform(xsltTransform);
             ed.CipherData.CipherReference.AddTransform(new XmlDsigBase64Transform());
 
-            // Create a document with EncryptedData and node with the actual cipher data (with the ID)
+
             doc.LoadXml("<root></root>");
             XmlNode encryptedDataNode = doc.ImportNode(ed.GetXml(), true);
             doc.DocumentElement.AppendChild(encryptedDataNode);

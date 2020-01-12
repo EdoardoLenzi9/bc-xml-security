@@ -23,18 +23,15 @@ namespace Org.BouncyCastle.Crypto.Xml
 
             XmlNode encryptionMethodNode = value.SelectSingleNode("enc:EncryptionMethod", nsm);
 
-            // EncryptionMethod
             EncryptionMethod = new EncryptionMethod();
             if (encryptionMethodNode != null)
                 EncryptionMethod.LoadXml(encryptionMethodNode as XmlElement);
 
-            // Key Info
             KeyInfo = new KeyInfo();
             XmlNode keyInfoNode = value.SelectSingleNode("ds:KeyInfo", nsm);
             if (keyInfoNode != null)
                 KeyInfo.LoadXml(keyInfoNode as XmlElement);
 
-            // CipherData
             XmlNode cipherDataNode = value.SelectSingleNode("enc:CipherData", nsm);
             if (cipherDataNode == null)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_MissingCipherData);
@@ -42,11 +39,9 @@ namespace Org.BouncyCastle.Crypto.Xml
             CipherData = new CipherData();
             CipherData.LoadXml(cipherDataNode as XmlElement);
 
-            // EncryptionProperties
             XmlNode encryptionPropertiesNode = value.SelectSingleNode("enc:EncryptionProperties", nsm);
             if (encryptionPropertiesNode != null)
             {
-                // Select the EncryptionProperty elements inside the EncryptionProperties element
                 XmlNodeList encryptionPropertyNodes = encryptionPropertiesNode.SelectNodes("enc:EncryptionProperty", nsm);
                 if (encryptionPropertyNodes != null)
                 {
@@ -59,7 +54,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 }
             }
 
-            // Save away the cached value
             _cachedXml = value;
         }
 
@@ -74,10 +68,8 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         internal XmlElement GetXml(XmlDocument document)
         {
-            // Create the EncryptedData element
             XmlElement encryptedDataElement = document.CreateElement("EncryptedData", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
 
-            // Deal with attributes
             if (!string.IsNullOrEmpty(Id))
                 encryptedDataElement.SetAttribute("Id", Id);
             if (!string.IsNullOrEmpty(Type))
@@ -87,20 +79,16 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (!string.IsNullOrEmpty(Encoding))
                 encryptedDataElement.SetAttribute("Encoding", Encoding);
 
-            // EncryptionMethod
             if (EncryptionMethod != null)
                 encryptedDataElement.AppendChild(EncryptionMethod.GetXml(document));
 
-            // KeyInfo
             if (KeyInfo.Count > 0)
                 encryptedDataElement.AppendChild(KeyInfo.GetXml(document));
 
-            // CipherData is required.
             if (CipherData == null)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_MissingCipherData);
             encryptedDataElement.AppendChild(CipherData.GetXml(document));
 
-            // EncryptionProperties
             if (EncryptionProperties.Count > 0)
             {
                 XmlElement encryptionPropertiesElement = document.CreateElement("EncryptionProperties", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);

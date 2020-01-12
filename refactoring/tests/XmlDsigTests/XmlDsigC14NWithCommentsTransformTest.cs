@@ -1,17 +1,17 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information
-//
-// XmlDsigC14NWithCommentsTransformTest.cs 
-//	- Test Cases for XmlDsigC14NWithCommentsTransform
-//
-// Author:
-//	Sebastien Pouliot <sebastien@ximian.com>
-//
-// (C) 2002, 2003 Motus Technologies Inc. (http://www.motus.com)
-// Copyright (C) 2004-2005 Novell, Inc (http://www.novell.com)
-//
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 using System;
 using System.IO;
@@ -24,8 +24,8 @@ using Xunit;
 namespace Org.BouncyCastle.Crypto.Xml.Tests
 {
 
-    // Note: GetInnerXml is protected in XmlDsigC14NWithCommentsTransform
-    // making it difficult to test properly. This class "open it up" :-)
+
+
     public class UnprotectedXmlDsigC14NWithCommentsTransform : XmlDsigC14NWithCommentsTransform
     {
         public XmlNodeList UnprotectedGetInnerXml()
@@ -127,10 +127,10 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             }
         }
 
-        //
-        // Example 1 from C14N spec - PIs, Comments, and Outside of Document Element: 
-        // http://www.w3.org/TR/xml-c14n#Example-OutsideDoc
-        //
+
+
+
+
         static string C14NSpecExample1Input =>
             "<?xml version=\"1.0\"?>\n" +
                 "\n" +
@@ -152,10 +152,10 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                 "<!-- Comment 2 -->\n" +
                 "<!-- Comment 3 -->";
 
-        //
-        // Example 2 from C14N spec - Whitespace in Document Content: 
-        // http://www.w3.org/TR/xml-c14n#Example-WhitespaceInContent
-        // 
+
+
+
+
         const string C14NSpecExample2Input =
                 "<doc>\n" +
                 "  <clean>   </clean>\n" +
@@ -181,10 +181,10 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                 "   </mixed>\n" +
                 "</doc>";
 
-        //
-        // Example 3 from C14N spec - Start and End Tags: 
-        // http://www.w3.org/TR/xml-c14n#Example-SETags
-        //
+
+
+
+
         const string C14NSpecExample3Input =
                 "<!DOCTYPE doc [<!ATTLIST e9 attr CDATA \"default\">]>\n" +
                 "<doc>\n" +
@@ -215,23 +215,23 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                 "       <e7 xmlns=\"http://www.ietf.org\">\n" +
                 "           <e8 xmlns=\"\">\n" +
                 "               <e9 xmlns:a=\"http://www.ietf.org\" attr=\"default\"></e9>\n" +
-                //		    	    "               <e9 xmlns:a=\"http://www.ietf.org\"></e9>\n" +
+
                 "           </e8>\n" +
                 "       </e7>\n" +
                 "   </e6>\n" +
                 "</doc>";
 
 
-        //
-        // Example 4 from C14N spec - Character Modifications and Character References: 
-        // http://www.w3.org/TR/xml-c14n#Example-Chars
-        //
-        // Aleksey: 
-        // This test does not include "normId" element
-        // because it has an invalid ID attribute "id" which
-        // should be normalized by XML parser. Currently Mono
-        // does not support this (see comment after this example
-        // in the spec).
+
+
+
+
+
+
+
+
+
+
         const string C14NSpecExample4Input =
                 "<!DOCTYPE doc [<!ATTLIST normId id ID #IMPLIED>]>\n" +
                 "<doc>\n" +
@@ -240,7 +240,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                 "   <compute><![CDATA[value>\"0\" && value<\"10\" ?\"valid\":\"error\"]]></compute>\n" +
                 "   <compute expr=\'value>\"0\" &amp;&amp; value&lt;\"10\" ?\"valid\":\"error\"\'>valid</compute>\n" +
                 "   <norm attr=\' &apos;   &#x20;&#13;&#xa;&#9;   &apos; \'/>\n" +
-                // "   <normId id=\' &apos;   &#x20;&#13;&#xa;&#9;   &apos; \'/>\n" +
+
                 "</doc>\n";
         const string C14NSpecExample4Output =
                 "<doc>\n" +
@@ -250,13 +250,13 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                 "   <compute>value&gt;\"0\" &amp;&amp; value&lt;\"10\" ?\"valid\":\"error\"</compute>\n" +
                 "   <compute expr=\"value>&quot;0&quot; &amp;&amp; value&lt;&quot;10&quot; ?&quot;valid&quot;:&quot;error&quot;\">valid</compute>\n" +
                 "   <norm attr=\" \'    &#xD;&#xA;&#x9;   \' \"></norm>\n" +
-                // "   <normId id=\"\' &#xD;&#xA;&#x9; \'\"></normId>\n" +
+
                 "</doc>";
 
-        //
-        // Example 5 from C14N spec - Entity References: 
-        // http://www.w3.org/TR/xml-c14n#Example-Entities
-        //
+
+
+
+
         static string C14NSpecExample5Input =>
                 "<!DOCTYPE doc [\n" +
                 "<!ATTLIST doc attrExtEnt ENTITY #IMPLIED>\n" +
@@ -276,10 +276,10 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                 "</doc>\n" +
                 $"<!-- Let doc.txt contain \"world\" (excluding the quotes) -->";
 
-        //
-        // Example 6 from C14N spec - UTF-8 Encoding: 
-        // http://www.w3.org/TR/xml-c14n#Example-UTF8
-        // 
+
+
+
+
         static string C14NSpecExample6Input =
                 "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n" +
                 "<doc>&#169;</doc>\n";

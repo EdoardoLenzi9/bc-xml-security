@@ -5,7 +5,6 @@ using Org.BouncyCastle.Crypto.Xml.Utils;
 
 namespace Org.BouncyCastle.Crypto.Xml
 {
-    // the class that provides node subset state and canonicalization function to XmlElement
     internal class CanonicalXmlElement : XmlElement, ICanonicalizableNode
     {
         private bool _isInNodeSet;

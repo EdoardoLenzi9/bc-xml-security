@@ -14,7 +14,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Utils
             return false;
         }
 
-        // A helper function that determines if a namespace node is a committed attribute
+
         internal static bool IsCommittedNamespace(XmlElement element, string prefix, string value)
         {
             if (element == null)
@@ -67,7 +67,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Utils
         {
             foreach (XmlAttribute attr in element.Attributes)
             {
-                // There are a few Xml Special Attributes that are always allowed on any node. Make sure we allow those here.
+
                 bool attrIsAllowed = attr.Name == "xmlns" || attr.Name.StartsWith("xmlns:") || attr.Name == "xml:space" || attr.Name == "xml:lang" || attr.Name == "xml:base";
                 int expectedInd = 0;
                 while (!attrIsAllowed && expectedAttrNames != null && expectedInd < expectedAttrNames.Length)
@@ -81,7 +81,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Utils
             return true;
         }
 
-        // This method gets the attributes that should be propagated
+
         internal static CanonicalXmlNodeList GetPropagatedAttributes(XmlElement elem)
         {
             if (elem == null)
@@ -101,7 +101,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Utils
                 }
                 if (!IsCommittedNamespace(ancestorElement, ancestorElement.Prefix, ancestorElement.NamespaceURI))
                 {
-                    // Add the namespace attribute to the collection if needed
+
                     if (!IsRedundantNamespace(ancestorElement, ancestorElement.Prefix, ancestorElement.NamespaceURI))
                     {
                         string name = ((ancestorElement.Prefix.Length > 0) ? "xmlns:" + ancestorElement.Prefix : "xmlns");
@@ -115,7 +115,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Utils
                     XmlAttributeCollection attribs = ancestorElement.Attributes;
                     foreach (XmlAttribute attrib in attribs)
                     {
-                        // Add a default namespace if necessary
+
                         if (bDefNamespaceToAdd && attrib.LocalName == "xmlns")
                         {
                             XmlAttribute nsattrib = elem.OwnerDocument.CreateAttribute("xmlns");
@@ -124,7 +124,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Utils
                             bDefNamespaceToAdd = false;
                             continue;
                         }
-                        // retain the declarations of type 'xml:*' as well
+
                         if (attrib.Prefix == "xmlns" || attrib.Prefix == "xml")
                         {
                             namespaces.Add(attrib);
@@ -155,7 +155,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Utils
                 foreach (XmlNode attrib in namespaces)
                 {
                     string name = ((attrib.Prefix.Length > 0) ? attrib.Prefix + ":" + attrib.LocalName : attrib.LocalName);
-                    // Skip the attribute if one with the same qualified name already exists
+
                     if (elem.HasAttribute(name) || (name.Equals("xmlns") && elem.Prefix.Length == 0)) continue;
                     XmlAttribute nsattrib = elem.OwnerDocument.CreateAttribute(name);
                     nsattrib.Value = attrib.Value;
@@ -178,7 +178,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Utils
             }
         }
 
-        // This removes all children of an element.
+
         internal static void RemoveAllChildren(XmlElement inputElement)
         {
             XmlNode child = inputElement.FirstChild;

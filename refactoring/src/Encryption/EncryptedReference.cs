@@ -91,12 +91,10 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (ReferenceType == null)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_ReferenceTypeRequired);
 
-            // Create the Reference
             XmlElement referenceElement = document.CreateElement(ReferenceType, XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
             if (!string.IsNullOrEmpty(_uri))
                 referenceElement.SetAttribute("URI", _uri);
 
-            // Add the transforms to the CipherReference
             if (TransformChain.Count > 0)
                 referenceElement.AppendChild(TransformChain.GetXml(document, NS.XmlDsigNamespaceUrl));
 
@@ -115,14 +113,12 @@ namespace Org.BouncyCastle.Crypto.Xml
                 throw new ArgumentNullException(SR.Cryptography_Xml_UriRequired);
             Uri = uri;
 
-            // Transforms
             XmlNamespaceManager nsm = new XmlNamespaceManager(value.OwnerDocument.NameTable);
             nsm.AddNamespace("ds", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
             XmlNode transformsNode = value.SelectSingleNode("ds:Transforms", nsm);
             if (transformsNode != null)
                 TransformChain.LoadXml(transformsNode as XmlElement);
 
-            // cache the Xml
             _cachedXml = value;
         }
     }

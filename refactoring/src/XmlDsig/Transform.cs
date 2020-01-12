@@ -125,7 +125,6 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public virtual void GetDigestedOutput(IHash hash)
         {
-            // Default the buffer size to 4K.
             byte[] buffer = new byte[4096];
             int bytesRead;
             var inputStream = (Stream)GetOutput(typeof(Stream));
@@ -165,7 +164,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 Reference reference = Reference;
                 SignedXml signedXml = (reference == null ? SignedXml : reference.GetSignedXml());
 
-                // If the reference is not a Uri reference with a DataObject target, return an empty hashtable.
                 if (reference != null &&
                     ((reference.ReferenceTargetType != ReferenceTargetType.UriReference) ||
                      (string.IsNullOrEmpty(reference.Uri) || reference.Uri[0] != '#')))
@@ -180,7 +178,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 else if (signedXml?._context != null)
                     namespaces = ElementUtils.GetPropagatedAttributes(signedXml._context);
 
-                // if no namespaces have been propagated, return an empty hashtable.
                 if (namespaces == null)
                 {
                     _propagatedNamespaces = new Hashtable(0);

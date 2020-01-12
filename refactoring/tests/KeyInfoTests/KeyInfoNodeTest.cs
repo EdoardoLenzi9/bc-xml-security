@@ -1,15 +1,15 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information
-//
-// KeyInfoNodeTest.cs - Test Cases for KeyInfoNode
-//
-// Author:
-//	Sebastien Pouliot (spouliot@motus.com)
-//
-// (C) 2002, 2003 Motus Technologies Inc. (http://www.motus.com)
-//
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information.
+
+
+
+
+
+
+
+
+
+
+
+
 
 using System.Xml;
 using Xunit;
@@ -40,7 +40,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         [Fact]
         public void ImportKeyNode()
         {
-            // Note: KeyValue is a valid KeyNode
+
             string value = "<KeyName xmlns=\"http://www.w3.org/2000/09/xmldsig#\">Mono::</KeyName>";
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(value);
@@ -52,7 +52,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             Assert.Equal(value, s);
         }
 
-        // well there's no invalid value - unless you read the doc ;-)
+
         [Fact]
         public void InvalidKeyNode()
         {
@@ -61,7 +61,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             doc.LoadXml(bad);
 
             KeyInfoNode node1 = new KeyInfoNode();
-            // No ArgumentNullException is thrown if value == null
+
             node1.LoadXml(null);
             Assert.Null(node1.GetValue());
         }

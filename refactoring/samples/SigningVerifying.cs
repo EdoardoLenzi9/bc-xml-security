@@ -7,9 +7,7 @@ using Org.BouncyCastle.Security;
 
 namespace _SignedXml.Samples
 {
-    // Implementation of MSDN samples:
-    // Signing: https://msdn.microsoft.com/en-us/library/ms229745(v=vs.110).aspx
-    // Verifying: https://msdn.microsoft.com/en-us/library/ms229745(v=vs.110).aspx
+
     public class SigningAndVerifying
     {
         const string ExampleXml = @"<?xml version=""1.0""?>

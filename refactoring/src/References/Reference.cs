@@ -155,7 +155,6 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         internal XmlElement GetXml(XmlDocument document)
         {
-            // Create the Reference
             XmlElement referenceElement = document.CreateElement("Reference", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
 
             if (!string.IsNullOrEmpty(_id))
@@ -167,11 +166,9 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (!string.IsNullOrEmpty(_type))
                 referenceElement.SetAttribute("Type", _type);
 
-            // Add the transforms to the Reference
             if (TransformChain.Count != 0)
                 referenceElement.AppendChild(TransformChain.GetXml(document, NS.XmlDsigNamespaceUrl));
 
-            // Add the DigestMethod
             if (string.IsNullOrEmpty(_digestMethod))
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_DigestMethodRequired);
 
@@ -207,7 +204,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             XmlNamespaceManager nsm = new XmlNamespaceManager(value.OwnerDocument.NameTable);
             nsm.AddNamespace("ds", XmlNameSpace.Url[NS.XmlDsigNamespaceUrl]);
 
-            // Transforms
             bool hasTransforms = false;
             TransformChain = new TransformChain();
             XmlNodeList transformsNodes = value.SelectNodes("ds:Transforms", nsm);
@@ -249,13 +245,10 @@ namespace Org.BouncyCastle.Crypto.Xml
                             throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_UnknownTransform);
                         }
                         AddTransform(transform);
-                        // let the transform read the children of the transformElement for data
                         transform.LoadInnerXml(transformElement.ChildNodes);
-                        // Hack! this is done to get around the lack of here() function support in XPath
                         if (transform is XmlDsigEnvelopedSignatureTransform)
                         {
-                            // Walk back to the Signature tag. Find the nearest signature ancestor
-                            // Signature-->SignedInfo-->Reference-->Transforms-->Transform
+
                             XmlNode signatureTag = transformElement.SelectSingleNode("ancestor::ds:Signature[1]", nsm);
                             XmlNodeList signatureList = transformElement.SelectNodes("//ds:Signature", nsm);
                             if (signatureList != null)
@@ -276,7 +269,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 }
             }
 
-            // DigestMethod
             XmlNodeList digestMethodNodes = value.SelectNodes("ds:DigestMethod", nsm);
             if (digestMethodNodes == null || digestMethodNodes.Count == 0 || digestMethodNodes.Count > 1)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "Reference/DigestMethod");
@@ -286,7 +278,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "Reference/DigestMethod");
 
 
-            // DigestValue
             XmlNodeList digestValueNodes = value.SelectNodes("ds:DigestValue", nsm);
             if (digestValueNodes == null || digestValueNodes.Count == 0 || digestValueNodes.Count > 1)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "Reference/DigestValue");
@@ -294,12 +285,10 @@ namespace Org.BouncyCastle.Crypto.Xml
             _digestValue = Convert.FromBase64String(ParserUtils.DiscardWhiteSpaces(digestValueElement.InnerText));
             if (!ElementUtils.VerifyAttributes(digestValueElement, (string[])null))
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "Reference/DigestValue");
-            // Verify that there aren't any extra nodes that aren't allowed
             int expectedChildNodeCount = hasTransforms ? 3 : 2;
             if (value.SelectNodes("*").Count != expectedChildNodeCount)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidElement, "Reference");
 
-            // cache the Xml
             _cachedXml = value;
         }
 

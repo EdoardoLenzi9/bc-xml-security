@@ -18,9 +18,7 @@ namespace Org.BouncyCastle.Crypto.Xml
         public XmlDecryption() : base() { }
         public XmlDecryption(XmlDocument document) : base(document) { }
 
-        //
-        // private methods
-        //
+
 
         private byte[] GetCipherValue(CipherData cipherData)
         {
@@ -40,10 +38,8 @@ namespace Org.BouncyCastle.Crypto.Xml
                 {
                     throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_UriNotSupported);
                 }
-                // See if the CipherReference is a local URI
                 if (cipherData.CipherReference.Uri.Length == 0)
                 {
-                    // self referenced Uri
                     string baseUri = (_document == null ? null : _document.BaseURI);
                     TransformChain tc = cipherData.CipherReference.TransformChain;
                     if (tc == null)
@@ -55,7 +51,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 else if (cipherData.CipherReference.Uri[0] == '#')
                 {
                     string idref = ParserUtils.ExtractIdFromLocalUri(cipherData.CipherReference.Uri);
-                    // Serialize 
                     XmlElement idElem = GetIdElement(_document, idref);
                     if (idElem == null || idElem.OuterXml == null)
                     {
@@ -74,24 +69,20 @@ namespace Org.BouncyCastle.Crypto.Xml
                 {
                     throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_UriNotResolved, cipherData.CipherReference.Uri);
                 }
-                // read the output stream into a memory stream
                 byte[] cipherValue = null;
                 using (MemoryStream ms = new MemoryStream())
                 {
                     StreamUtils.Pump(decInputStream, ms);
                     cipherValue = ms.ToArray();
-                    // Close the stream and return
                     if (inputStream != null)
                         inputStream.Close();
                     decInputStream.Close();
                 }
 
-                // cache the cipher value for Perf reasons in case we call this routine twice
                 cipherData.CipherReference.CipherValue = cipherValue;
                 return cipherValue;
             }
 
-            // Throw a CryptographicException if we were unable to retrieve the cipher data.
             throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_MissingCipherData);
         }
 
@@ -123,7 +114,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                     initBytesSize = 16;
                     break;
                 default:
-                    // The Uri is not supported.
                     throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_UriNotSupported);
             }
 
@@ -149,13 +139,11 @@ namespace Org.BouncyCastle.Crypto.Xml
                 kiName = keyInfoEnum.Current as KeyInfoName;
                 if (kiName != null)
                 {
-                    // Get the decryption key from the key mapping
                     string keyName = kiName.Value;
                     if (_keyNameMapping[keyName] is ICipherParameters)
                     {
                         return (ICipherParameters)_keyNameMapping[keyName];
                     }
-                    // try to get it from a CarriedKeyName
                     XmlNamespaceManager nsm = new XmlNamespaceManager(_document.NameTable);
                     nsm.AddNamespace("enc", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
                     XmlNodeList encryptedKeyList = _document.SelectNodes("//enc:EncryptedKey", nsm);
@@ -288,11 +276,9 @@ namespace Org.BouncyCastle.Crypto.Xml
         private byte[] DecryptEncryptedKey4(EncryptedKey ek, KeyInfoEncryptedKey kiEncKey, EncryptedKey encryptedKey, RsaKeyParameters privateKey)
         {
             ek = kiEncKey.GetEncryptedKey();
-            // recursively process EncryptedKey elements
             byte[] encryptionKey = DecryptEncryptedKey(ek, privateKey);
             if (encryptionKey != null)
             {
-                // this is a symmetric algorithm for sure
                 IBlockCipher blockSymAlg = CryptoHelpers.CreateFromName<IBlockCipher>(XmlNameSpace.Url[encryptedKey.EncryptionMethod.KeyAlgorithm]);
                 if (blockSymAlg == null)
                 {
@@ -371,7 +357,6 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public void DecryptDocument()
         {
-            // Look for all EncryptedData elements and decrypt them
             XmlNamespaceManager nsm = new XmlNamespaceManager(_document.NameTable);
             nsm.AddNamespace("enc", XmlNameSpace.Url[NS.XmlEncNamespaceUrl]);
             XmlNodeList encryptedDataList = _document.SelectNodes("//enc:EncryptedData", nsm);
@@ -399,10 +384,8 @@ namespace Org.BouncyCastle.Crypto.Xml
             var ivParam = symmetricAlgorithm as ParametersWithIV;
             var keyParam = ivParam == null ? symmetricAlgorithm as KeyParameter : ivParam.Parameters as KeyParameter;
 
-            // get the cipher value and decrypt
             byte[] cipherValue = GetCipherValue(encryptedData.CipherData);
 
-            // read the IV from cipherValue
             byte[] decryptionIV = null;
             if (!_mode.Equals("ECB", StringComparison.OrdinalIgnoreCase))
                 decryptionIV = GetDecryptionIV(encryptedData, NS.None);

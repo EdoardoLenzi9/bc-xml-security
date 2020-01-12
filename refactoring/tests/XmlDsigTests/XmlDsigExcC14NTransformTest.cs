@@ -1,21 +1,21 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information
-//
-// XmlDsigExcC14NTransformTest.cs - Test Cases for XmlDsigExcC14NTransform
-//
-// Author:
-//  original:
-//	Sebastien Pouliot <sebastien@ximian.com>
-//	Aleksey Sanin (aleksey@aleksey.com)
-//  this file:
-//	Atsushi Enomoto <atsushi@ximian.com>
-//
-// (C) 2002, 2003 Motus Technologies Inc. (http://www.motus.com)
-// (C) 2003 Aleksey Sanin (aleksey@aleksey.com)
-// (C) 2004 Novell (http://www.novell.com)
-//
-// Licensed to the .NET Foundation under one or more agreements.
-// See the LICENSE file in the project root for more information.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 using System;
@@ -29,8 +29,8 @@ using Xunit;
 namespace Org.BouncyCastle.Crypto.Xml.Tests
 {
 
-    // Note: GetInnerXml is protected in XmlDsigExcC14NTransform making it
-    // difficult to test properly. This class "open it up" :-)
+
+
     public class UnprotectedXmlDsigExcC14NTransform : XmlDsigExcC14NTransform
     {
         public UnprotectedXmlDsigExcC14NTransform()
@@ -147,7 +147,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         {
             Type[] input = transform.InputTypes;
             Assert.True((input.Length == 3), "Input #");
-            // check presence of every supported input types
+
             bool istream = false;
             bool ixmldoc = false;
             bool ixmlnl = false;
@@ -166,7 +166,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
 
             Type[] output = transform.OutputTypes;
             Assert.True((output.Length == 1), "Output #");
-            // check presence of every supported output types
+
             bool ostream = false;
             foreach (Type t in output)
             {
@@ -183,12 +183,12 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             input[0] = null;
             input[1] = null;
             input[2] = null;
-            // property does not return a clone
+
             foreach (Type t in transform.InputTypes)
             {
                 Assert.Null(t);
             }
-            // it's not a static array
+
             XmlDsigExcC14NTransform t2 = new XmlDsigExcC14NTransform();
             foreach (Type t in t2.InputTypes)
             {
@@ -216,11 +216,11 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         }
 
         static string xml = "<Test  attrib='at ' xmlns=\"http://www.go-mono.com/\" > \r\n &#xD; <Toto/> text &amp; </Test   >";
-        // GOOD for Stream input
+
         static string c14xml2 = "<Test xmlns=\"http://www.go-mono.com/\" attrib=\"at \"> \n &#xD; <Toto></Toto> text &amp; </Test>";
-        // GOOD for XmlDocument input. The difference is because once
-        // xml string is loaded to XmlDocument, there is no difference
-        // between \r and &#xD;, so every \r must be handled as &#xD;.
+
+
+
         static string c14xml3 = "<Test xmlns=\"http://www.go-mono.com/\" attrib=\"at \"> &#xD;\n &#xD; <Toto></Toto> text &amp; </Test>";
 
         private XmlDocument GetDoc()
@@ -242,11 +242,11 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         }
 
         [Fact(Skip = "https://github.com/dotnet/corefx/issues/16685")]
-        // see LoadInputAsXmlNodeList2 description
+
         public void LoadInputAsXmlNodeList()
         {
             XmlDocument doc = GetDoc();
-            // Argument list just contains element Test.
+
             transform.LoadInput(doc.ChildNodes);
             Stream s = (Stream)transform.GetOutput();
             string output = Stream2String(s);
@@ -254,9 +254,9 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         }
 
         [Fact(Skip = "https://github.com/dotnet/corefx/issues/16685")]
-        // MS has a bug that those namespace declaration nodes in
-        // the node-set are written to output. Related spec section is:
-        // http://www.w3.org/TR/2001/REC-xml-c14n-20010315#ProcessingModel
+
+
+
         public void LoadInputAsXmlNodeList2()
         {
             XmlDocument doc = GetDoc();
@@ -318,7 +318,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
         }
 
         [Fact]
-        //		[Ignore ("This test should be fine, but it does not pass under MS.NET")]
+
         public void ExcC14NSpecExample4()
         {
             string res = ExecuteXmlDSigExcC14NTransform(ExcC14NSpecExample4Input);
@@ -349,9 +349,9 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             doc.PreserveWhitespace = true;
             doc.LoadXml(InputXml);
 
-            // Testing default attribute support with
-            // vreader.ValidationType = ValidationType.None.
-            //
+
+
+
             UTF8Encoding utf8 = new UTF8Encoding();
             byte[] data = utf8.GetBytes(InputXml.ToString());
             Stream stream = new MemoryStream(data);
@@ -369,13 +369,13 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
             }
         }
 
-        //
-        // Example 1 from ExcC14N spec - PIs, Comments, and Outside of Document Element: 
-        // http://www.w3.org/TR/xml-c14n#Example-OutsideDoc
-        // 
-        // Aleksey: 
-        // removed reference to an empty external DTD
-        //
+
+
+
+
+
+
+
         static string ExcC14NSpecExample1Input =
                 "<?xml version=\"1.0\"?>\n" +
                 "\n" +
@@ -395,10 +395,10 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                 "<doc>Hello, world!</doc>\n" +
                 "<?pi-without-data?>";
 
-        //
-        // Example 2 from ExcC14N spec - Whitespace in Document Content: 
-        // http://www.w3.org/TR/xml-c14n#Example-WhitespaceInContent
-        // 
+
+
+
+
         static string ExcC14NSpecExample2Input =
                 "<doc>\n" +
                 "  <clean>   </clean>\n" +
@@ -424,10 +424,10 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                 "   </mixed>\n" +
                 "</doc>";
 
-        //
-        // Example 3 from ExcC14N spec - Start and End Tags: 
-        // http://www.w3.org/TR/xml-c14n#Example-SETags
-        //
+
+
+
+
         static string ExcC14NSpecExample3Input =
                 "<!DOCTYPE doc [<!ATTLIST e9 attr CDATA \"default\">]>\n" +
                 "<doc>\n" +
@@ -458,23 +458,23 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                 "       <e7 xmlns=\"http://www.ietf.org\">\n" +
                 "           <e8 xmlns=\"\">\n" +
                 "               <e9 attr=\"default\"></e9>\n" +
-                //	    	        "               <e9 xmlns:a=\"http://www.ietf.org\"></e9>\n" +
+
                 "           </e8>\n" +
                 "       </e7>\n" +
                 "   </e6>\n" +
                 "</doc>";
 
 
-        //
-        // Example 4 from ExcC14N spec - Character Modifications and Character References: 
-        // http://www.w3.org/TR/xml-c14n#Example-Chars
-        //
-        // Aleksey: 
-        // This test does not include "normId" element
-        // because it has an invalid ID attribute "id" which
-        // should be normalized by XML parser. Currently Mono
-        // does not support this (see comment after this example
-        // in the spec).
+
+
+
+
+
+
+
+
+
+
         static string ExcC14NSpecExample4Input =
                 "<!DOCTYPE doc [<!ATTLIST normId id ID #IMPLIED>]>\n" +
                 "<doc>\n" +
@@ -483,7 +483,7 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                 "   <compute><![CDATA[value>\"0\" && value<\"10\" ?\"valid\":\"error\"]]></compute>\n" +
                 "   <compute expr=\'value>\"0\" &amp;&amp; value&lt;\"10\" ?\"valid\":\"error\"\'>valid</compute>\n" +
                 "   <norm attr=\' &apos;   &#x20;&#13;&#xa;&#9;   &apos; \'/>\n" +
-                // "   <normId id=\' &apos;   &#x20;&#13;&#xa;&#9;   &apos; \'/>\n" +
+
                 "</doc>\n";
         static string ExcC14NSpecExample4Output =
                 "<doc>\n" +
@@ -493,13 +493,13 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                 "   <compute>value&gt;\"0\" &amp;&amp; value&lt;\"10\" ?\"valid\":\"error\"</compute>\n" +
                 "   <compute expr=\"value>&quot;0&quot; &amp;&amp; value&lt;&quot;10&quot; ?&quot;valid&quot;:&quot;error&quot;\">valid</compute>\n" +
                 "   <norm attr=\" \'    &#xD;&#xA;&#x9;   \' \"></norm>\n" +
-                // "   <normId id=\"\' &#xD;&#xA;&#x9; \'\"></normId>\n" +
+
                 "</doc>";
 
-        //
-        // Example 5 from ExcC14N spec - Entity References: 
-        // http://www.w3.org/TR/xml-c14n#Example-Entities
-        //
+
+
+
+
         static string ExcC14NSpecExample5Input =>
                 "<!DOCTYPE doc [\n" +
                 "<!ATTLIST doc attrExtEnt ENTITY #IMPLIED>\n" +
@@ -518,10 +518,10 @@ namespace Org.BouncyCastle.Crypto.Xml.Tests
                 "   Hello, world!\n" +
                 "</doc>";
 
-        //
-        // Example 6 from ExcC14N spec - UTF-8 Encoding: 
-        // http://www.w3.org/TR/xml-c14n#Example-UTF8
-        // 
+
+
+
+
         static string ExcC14NSpecExample6Input =
                     "<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?>\n" +
                     "<doc>&#169;</doc>\n";

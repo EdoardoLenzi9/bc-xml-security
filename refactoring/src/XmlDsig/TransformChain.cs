@@ -147,7 +147,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             {
                 if (transform != null)
                 {
-                    // Construct the individual transform element
                     XmlElement transformElement = transform.GetXml(document);
                     if (transformElement != null)
                         transformsElement.AppendChild(transformElement);
@@ -176,7 +175,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 Transform transform = CryptoHelpers.CreateFromName<Transform>(algorithm);
                 if (transform == null)
                     throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_UnknownTransform);
-                // let the transform read the children of the transformElement for data
                 transform.LoadInnerXml(transformElement.ChildNodes);
                 _transforms.Add(transform);
             }

@@ -70,7 +70,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 if (value == null)
                     throw new ArgumentNullException(nameof(value));
 
-                // Reset the node list
                 _elData = new CanonicalXmlNodeList();
                 foreach (XmlNode node in value)
                 {
@@ -133,7 +132,6 @@ namespace Org.BouncyCastle.Crypto.Xml
                 _elData.Add(node);
             }
 
-            // Save away the cached value
             _cachedXml = value;
         }
     }

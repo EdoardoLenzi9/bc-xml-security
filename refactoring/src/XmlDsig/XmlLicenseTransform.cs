@@ -1,6 +1,6 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-// See the LICENSE file in the project root for more information.
+﻿
+
+
 
 using System;
 using System.Collections;
@@ -113,7 +113,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             }
         }
 
-        // License transform has no inner XML elements
+
         protected override XmlNodeList GetInnerXml()
         {
             return null;
@@ -132,7 +132,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             return GetOutput();
         }
 
-        // License transform has no inner XML elements
+
         public override void LoadInnerXml(XmlNodeList nodeList)
         {
             if (nodeList != null && nodeList.Count > 0)
@@ -141,7 +141,7 @@ namespace Org.BouncyCastle.Crypto.Xml
 
         public override void LoadInput(object obj)
         {
-            // Check if the Context property is set before this transform is invoked.
+
             if (Context == null)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_XrmlMissingContext);
 
@@ -156,7 +156,7 @@ namespace Org.BouncyCastle.Crypto.Xml
             XmlElement currentLicenseContext = null;
             XmlNode signatureNode = null;
 
-            // Get the nearest issuer node
+
             currentIssuerContext = Context.SelectSingleNode("ancestor-or-self::r:issuer[1]", _namespaceManager) as XmlElement;
             if (currentIssuerContext == null)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_XrmlMissingIssuer);
@@ -165,14 +165,14 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (signatureNode != null)
                 signatureNode.ParentNode.RemoveChild(signatureNode);
 
-            // Get the nearest license node
+
             currentLicenseContext = currentIssuerContext.SelectSingleNode("ancestor-or-self::r:license[1]", _namespaceManager) as XmlElement;
             if (currentLicenseContext == null)
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_XrmlMissingLicence);
 
             XmlNodeList issuerList = currentLicenseContext.SelectNodes("descendant-or-self::r:license[1]/r:issuer", _namespaceManager);
 
-            // Remove all issuer nodes except current
+
             for (int i = 0, count = issuerList.Count; i < count; i++)
             {
                 if (issuerList[i] == currentIssuerContext)

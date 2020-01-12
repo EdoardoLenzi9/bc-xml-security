@@ -79,7 +79,6 @@ namespace _SignedXml.Samples
 
         public static Tuple<X509Certificate, AsymmetricKeyParameter> GetSampleX509Certificate()
         {
-            // To generate self-signed certificate, see GostUtilities.cs
 
             Pkcs12Store store = new Pkcs12Store();
 

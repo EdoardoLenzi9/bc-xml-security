@@ -23,7 +23,6 @@ namespace _SignedXml.Samples
             var elementToEncrypt = (XmlElement)doc.GetElementsByTagName(elementName)[0];
 
             ICipherParameters innerKey = innerKeyFactory();
-            // Encrypt the key with another key
             var encryptedKey = new EncryptedKey()
             {
                 CipherData = new CipherData(XmlEncryption.EncryptKey(((KeyParameter)((ParametersWithIV)innerKey).Parameters).GetKey(), (KeyParameter)((ParametersWithIV)key).Parameters)),
@@ -93,7 +92,6 @@ namespace _SignedXml.Samples
 
         public void SymmetricKeyWrapEncryptionRoundtrip()
         {
-            // DES is not supported in keywrap scenario, there is no specification string for it either
             foreach (var factory in EncryptingAndDecryptingSymmetric.GetSymmetricAlgorithms(skipDes: true))
                 foreach (var innerFactory in EncryptingAndDecryptingSymmetric.GetSymmetricAlgorithms(skipDes: true))
                     SymmetricKeyWrapEncryptionRoundtrip(factory, innerFactory);

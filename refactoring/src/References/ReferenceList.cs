@@ -87,7 +87,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             }
         }
 
-        /// <internalonly/>
         object IList.this[int index]
         {
             get { return _references[index]; }

@@ -25,11 +25,8 @@ namespace Org.BouncyCastle.Crypto.Xml.Encryption
         {
             _document = document;
             _xmlResolver = null;
-            // set the default padding to ISO-10126
             _padding = "ISO10126PADDING";
-            // set the default cipher mode to CBC
             _mode = "CBC";
-            // By default the encoding is going to be UTF8
             _encoding = Encoding.UTF8;
             _keyNameMapping = new Hashtable(_capacity);
             _xmlDsigSearchDepth = StreamUtils.XmlDsigSearchDepth;

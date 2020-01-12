@@ -12,7 +12,6 @@ namespace Org.BouncyCastle.Crypto.Xml
         private XmlElement _elemProp;
         private XmlElement _cachedXml = null;
 
-        // We are being lax here as per the spec
         public EncryptionProperty() { }
 
         public EncryptionProperty(XmlElement elementProperty)
@@ -80,7 +79,6 @@ namespace Org.BouncyCastle.Crypto.Xml
             if (value.LocalName != "EncryptionProperty" || value.NamespaceURI != XmlNameSpace.Url[NS.XmlEncNamespaceUrl])
                 throw new System.Security.Cryptography.CryptographicException(SR.Cryptography_Xml_InvalidEncryptionProperty);
 
-            // cache the Xml
             _cachedXml = value;
             _id = ElementUtils.GetAttribute(value, "Id", NS.XmlEncNamespaceUrl);
             _target = ElementUtils.GetAttribute(value, "Target", NS.XmlEncNamespaceUrl);
