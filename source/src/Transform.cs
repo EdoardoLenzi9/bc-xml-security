@@ -28,14 +28,14 @@ namespace Org.BouncyCastle.Crypto.Xml
 {
     public abstract class Transform
     {
-        private string _algorithm;
-        private string _baseUri = null;
-        internal XmlResolver _xmlResolver = null;
-        private bool _bResolverSet = false;
-        private SignedXml _signedXml = null;
-        private Reference _reference = null;
-        private Hashtable _propagatedNamespaces = null;
-        private XmlElement _context = null;
+        public static string _algorithm;
+        public static string _baseUri = null;
+        public static XmlResolver _xmlResolver = null;
+        public static bool _bResolverSet = false;
+        public static SignedXml _signedXml = null;
+        public static Reference _reference = null;
+        public static Hashtable _propagatedNamespaces = null;
+        public static XmlElement _context = null;
 
         internal string BaseURI
         {

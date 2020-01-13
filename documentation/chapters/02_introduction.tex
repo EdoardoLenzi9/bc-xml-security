@@ -1,5 +1,142 @@
-\chapter{Introduction}
-    $ $\\
+\chapter{Introduction - Model capture}
 
-Introduction
 
+The program implements XML Security standards using Bouncy Castle.
+Verification XML signature syntax using such algorithms:
+
+x509 certificate
+GOST algorithm
+
+with a custom signature method
+ 
+Encrypting and decrypting XML documents with algorithms:
+                          	Symmetric algorithms:
+                                         	http://www.w3.org/2001/04/xmlenc#des-cbc
+                                         	http://www.w3.org/2001/04/xmlenc#tripledes-cbc
+                                         	http://www.w3.org/2001/04/xmlenc#aes128-cbc
+http://www.w3.org/2001/04/xmlenc#aes192-cbc
+http://www.w3.org/2001/04/xmlenc#aes256-cbc
+                          	Symmetric algorithms with key wrap:
+                                         	http://www.w3.org/2001/04/xmlenc#kw-tripledes
+http://www.w3.org/2001/04/xmlenc#kw-aes128
+http://www.w3.org/2001/04/xmlenc#kw-aes192
+http://www.w3.org/2001/04/xmlenc#kw-aes256
+                          	Algorithms using RSA with and without OAEP
+
+
+
+
+
+
+
+
+
+The aim of this chapter is to 
+
+What are the main features of the project?
+What is bouncy castle?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{}
+
+reverse engineering of the source code by applying the initial understanding 
+and detailed model capture patterns. 
+
+apply the patterns 
+* "Read all the Code in One Hour", 
+* "Do a Mock Installation",  
+* "Speculate about Design", 
+* "Study the Exceptional Entities". 
+
+Find out:
+* main features?
+* important source code entities?
+* first impression of the quality of the design and implementation (also think of documentation, tests, etc.)?
+* Do you think a reengineering is feasible?
+* What are the exceptional packages, classes, and methods?
+* inheritance structure look like?
+
+apply the patterns 
+* "Step through the Execution",
+* "Look for the Contracts", 
+* "Look for Key Methods", 
+* "Look for Template/Hook Methods". 
+
+How three main features of the subject system are implemented 
+(mention the main classes, methods and briefly describe how they depend on each other).
+
+Plot:
+* Structural Analysis for Java (IBM)
+* X-Ray
+* Code City
+* Your tool (use your favorite reverse engineering tool)
+
+main features, ui, project goals (measurable goals)
+Most valuable first (customer values/business model)
+One hour overview
+    * tests, abstract classes, comments, high fan-out classes
+    * dependencies, version numbers
+Skim doc (no doc)
+Demo and mock installation
+Test evolution
+cost estimation
+
+Project scope (description, context, goals, verification criteria)
+Opportunities (what helps to achieve the project goals)
+Risks (what can cause the main problems)
+
+\begin{comment}
+\chapter{Reverse Engineering}
+
+Is the process of analyzing a subject system to identify the system components and their 
+interrelationships and create representations of the system in another form or at higher 
+level of abstraction.
+
+It is an iterative process
+
+* Persistent data
+* Draw classes (sort by size/loc) color 
+* Contracts
+* Git history (pulsars)
+
+
+---------------
+
+Problem detection
+Requirement analysis
+Problem resolution
+
+# Tests
+
+Write tests
+TDD 
+\end{comment}
+
+signedxml -> labels
+utils
+signedinfo
+signedxml nested classes
+
+dry ancestornamespace xmlattributenestedspace

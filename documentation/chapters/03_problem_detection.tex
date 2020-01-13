@@ -1,0 +1,194 @@
+\chapter{Problem Detection}
+
+\chapter{Code Smells}
+
+The aim of this chapter is describing 
+
+* Duplicated Code 
+* Long Method 
+* Large Class 
+* Long Parameter List 
+* Divergent Change 
+* Shotgun Surgery 
+* Feature Envy 
+* ...
+
+* Polymetric views
+
+* Long methods (distribution view)
+* System hotspots 
+    * classes with too many responsabilities
+    * classes too large
+    * NOM Number of methods
+    * NOA Number of attributes
+    * LOC Lines of code
+
+    * NMA wrt a child class, see the number of methods added 
+    * NMO overridden 
+    * NME extended
+
+> inheritance classification view
+
+
+# Detection strategy with metrics
+
+* problem of magic tresholds
+
+
+## GOD class 
+
+Performs too much work on its own, 
+u can smell it by metrics or blueprint
+
+## Feature envy 
+
+Denotes a method more interested in the data of 
+a few other classes that of its own class.
+(use blueprint)
+
+
+## Data class
+
+without logic, used by the others
+
+
+## Brain Method
+
+centralize the functionality of a class in the same way as a god class centralizes too much 
+functionality of the system
+
+
+---
+
+# Version control history
+
+VCS contains a lot of useful informations
+
+* how often things change
+* bug fixing
+* code that changes in the past is likely to change in the future
+
+Visualize class evolution (through the history -> animated diagram)
+
+
+## Understand evolution, evolution smells
+
+* [Code Maat](https://github.com/adamtornhill/code-maat) (git analizer)
+* Visualizing class evolution (base on NOM and NOA box diagram)
+* Evolution matrix (don't scale, )
+
+
+**Evolution patterns and smells**
+
+* Day fly
+* Pulsar/supernova
+* White Dwarf/red giant/idle
+
+* Extended polimetric views (kiviat diagram)
+
+\chapter{OO Violations}
+
+The aim of this chapter is to underline where the project violates 
+some laws (LoD, DRY) and design principles (\textbf{S.O.L.I.D. Design Principle})
+and the collaboration disarmonies.
+
+
+\section{SRP (Single Responsibility Principle)}
+
+Single purpose classes with a single reason to change
+
+1. describe the primary responsibility in a sentence 
+2. group similar methods
+3. look at private/protected methods
+4. decisions
+5. internal relationship between methods and variables
+
+
+\section{OCP (Open Closed Principle)}
+
+Open for extension, closed for modifications, 
+used for strategy patterns (different behaviours)
+
+1. duplicated code, change history -> classes that frequently change together
+
+
+\section{LSP (Liskov Substitution Principle)}
+
+SubTypes must be substitutable for their base type,
+don't differentiate the base class from the derived class
+
+1. subclass must accept everything the base class could accept
+2. don't violate the post condition of the base class (design by contract)
+
+> check contracts and remember that **each LSP violation is also an OCP 
+violation but not vice versa**
+
+
+\section{ISP (Interface Segregation Principle)}
+
+Design cohesive interfaces, avoid fat interfaces 
+(don't force clients to depend on methods that they never use)
+
+Split fat interface per different clients (group methods);
+
+1. check classes with an high number of public methods
+    * check methods that frequently change together
+2. group clients
+
+
+\section{DIP (Dependency Inversion Principle)}
+
+High level modules should not depend on low level modules, both should 
+depend on abstractions.
+
+Abstractions should not depend on details but vice versa.
+
+Comes at the heart of framework design.
+
+1. Use always interfaces, no variable should hold a reference to a concrete class.
+2. No class should derive from a concrete class 
+
+Someone soon or later must create a class instance but it mustn't be 
+volatile-transient (singleton) 
+
+
+\section{LoD (Law of Demeter)}
+
+* Principle of Least Knowledge
+* Only talk to immediate friends, don't talk with strangers
+* Write shy code
+* Minimize coupling
+
+```
+final String outputDir = ctxt.getOptions().getScratchDir().getAbsolutePath(); 
+a.getB().getC().doSomething() 
+```
+.*\(.*\).*\(.*\).*\(.*\)
+
+
+\section{DRY (Don't Repeat Yourself)}
+
+Is a really nice rule cause improve maintainability and understandability
+of the sys. 
+
+> each piece of knowledge requires a single, unambiguous, authoritative representation
+within a system.
+
+copy paste
+redundan parameter
+
+
+\section{Collaboration disarmonies}
+
+* Intensive coupling 
+(add a new method to the provider to replace multiple calls with a single call)
+
+* Dispersed coupling (a brain method m)
+
+* Shotgun surgery (data classes, brain methods, u have a method called by everyone)
+
+
+XMLDecryptionTransform > LoadInput 
+* null 
+* type checking
+* pass an object
